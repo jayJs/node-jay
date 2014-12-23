@@ -26,9 +26,9 @@ Bower - package management
 
 MVCish framework for jQuery  
 jQuery code is divided into 3 parts:  
-Model - here you decide, which function for view gets called.  
-Views - here you define which div-s are shown for this view and which controller function get's called.  
-Controller - here you keep the logic of this view, for example which API gets called.  
+Model - which function gets called on what URL.  
+Views - which div-s are shown and which controller function is called.  
+Controller - the logic of this view, for example which API gets called.  
 
 
 
