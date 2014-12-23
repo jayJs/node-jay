@@ -1,0 +1,16 @@
+
+p {
+  margin-bottom: 10px;
+}
+
+#loading {
+  width: 100%;
+  text-align: center;
+  margin-top: 150px;
+}
+
+#app {
+  margin-top: 150px;
+  width: 100%;
+  text-align: center;
+}
