@@ -15,20 +15,21 @@ Server via Node
 Database via Parse  
 Backend via Parse  
 
-Front-end tools:
+Front-end tools:  
 jQuery  
 Bootstrap  
 Animate.css - css animations  
 momentJs - date manipulations  
 crossroads.js - routing  
-html5shiv, respond - compatibility
+html5shiv, respond - compatibility  
 Bower - package management  
 
 MVCish framework for jQuery  
 jQuery code is divided into 3 parts:  
 Model - here you decide, which function for view gets called.  
-Views - here you define which div-s are shown for this view and call.  
+Views - here you define which div-s are shown for this view and which controller function get's called.  
 Controller - here you keep the logic of this view, for example which API gets called.  
+
 
 
 
