@@ -3,15 +3,14 @@ J js
 
 A homage to jQuery.  
 A boilerplate for a Single Page Application + server.  
-Built to enable fast development and maintainability for jQuery based SPAs.  
 
-Goals:  
+**Goals:**  
 * High browser compatibility  
 * fast project start time  
 * fast development time  
 * good code maintainability  
 
-INSTANT  
+**Instant**  
 Server via Node  
 Database via Parse  
 Backend via Parse  
@@ -26,7 +25,7 @@ html5shiv, respond - compatibility
 Bower - package management
 MVCish framework for jQuery.  
 
-TODO:  
+**Todo:**  
 Authentication  
 will be on page load done via Facebook, Twitter, or Google connect.
 
