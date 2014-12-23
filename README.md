@@ -22,8 +22,15 @@ Animate.css - css animations
 momentJs - date manipulations  
 crossroads.js - routing  
 html5shiv, respond - compatibility
-Bower - package management
-MVCish framework for jQuery.  
+Bower - package management  
+
+MVCish framework for jQuery  
+jQuery code is divided into 3 parts:  
+Model - here you decide, which function for view gets called.  
+Views - here you define which div-s are shown for this view and call.  
+Controller - here you keep the logic of this view, for example which API gets called.  
+
+
 
 **Todo:**  
 Authentication  
@@ -35,9 +42,6 @@ will be on page load done via Facebook, Twitter, or Google connect.
 
 
 
-
-Changelog from tabulaRasa:  
--> Removed director and replaced with crossroads.  
 
 This is old readme, waiting to be updated:
 
