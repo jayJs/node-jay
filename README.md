@@ -1,24 +1,30 @@
 J js  
 ===================
 
-A homage to jQuery.
+A homage to jQuery.  
 A boilerplate for a Single Page Application + server.  
-Built to enable fast development and maintainability for jQuery based SPAs.
+Built to enable fast development and maintainability for jQuery based SPAs.  
 
 Goals:  
-* Highly compatible  
-Everything that runs jQuery + Bootstrap can run it.  
+* High browser compatibility  
+* fast project start time  
+* fast development time  
+* good code maintainability  
 
+INSTANT  
+Server via Node  
+Database via Parse  
+Backend via Parse  
 
-Includes:
-
-ROUTING  
-by crossroads.js  
-Hasher js and Signals js are included as a dependency.  
-
+Front-end tools:
+jQuery  
+Bootstrap  
+Animate.css - css animations  
+momentJs - date manipulations  
+crossroads.js - routing  
+html5shiv, respond - compatibility
+Bower - package management
 MVCish framework for jQuery.  
-Routing calls a function that is meant for
-
 
 TODO:  
 Authentication  
