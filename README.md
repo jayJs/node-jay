@@ -1,13 +1,13 @@
 J js  
 ===================
 
-A lightning fast boilerplate for (web) applications.
+A homage to jQuery.
+A boilerplate for a Single Page Application + server.  
+Built to enable fast development and maintainability for jQuery based SPAs.
 
 Goals:  
-* Hight compatible  
+* Highly compatible  
 Everything that runs jQuery + Bootstrap can run it.  
-
-
 
 
 Includes:
@@ -16,9 +16,14 @@ ROUTING
 by crossroads.js  
 Hasher js and Signals js are included as a dependency.  
 
-
 MVCish framework for jQuery.  
 Routing calls a function that is meant for
+
+
+TODO:  
+Authentication  
+will be on page load done via Facebook, Twitter, or Google connect.
+
 
 
 
