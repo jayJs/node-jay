@@ -3,6 +3,11 @@ function cl(data) {
     console.log(data);
 }
 
+// hello hello, facebook connect and #_=_
+if (window.location.hash && window.location.hash == '#_=_') {
+  window.location.hash = '/admin';
+}
+
 $(document).ready(function() {
 
   // connect-livereload via Gulp autorefreshes the site.
@@ -37,9 +42,14 @@ $(document).ready(function() {
 
     // if not logged in
     if(window.userId != undefined) {
-      l("jou");
+      l("logged in");
+      $("#fbLogin").addClass("hidden").addClass("animated fadeOut");
+      $("#userInfo").removeClass("hidden fadeOut").addClass("animated fadeIn");
+      $("#userIdShow").empty().append(window.userId);
     } else { // logged in
-      l("no");
+      l("not logged in");
+      $("#userInfo").addClass("hidden").addClass("animated fadeOut");
+      $("#fbLogin").removeClass("hidden fadeOut").addClass("animated fadeIn");
     }
 
     adminFunction();
