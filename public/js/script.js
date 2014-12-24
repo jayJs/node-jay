@@ -15,24 +15,41 @@ $(document).ready(function() {
   // VIEWS
   // Front page view
   var frontView = function () {
-    $("#otherPage").addClass("hidden").addClass("animated fadeOut");
+    $("#otherPage, #admin").addClass("hidden").addClass("animated fadeOut");
     $("#frontPage").removeClass("hidden fadeOut").addClass("animated fadeIn");
-    l("front page view shown");
+    l("Front page view shown");
     frontPageFunction();
   }
 
   // Other page view
   var otherView = function () {
-    $("#frontPage").addClass("hidden").addClass("animated fadeOut");
+    $("#frontPage, #admin").addClass("hidden").addClass("animated fadeOut");
     $("#otherPage").removeClass("hidden fadeOut").addClass("animated fadeIn");
     l("Other page view shown");
     otherPageFunction();
+  }
+
+  // Admin view
+  var adminView = function () {
+    $("#frontPage, #otherPage").addClass("hidden").addClass("animated fadeOut");
+    $("#admin").removeClass("hidden fadeOut").addClass("animated fadeIn");
+    l("Admin view shown");
+
+    // if not logged in
+    if(window.userId != undefined) {
+      l("jou");
+    } else { // logged in
+      l("no");
+    }
+
+    adminFunction();
   }
 
   // MODEL
   // Set up routes
   crossroads.addRoute('/', frontView);
   crossroads.addRoute('/you', otherView);
+  crossroads.addRoute('/admin', adminView);
 
   //setup hasher
   // hasher let's you know when route is changed
@@ -54,6 +71,12 @@ $(document).ready(function() {
   function otherPageFunction() {
     l("Other page function called");
   }
+
+  // admin view controller
+  function adminFunction() {
+    l("Admin function called");
+  }
+
 
   // shortcut for log to #log
   function l(data) {
