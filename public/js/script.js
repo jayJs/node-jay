@@ -8,6 +8,18 @@ if (window.location.hash && window.location.hash == '#_=_') {
   window.location.hash = '/admin';
 }
 
+function isUser(){
+  FB.getLoginStatus(function(response){
+    if (response.status === "connected") {
+      return response.authResponse.userID;
+    } else {
+      return false;
+    }
+  });
+}
+
+
+
 $(document).ready(function() {
 
   // connect-livereload via Gulp autorefreshes the site.
@@ -41,13 +53,28 @@ $(document).ready(function() {
     l("Admin view shown");
 
     // if not logged in
+  /*
+    var username = isUser();
+    cl(username);
+    if(isUser) {
+      l("is user");
+      $("#fbLogin").addClass("hidden").addClass("animated fadeOut");
+      $("#userInfo").removeClass("hidden fadeOut").addClass("animated fadeIn");
+      $("#userIdShow").empty().append(window.userId);
+    } else {
+      l("is no user");
+      $("#userInfo").addClass("hidden").addClass("animated fadeOut");
+      $("#fbLogin").removeClass("hidden fadeOut").addClass("animated fadeIn");
+    }
+*/
+
     if(window.userId != undefined) {
-      l("logged in");
+      l("is user");
       $("#fbLogin").addClass("hidden").addClass("animated fadeOut");
       $("#userInfo").removeClass("hidden fadeOut").addClass("animated fadeIn");
       $("#userIdShow").empty().append(window.userId);
     } else { // logged in
-      l("not logged in");
+      l("is no user");
       $("#userInfo").addClass("hidden").addClass("animated fadeOut");
       $("#fbLogin").removeClass("hidden fadeOut").addClass("animated fadeIn");
     }
