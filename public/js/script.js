@@ -6,7 +6,7 @@ function cl(data) {
 $(document).ready(function() {
 
   // connect-livereload via Gulp autorefreshes the site.
-  $("body").append('<script src="http://localhost:35729/livereload.js?snipver=1"></script>');
+  //$("body").append('<script src="http://localhost:35729/livereload.js?snipver=1"></script>');
 
   // hide loadin + show app
   $("#loading").addClass("animated fadeOut").addClass("hidden");

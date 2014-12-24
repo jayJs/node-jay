@@ -12,6 +12,55 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
     </head>
     <body>
+      <div id="fb-root"></div>
+      <script>
+      window.fbAsyncInit = function() {
+
+        // test account for j, works on localhost:5000
+        var fbAppId = "756437764450452"
+
+        FB.init({
+          appId      : fbAppId,
+          xfbml      : true,
+          version    : 'v2.2',
+          status     : true
+        });
+
+        FB.getLoginStatus(function(response){
+          if (response.status === "connected") {
+            window.userId = response.authResponse.userID;
+            document.getElementById("login").className = "animated fadeOut hidden";
+            document.getElementById("loading").className = "animated fadeOut hidden";
+            document.getElementById("app").className = "animated fadeIn";
+
+            // Get user information
+            if(window.userId) {
+              var xhr = new XMLHttpRequest();
+              xhr.open("GET", "/api/user/"+window.userId, false);
+              xhr.send();
+              var json = JSON.parse(xhr.response);
+              window.companies = json[0].companies;
+              window.selectedCompany = json[0].selectedCompany;
+              window.userName = json[0].username;
+            }
+
+          } else {
+            document.getElementById("login").className = "animeted fadeIn";
+            console.log(response);
+          }
+        });
+
+      };
+
+      (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/all.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script>
+
     <div id="loading">
           Loading...
         </div>
