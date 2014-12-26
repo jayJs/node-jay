@@ -16,6 +16,7 @@ Database via Parse
 Backend via Parse  
 
 Front-end tools:  
+Authentication via Facebook  
 jQuery  
 Bootstrap  
 Animate.css - css animations  
@@ -29,6 +30,50 @@ jQuery code is divided into 3 parts:
 Model - which function gets called on what URL.  
 Views - which div-s are shown and which controller function is called.  
 Controller - the logic of this view, for example which API gets called.  
+
+**Helpers**  
+cl(message) - shortcut for console.log(message);  
+l(message) - print message to the #log  
+a(message) - print message as an alert to the top of the page for client.  
+isUser(isLoggedIn, isNotLoggedIn) - determine, if user is logged in  
+
+**Using isUser()**  
+```
+function isLoggedIn() {
+  $("#logInBox").hide();
+  $("#logOutBox").show();  
+}
+
+function isNotLoggedIn() {
+  $("#logOutBox").hide();  
+  $("#logInBox").show();
+}
+
+isUser(isLoggedIn, isNotLoggedIn);  
+
+```
+OR  
+```
+function isLoggedIn() {
+}
+
+function isNotLoggedIn() {
+  $("#logOutBox").hide();  
+  $("#logInBox").show();
+}
+
+isUser(function() { // logged in users
+  $("#logInBox").hide();
+  $("#logOutBox").show();  
+}, function (){ // not logged in users
+  $("#logOutBox").hide();  
+  $("#logInBox").show();
+});  
+
+```
+
+
+
 
 
 

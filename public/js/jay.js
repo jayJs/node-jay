@@ -1,8 +1,14 @@
+// hello hello, facebook connect and #_=_
+if (window.location.hash && window.location.hash == '#_=_') {
+  window.location.hash = '/admin';
+}
+
 // shortcut for console.log
 function cl(data) {
   console.log(data);
 }
 
+// write to alert
 function a(message) {
   document.getElementById('alertMessage').innerHTML = message;
   document.getElementById('alert').classList.remove("hidden");
@@ -13,11 +19,6 @@ function l(data) {
   var log = document.getElementById('log');
   log.innerHTML = log.innerHTML + data+"<br />";
   log.scrollTop = log.scrollHeight;
-}
-
-// hello hello, facebook connect and #_=_
-if (window.location.hash && window.location.hash == '#_=_') {
-  window.location.hash = '/admin';
 }
 
 function isUser (isLoggedIn, notLoggedIn) {
