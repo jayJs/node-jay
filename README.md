@@ -55,13 +55,6 @@ isUser(isLoggedIn, isNotLoggedIn);
 ```
 OR  
 ```
-function isLoggedIn() {
-}
-
-function isNotLoggedIn() {
-  $("#logOutBox").hide();  
-  $("#logInBox").show();
-}
 
 isUser(function() { // logged in users
   $("#logInBox").hide();
