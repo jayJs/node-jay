@@ -16,7 +16,7 @@
       <script>
       window.fbAsyncInit = function() {
 
-        // test account for j, works on localhost:5000
+        // test account for jay, works on localhost:5000
         var fbAppId = "756437764450452"
 
         FB.init({
@@ -30,12 +30,9 @@
           // FB logged in and this app has permissions
           if (response.status === "connected") {
             window.userId = response.authResponse.userID;
-            //cl(window.userId);
-            //document.getElementById("login").className = "animated fadeOut hidden";
-            //document.getElementById("loading").className = "animated fadeOut hidden";
-            //document.getElementById("app").className = "animated fadeIn";
 
             // Get user information
+            // OK so this is what we'll do with server after the frontend part is cleared.
             /*if(window.userId) {
               var xhr = new XMLHttpRequest();
               xhr.open("GET", "/api/user/"+window.userId, false);
@@ -47,11 +44,9 @@
           // not a user or not authenticated with the app
           } else {
             window.userId = false;
-            //document.getElementById("login").className = "animeted fadeIn";
             //console.log(response);
           }
         });
-
       };
 
       (function(d, s, id){
@@ -98,11 +93,9 @@
         </div>
       </div>
 
-
       <div id="log">
       </div>
     </div>
-
 
     <script src="/b/js-signals/dist/signals.min.js"></script>
     <script src="/b/hasher/dist/js/hasher.min.js"></script>

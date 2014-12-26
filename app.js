@@ -40,7 +40,7 @@ app.get('/', function(req, res){
 
 /* PASSPORT */
 
-// demo account for J, works at localhost:5000
+// demo account for Jay, works at localhost:5000
 var FACEBOOK_APP_ID = "756437764450452";
 var FACEBOOK_APP_SECRET = "3fcc01cbe7631a706a851aa4c7b4e745";
 

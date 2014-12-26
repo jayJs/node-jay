@@ -32,10 +32,12 @@ $(document).ready(function() {
     l("Admin view shown");
 
     isUser(function(){ // is a user
+      l("user is logged in and his stuff is seen");
       $("#fbLogin").addClass("hidden").addClass("animated fadeOut");
       $("#userInfo").removeClass("hidden fadeOut").addClass("animated fadeIn");
       $("#userIdShow").empty().append(window.userId);
     }, function() { // is not a user
+      l("user is asked to log in");
       $("#userInfo").addClass("hidden").addClass("animated fadeOut");
       $("#fbLogin").removeClass("hidden fadeOut").addClass("animated fadeIn");
     });
