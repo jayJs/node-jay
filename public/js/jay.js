@@ -54,3 +54,17 @@ function isUser (isLoggedIn, notLoggedIn) {
     }, 100); // Ping every 100 ms
   }
 }
+
+jQuery.fn.extend({
+  out: function(input) {
+    //cl(input);
+    this.addClass("hidden").addClass("animated fadeOut");
+    return this;
+  },
+  in: function(input) {
+    //cl(input);
+    cl(this[0].className);
+    this.removeClass("hidden fadeOut").addClass("animated fadeIn");
+    return this;
+  }
+});

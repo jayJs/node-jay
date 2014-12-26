@@ -17,29 +17,36 @@ $(document).ready(function() {
     frontPageFunction();
   }
 
+  /*
+  jQuery.out = function(input) {
+    cl(input);
+    this.addClass("hidden").addClass("animated fadeOut");
+    return this;
+  } */
+
   // Other page view
   var otherView = function () {
-    $("#frontPage, #admin").addClass("hidden").addClass("animated fadeOut");
-    $("#otherPage").removeClass("hidden fadeOut").addClass("animated fadeIn");
+    $("#frontPage, #admin").out("ei");
+    $("#otherPage").in("jah");;
     l("Other page view shown");
     otherPageFunction();
   }
 
   // Admin view
   var adminView = function () {
-    $("#frontPage, #otherPage").addClass("hidden").addClass("animated fadeOut");
-    $("#admin").removeClass("hidden fadeOut").addClass("animated fadeIn");
+    $("#frontPage, #otherPage").out();
+    $("#admin").in();
     l("Admin view shown");
 
     isUser(function(){ // is a user
-      l("user is logged in and his stuff is seen");
-      $("#fbLogin").addClass("hidden").addClass("animated fadeOut");
-      $("#userInfo").removeClass("hidden fadeOut").addClass("animated fadeIn");
+      l("user is logged in and his ID is shown");
+      $("#fbLogin").out();
+      $("#userInfo").in();
       $("#userIdShow").empty().append(window.userId);
     }, function() { // is not a user
       l("user is asked to log in");
-      $("#userInfo").addClass("hidden").addClass("animated fadeOut");
-      $("#fbLogin").removeClass("hidden fadeOut").addClass("animated fadeIn");
+      $("#userInfo").out();
+      $("#fbLogin").in();
     });
 
     adminFunction();
