@@ -14,3 +14,13 @@ p {
   width: 100%;
   text-align: center;
 }
+
+#alert {
+  position: absolute;
+  top: 20px;
+  width: 100%;
+}
+
+#alert>button {
+  margin-top: 15px; margin-right: 15px;
+}
