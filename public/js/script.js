@@ -52,21 +52,7 @@ $(document).ready(function() {
     $("#admin").removeClass("hidden fadeOut").addClass("animated fadeIn");
     l("Admin view shown");
 
-    // if not logged in
-  /*
-    var username = isUser();
-    cl(username);
-    if(isUser) {
-      l("is user");
-      $("#fbLogin").addClass("hidden").addClass("animated fadeOut");
-      $("#userInfo").removeClass("hidden fadeOut").addClass("animated fadeIn");
-      $("#userIdShow").empty().append(window.userId);
-    } else {
-      l("is no user");
-      $("#userInfo").addClass("hidden").addClass("animated fadeOut");
-      $("#fbLogin").removeClass("hidden fadeOut").addClass("animated fadeIn");
-    }
-*/
+    // if logged in
 
     if(window.userId != undefined) {
       l("is user");
@@ -74,6 +60,11 @@ $(document).ready(function() {
       $("#userInfo").removeClass("hidden fadeOut").addClass("animated fadeIn");
       $("#userIdShow").empty().append(window.userId);
     } else { // logged in
+
+      
+      //or FB has not yet responded
+        // wait till FB answers
+
       l("is no user");
       $("#userInfo").addClass("hidden").addClass("animated fadeOut");
       $("#fbLogin").removeClass("hidden fadeOut").addClass("animated fadeIn");
