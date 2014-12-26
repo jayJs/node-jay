@@ -2,7 +2,7 @@ J js
 ===================
 
 //A homage to jQuery.  
-Build a MVP in no time.
+Build a MVP in no time.  
 A boilerplate for a Single Page Application + server.  
 
 **Goals:**  
