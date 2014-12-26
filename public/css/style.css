@@ -24,3 +24,14 @@ p {
 #alert>button {
   margin-top: 15px; margin-right: 15px;
 }
+
+#log {
+  border-top: #999 1px solid;
+  height: 130px;
+  bottom: 0; position:
+  absolute;
+  width: 100%;
+  overflow: hidden;
+  font-size: 8pt;
+  color: #999;
+}

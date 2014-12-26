@@ -1,34 +1,8 @@
-// shortcut for console.log
-function cl(data) {
-    console.log(data);
-}
-
-function a(message) {
-  document.getElementById('alertMessage').innerHTML = message;
-  document.getElementById('alert').classList.remove("hidden");
-}
-
-// hello hello, facebook connect and #_=_
-if (window.location.hash && window.location.hash == '#_=_') {
-  window.location.hash = '/admin';
-}
-
-function isUser(){
-  FB.getLoginStatus(function(response){
-    if (response.status === "connected") {
-      return response.authResponse.userID;
-    } else {
-      return false;
-    }
-  });
-}
-
-
 
 $(document).ready(function() {
 
   // connect-livereload via Gulp autorefreshes the site.
-  //$("body").append('<script src="http://localhost:35729/livereload.js?snipver=1"></script>');
+  $("body").append('<script src="http://localhost:35729/livereload.js?snipver=1"></script>');
 
   // hide loadin + show app
   $("#loading").addClass("animated fadeOut").addClass("hidden");
@@ -57,50 +31,14 @@ $(document).ready(function() {
     $("#admin").removeClass("hidden fadeOut").addClass("animated fadeIn");
     l("Admin view shown");
 
-    // show for logged in users
-    function isLoggedIn() {
+    isUser(function(){ // is a user
       $("#fbLogin").addClass("hidden").addClass("animated fadeOut");
       $("#userInfo").removeClass("hidden fadeOut").addClass("animated fadeIn");
       $("#userIdShow").empty().append(window.userId);
-    }
-
-    // show for not logged in users
-    function notLoggedIn() {
+    }, function() { // is not a user
       $("#userInfo").addClass("hidden").addClass("animated fadeOut");
       $("#fbLogin").removeClass("hidden fadeOut").addClass("animated fadeIn");
-    }
-
-
-    // if it's a user
-    if(window.userId != undefined && window.userId != false) {
-      isLoggedIn();
-    // if it's not a user or we are not sure yet
-    } else {
-      var i = 0;
-      var getStatus = setInterval(function(){
-        // is not a user
-        if(window.userId === false) {
-          notLoggedIn();
-          clearInterval(getStatus);
-        }
-        // is a user or not sure yet
-        else {
-          // is a user
-          if(window.userId != undefined) {
-            isLoggedIn();
-            clearInterval(getStatus);
-          } else {
-            // FB is not yet available
-            if(i === 20) { // turn off the search after 20 times
-              notLoggedIn();
-              a('Unable to authenticate. Refresh page to try again');
-              clearInterval(getStatus);
-            }
-            i++;
-          }
-        }
-      }, 100); // Ping every 100 ms
-    }
+    });
 
     adminFunction();
   }
@@ -135,12 +73,6 @@ $(document).ready(function() {
   // admin view controller
   function adminFunction() {
     l("Admin function called");
-  }
-
-
-  // shortcut for log to #log
-  function l(data) {
-    $("#log").append(data+"<br />");
   }
 
 });
