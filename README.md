@@ -10,9 +10,7 @@ A boilerplate for a Single Page Application + server.
 I've built more then 10 MVP-s in the past and I'm still maintaining quite a number of them.  
 After some time I've found the code getting cluttered, some things not working in some browsers and myself doing the same mistakes over and over again.  
 
-A Single Page App (SPA) architecture relying on a REST API has become my weapon of choice since they can be used as a website and in many cases also as an initial iOS / Android app.
-
-Nevertheless, a SPA architecture can cause quite a lot of stress, especially when I try to add new features later on. To quote a former coworker - this javascript thing can become a flea circus real easy.  
+A Single Page App (SPA) architecture relying on a REST API has become my weapon of choice. Nevertheless, a SPA architecture can cause quite a lot of stress, especially when I try to add new features later on. To quote a former coworker - this javascript thing can become a flea circus real easy.  
 
 To solve this problem, I'm using a Model-View-Controller-ish framework relying on Crossroads.js routing.  
 The Model contains routes. If a route is matched, a View function is called:
@@ -31,7 +29,7 @@ hasher.changed.add(parseHash); //parse hash changes
 hasher.init(); //start listening for history change
 
 ```
-The View includes information about what to turn on or off on the page and calls a Controller function. 
+The View includes information about what to turn on or off on the page and calls a Controller function.
 ```
 var frontView = function () {
   $("#otherPage").out();
@@ -54,7 +52,6 @@ function frontPageFunction() {
   });
 }
 ```
-
 Client side user authentication relies on Facebook. Function isUser() provides the possibility to apply different commands to anonymous or logged-in users. Function isUser() determines that you are logged in before executing the functions. window.userId contains the user Facebook ID.
 
 ```
