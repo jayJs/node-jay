@@ -12,8 +12,7 @@ After some time I've found the code getting cluttered, some things not working i
 
 A Single Page App (SPA) architecture relying on a REST API has become my weapon of choice. The jQuery part I did not choose, this is derived from all of the clients who cannot choose their browsers. Nevertheless, a SPA architecture with jQuery can cause quite a lot of stress, especially when I try to add new features later on. To quote a former coworker - this javascript thing can become a flea circus real easy.  
 
-To solve this problem, I'm using a Model-View-Controller-ish framework relying on Crossroads.js routing.  
-The Model contains routes. If a route is matched, a View function is called:
+To solve this problem, I'm using a Model-View-Controller-ish framework relying on Crossroads.js routing. The Model contains routes. If a route is matched, a View function is called:
 
 ```
 // Set up routing
