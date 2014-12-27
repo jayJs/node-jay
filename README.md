@@ -15,7 +15,7 @@ A Single Page App (SPA) architecture relying on a REST API has become my weapon 
 Nevertheless, a SPA architecture can cause quite a lot of stress, especially when I try to add new features later on. To quote a former coworker - this javascript thing can become a flea circus real easy.  
 
 To solve this problem, I'm using a Model-View-Controller-ish framework relying on Crossroads.js routing.  
-The Model contains routes. If a route is matched a View function is called:
+The Model contains routes. If a route is matched, a View function is called:
 
 ```
 // Set up routing
@@ -31,7 +31,7 @@ hasher.changed.add(parseHash); //parse hash changes
 hasher.init(); //start listening for history change
 
 ```
-The View includes information about what to turn on or off on the page and calls a Controller function.
+The View includes information about what to turn on or off on the page and calls a Controller function. 
 ```
 var frontView = function () {
   $("#otherPage").out();
@@ -55,7 +55,7 @@ function frontPageFunction() {
 }
 ```
 
-Client side user authentication relies on Facebook. Function isUser() provides the possibility to apply different commands to anonymous or logged in users. Function isUser() determines that you are logged in before executing the functions. window.userId contains the user Facebook id.
+Client side user authentication relies on Facebook. Function isUser() provides the possibility to apply different commands to anonymous or logged-in users. Function isUser() determines that you are logged in before executing the functions. window.userId contains the user Facebook ID.
 
 ```
 function isLoggedIn() {
@@ -85,7 +85,7 @@ isUser(function() { // logged in users
     });  
 
 ```
-jQuery and Bootstrap do what they usually do, momentJs provides date manipulations and bower is used for package management. Functions in() and out() turn Bootstrap class "hidden" on and off. Giving it a animation name from animate.css - in("bounceInLeft") will decorate the entrance with a CSS animation.
+jQuery and Bootstrap do what they usually do, momentJs provides date manipulations, and bower is used for package management. Functions in() and out() turn Bootstrap class "hidden" on and off. Giving it an animation name from animate.css - in("bounceInLeft") will decorate the entrance with a CSS animation.
 
 ```
 $("#frontPage").out(); // hidden
@@ -153,14 +153,14 @@ isUser(isLoggedIn, isNotLoggedIn) - determine, if user is logged in
 
 
 
-This is old readme, waiting to be updated:
+This is an old readme, waiting to be updated:
 
 
 Blank Express + jQuery + Animate.css + Director + Bootstrap + Moment + Gulp (livereload) + Bower + Heroku  
 ===================
 
 
-This is a boilerplate for beginning a new Single Page Application with the components listed in the header.
+This is a boilerplate for starting a new Single Page Application with the components listed in the header.
 
 
 INSTALLATION AND STARTING UP
