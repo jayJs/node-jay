@@ -52,7 +52,7 @@ function frontPageFunction() {
 }
 ```
 
-![is the user logged in?](http://i.imgur.com/iR1rtRX.png)
+![is the user logged in?](http://i.imgur.com/rlWjEMH.png)
 
 Client side user authentication relies on Facebook. Function isUser() provides the possibility to apply different commands to anonymous or logged-in users. Function isUser() determines that you are logged in before executing the functions. window.userId contains the user Facebook ID.
 
