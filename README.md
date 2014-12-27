@@ -52,6 +52,9 @@ function frontPageFunction() {
   });
 }
 ```
+
+![is the user logged in?](http://i.imgur.com/q3Jeoep.png)
+
 Client side user authentication relies on Facebook. Function isUser() provides the possibility to apply different commands to anonymous or logged-in users. Function isUser() determines that you are logged in before executing the functions. window.userId contains the user Facebook ID.
 
 ```
@@ -82,7 +85,7 @@ isUser(function() { // logged in users
     });  
 
 ```
-jQuery and Bootstrap do what they usually do, momentJs provides date manipulations, and bower is used for package management. Functions in() and out() turn Bootstrap class "hidden" on and off. Giving it an animation name from animate.css - in("bounceInLeft") will decorate the entrance with a CSS animation.
+jQuery and Bootstrap do what they usually do, momentJs provides date manipulations, and bower is used for package management. Functions in() and out() turn Bootstrap class "hidden" on and off. Giving it an animation name from animate.css - in("bounceInLeft") will decorate them with a CSS animation.
 
 ```
 $("#frontPage").out(); // hidden
@@ -133,7 +136,7 @@ Controller - the logic of this view, for example which API gets called.
 
 **Helpers**  
 cl(message) - shortcut for console.log(message);  
-l(message) - print message to the #log
+l(message) - print message to the #log  
 a(message) - print message as an alert to the top of the page for client.  
 in(transition) - show an element (with a possible animate.css transition).  
 out(transition) - hide an element (with a possible animate.css transition).  
