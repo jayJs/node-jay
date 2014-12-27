@@ -11,8 +11,8 @@ $(document).ready(function() {
   // VIEWS
   // Front page view
   var frontView = function () {
-    $("#otherPage, #admin").addClass("hidden").addClass("animated fadeOut");
-    $("#frontPage").removeClass("hidden fadeOut").addClass("animated fadeIn");
+    $("#otherPage, #admin").out();
+    $("#frontPage").in();
     l("Front page view shown");
     frontPageFunction();
   }
@@ -26,8 +26,8 @@ $(document).ready(function() {
 
   // Other page view
   var otherView = function () {
-    $("#frontPage, #admin").out("ei");
-    $("#otherPage").in("jah");;
+    $("#frontPage, #admin").out("fadeOutLeft");
+    $("#otherPage").in("fadeInRight");
     l("Other page view shown");
     otherPageFunction();
   }

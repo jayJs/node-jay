@@ -36,8 +36,23 @@ Controller - the logic of this view, for example which API gets called.
 cl(message) - shortcut for console.log(message);  
 l(message) - print message to the #log  
 a(message) - print message as an alert to the top of the page for client.  
+in(transition) - show an element (with a possible animate.css transition).  
+out(transition) - hide an element (with a possible animate.css transition).  
 isUser(isLoggedIn, isNotLoggedIn) - determine, if user is logged in  
 
+**Using in() & out()**  
+```
+$("#frontPage").out();
+$("#otherPage").in();
+```
+OR with animate.css animations:
+```
+$("#frontPage").out("fadeOutRight");
+$("#otherPage").in("fadeInLeft");
+
+```
+
+  
 **Using isUser()**  
 ```
 function isLoggedIn() {

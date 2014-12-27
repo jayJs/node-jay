@@ -54,17 +54,56 @@ function isUser (isLoggedIn, notLoggedIn) {
     }, 100); // Ping every 100 ms
   }
 }
-
+/*
 jQuery.fn.extend({
-  out: function(input) {
-    //cl(input);
-    this.addClass("hidden").addClass("animated fadeOut");
+  out: function(message) { cl(message);
+        if (message === undefined) { cl("out");
+          this.addClass("hidden");
+        }
     return this;
-  },
-  in: function(input) {
     //cl(input);
-    cl(this[0].className);
-    this.removeClass("hidden fadeOut").addClass("animated fadeIn");
+    //cl("out: " + this[0].className);
+    //this.css("position","absolute").addClass("animated bounceOutRight").addClass("hidden").css("position","relative").removeClass("animated bounceOutRight");
+  },
+  in: function(input) { cl(input);
+    if (input === undefined) { cl("in");
+      this.addClass("hidden");
+    }
+    //cl(input);
+    //cl("in: " + this[0].className);
+    //this.removeClass("hidden bounceOutRight").addClass("animated bounceInLeft");
     return this;
   }
-});
+}); */
+
+$.fn.out = function(transition) {
+  return this.each(function() {
+    var elem = $( this );
+    if (transition === undefined) {
+      elem.addClass("hidden");
+    } else {
+      elem.addClass("animated " + transition).addClass("hidden");
+      elem.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+        elem.removeClass("animated " + transition);
+      });
+      //setTimeout(function(){ elem.removeClass("animated " + transition) }, 2000);
+    }
+    return this;
+  });
+}
+
+$.fn.in = function(transition) {
+  return this.each(function() {
+    var elem = $( this );
+    if (transition === undefined) {
+      elem.removeClass("hidden");
+    } else {
+      elem.addClass("animated " + transition).removeClass("hidden");
+      elem.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+        elem.removeClass("animated " + transition);
+      });
+      //setTimeout(function(){ elem.removeClass("animated " + transition) }, 2000);
+    }
+    return this;
+  });
+}
