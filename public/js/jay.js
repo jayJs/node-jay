@@ -54,27 +54,6 @@ function isUser (isLoggedIn, notLoggedIn) {
     }, 100); // Ping every 100 ms
   }
 }
-/*
-jQuery.fn.extend({
-  out: function(message) { cl(message);
-        if (message === undefined) { cl("out");
-          this.addClass("hidden");
-        }
-    return this;
-    //cl(input);
-    //cl("out: " + this[0].className);
-    //this.css("position","absolute").addClass("animated bounceOutRight").addClass("hidden").css("position","relative").removeClass("animated bounceOutRight");
-  },
-  in: function(input) { cl(input);
-    if (input === undefined) { cl("in");
-      this.addClass("hidden");
-    }
-    //cl(input);
-    //cl("in: " + this[0].className);
-    //this.removeClass("hidden bounceOutRight").addClass("animated bounceInLeft");
-    return this;
-  }
-}); */
 
 $.fn.out = function(transition) {
   return this.each(function() {

@@ -17,16 +17,9 @@ $(document).ready(function() {
     frontPageFunction();
   }
 
-  /*
-  jQuery.out = function(input) {
-    cl(input);
-    this.addClass("hidden").addClass("animated fadeOut");
-    return this;
-  } */
-
   // Other page view
   var otherView = function () {
-    $("#frontPage, #admin").out("fadeOutLeft");
+    $("#frontPage, #admin").out("");
     $("#otherPage").in("fadeInRight");
     l("Other page view shown");
     otherPageFunction();
