@@ -104,6 +104,18 @@ The name J or Jay is a wordplay with the name jQuery.
 I also like Jay-Z.  
 
 
+Goals for January:  
+
+1. Make Jay installable via bower.  
+It needs to be figured out how to install Jay via bower so that installing all of the dependencies is understandable for all (it currently relies on jquery, bootstrap, crossroads, signals and hasher).  
+2. Break front and backend into independent parts.  
+The current backend would be something like Jay-NodeJs or Jay-Node  
+3. Make a Github organisation that would host Jay & Jay-Node  
+4. Establish a way for CRUD operations.  
+5. Add WYSISWG editor - perhaps this:  
+https://github.com/Voog/wysihtml  
+6. Add Google Analytics and Facebook Like + Twitter Tweet buttons for demo.  
+
 **Goals:**  
 * High browser compatibility  
 * fast project start time  
