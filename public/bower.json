@@ -1,8 +1,9 @@
 {
-  "name": "Tabula Rasa",
-  "version": "0.0.1",
+  "name": "Jay",
+  "description": "jQuery MVC framework for rapid building of Single Page Applications. Instant Crossroads JS routing, FB authentication & Animate.CSS",
+  "version": "0.1",
   "authors": [
-    "4m4t3ur <m@multiverse.im>"
+    "Martin Sookael <m@multiverse.im>"
   ],
   "license": "MIT",
   "ignore": [

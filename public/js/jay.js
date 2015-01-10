@@ -86,3 +86,23 @@ $.fn.in = function(transition) {
     return this;
   });
 }
+
+$(document).ready(function() {
+
+  // get all tags from HTML
+  var allTags = document.body.getElementsByTagName('*');
+  var ids = [];
+  for (var tg = 0; tg< allTags.length; tg++) {
+    var tag = allTags[tg];
+    if (tag.id) {
+      ids.push(tag.id);
+    }
+  }
+
+  // assign name = $("#name") & name = $(".name")
+  for (var i = 0; i < ids.length; i++) {
+    ids[i] = $("#"+ids[i]);
+    window[ids[i][0].id] = $("#"+ids[i][0].id);
+  }
+
+});
