@@ -51,15 +51,8 @@ $(document).ready(function() {
   crossroads.addRoute('/you', otherView);
   crossroads.addRoute('/admin', adminView);
 
-  //setup hasher
-  // hasher let's you know when route is changed
-  function parseHash(newHash, oldHash){
-    crossroads.parse(newHash);
-  }
-  hasher.initialized.add(parseHash); //parse initial hash
-  hasher.changed.add(parseHash); //parse hash changes
-  hasher.init(); //start listening for history change
-
+  // start routing
+  route(crossroads);
 
   // CONTROLLERS
   // Controller, front page
