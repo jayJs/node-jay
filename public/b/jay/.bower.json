@@ -24,11 +24,11 @@
     "signals": "~1.0.0"
   },
   "devDependencies": {},
-  "_release": "6620610030",
+  "_release": "dc85c201e7",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "66206100300ba86f1d3965d21b5a492d19816407"
+    "commit": "dc85c201e74d55fadfd425356e1ba632994fbd2a"
   },
   "_source": "git://github.com/jayJs/jay.git",
   "_target": "*",
