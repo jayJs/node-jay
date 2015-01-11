@@ -5,9 +5,6 @@ if (window.location.hash && window.location.hash == '#_=_') {
 
 window.fbAsyncInit = function() {
 
-  // test account for jay, works on localhost:5000
-  var fbAppId = "756437764450452"
-
   FB.init({
     appId      : fbAppId,
     xfbml      : true,
@@ -87,38 +84,6 @@ function isUser (isLoggedIn, notLoggedIn) {
   }
 }
 
-$.fn.out = function(transition) {
-  return this.each(function() {
-    var elem = $( this );
-    if (transition === undefined) {
-      elem.addClass("hidden");
-    } else {
-      elem.addClass("animated " + transition).addClass("hidden");
-      elem.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
-        elem.removeClass("animated " + transition);
-      });
-      //setTimeout(function(){ elem.removeClass("animated " + transition) }, 2000);
-    }
-    return this;
-  });
-}
-
-$.fn.in = function(transition) {
-  return this.each(function() {
-    var elem = $( this );
-    if (transition === undefined) {
-      elem.removeClass("hidden");
-    } else {
-      elem.addClass("animated " + transition).removeClass("hidden");
-      elem.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
-        elem.removeClass("animated " + transition);
-      });
-      //setTimeout(function(){ elem.removeClass("animated " + transition) }, 2000);
-    }
-    return this;
-  });
-}
-
 function route(crossroads) {
   //setup hasher
   // hasher let's you know when route is changed
@@ -130,22 +95,46 @@ function route(crossroads) {
   hasher.init(); //start listening for history change
 }
 
-$(document).ready(function() {
+(function ( $ ) {
 
-  // get all tags from HTML
+  $.fn.out = function(transition) {
+    return this.each(function() {
+      var elem = $( this );
+      if (transition === undefined) {
+        elem.addClass("hidden");
+      } else {
+        elem.addClass("animated " + transition).addClass("hidden");
+        elem.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+          elem.removeClass("animated " + transition);
+        });
+        //setTimeout(function(){ elem.removeClass("animated " + transition) }, 2000);
+      }
+      return this;
+    });
+  }
+
+  $.fn.in = function(transition) {
+    return this.each(function() {
+      var elem = $( this );
+      if (transition === undefined) {
+        elem.removeClass("hidden");
+      } else {
+        elem.addClass("animated " + transition).removeClass("hidden");
+        elem.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+          elem.removeClass("animated " + transition);
+        });
+        //setTimeout(function(){ elem.removeClass("animated " + transition) }, 2000);
+      }
+      return this;
+    });
+  }
+
+  // get all tags from HTML and assign foo = $("#foo") & bar = $(".bar")
   var allTags = document.body.getElementsByTagName('*');
-  var ids = [];
   for (var tg = 0; tg< allTags.length; tg++) {
     var tag = allTags[tg];
-    if (tag.id) {
-      ids.push(tag.id);
+    if (tag.id && tag.id != "fb-root" && tag.id != "fb_xdm_frame_http" && tag.id != "fb_xdm_frame_http" && tag.id != "facebook-jssdk") {
+      window[tag.id] = $("#"+tag.id);
     }
   }
-
-  // assign name = $("#name") & name = $(".name")
-  for (var i = 0; i < ids.length; i++) {
-    ids[i] = $("#"+ids[i]);
-    window[ids[i][0].id] = $("#"+ids[i][0].id);
-  }
-
-});
+}( jQuery ));

@@ -25,9 +25,11 @@ or download [jQuery](http://jquery.com/download/), [Bootstrap](http://getbootstr
 <script src="/bower_components/crossroads/dist/crossroads.min.js"></script>
 <script src="/bower_components/jay/jay.js"></script>
 ```
-Go to bower_components/jay/jay.js and change your user ID
+Put your fbAppId into <html> <head> like this
 ```
-var fbAppId = "756437764450452"
+<script>
+  var fbAppId = "756437764450452"
+</script>
 ```
 
 **jQuery**  
@@ -58,7 +60,7 @@ They also take an optional argument for a [animate.css](http://daneden.github.io
 $("#hello").in();   // this is exactly the same
 hello.in();         // as this
 
-hello.in("bounce")   // comes in with a animate.css animation called "bounce"
+hello.in("bounce")   // comes in with animate.css animation called "bounce"
 ```
 It's basically just a shorthand for adding / removing class "hidden" and optionally adding an animation.  
 ```
