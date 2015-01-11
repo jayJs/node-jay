@@ -6,7 +6,7 @@ Backend for a SPA page relying on [Jay](https://github.com/jayJs/jay).
 **Instant back-end**  
 Server via Node
 (Express via Node)  
-Database via Parse
+Database via Parse  
 Backend via Parse  
 Authentication - currently half there  
 Gulp livereload  
@@ -23,7 +23,7 @@ Bower - package management
 Jay
 
 Jay is a jQuery MVC framework for rapid building of Single Page Applications.  
-  
+
 INSTALLATION AND STARTING UP
 ===================  
 
@@ -88,5 +88,5 @@ As a side note - Bootstrap also does a CSS reset.
 ANIMATE.CSS  
 Provides simple animations through CSS.
 
-JAY
+JAY  
 a jQuery MVC framework
