@@ -237,5 +237,3 @@ As a side note - Bootstrap also does a CSS reset.
 
 ANIMATE.CSS  
 Provides simple animations through CSS.
-
-DIRECTOR
