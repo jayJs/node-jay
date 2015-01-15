@@ -69,20 +69,9 @@ $(document).ready(function() {
   function otherPageFunction() {
     cl("Other page function called");
 
-    //var post = get("20346fdgs", "Posts");
-    //cl("aa "+post);
-
-    get("20346fdgs", "Posts").then(function(data) {
-      cl(data);
-      otherPage.append(data.answer);
+    get("Posts", "lQe4VuxRXE").then(function(data) {
+      otherPage.append("<br/>"+data.title);
     });
-
-    //cl(post.error.length);
-/*    if(post.error.length) {
-      title.append(post.title)
-    } else {
-      console.log("Error");
-    }*/
   }
 
   // admin view controller

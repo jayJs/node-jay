@@ -37,6 +37,11 @@ function cl(data) {
   console.log(data);
 }
 
+// shortcut for console.error
+function ce(data) {
+  console.error(data);
+}
+
 // write to alert
 function a(message) {
   document.getElementById('alertMessage').innerHTML = message;
@@ -88,18 +93,17 @@ function route(crossroads) {
   hasher.init(); //start listening for history change
 }
 
-//var post = get("20346fdgs", "Posts");
 // define get()
-function get(id, table) {
+//var post = get("20346fdgs", "Posts");
+function get(table, id) {
   return $.ajax({
-    url: "/api/",
+    url: "/api/?table="+table+'&id='+id,
     success: function(data){
-      //cl(data);
       return data;
     },
-    fail: function(error) {
-      cl(error);
-      console.error(error);
+    error: function(error) {
+      a(error.responseText);
+      ce(error);
       return error;
     }
   });

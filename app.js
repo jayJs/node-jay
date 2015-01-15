@@ -38,6 +38,15 @@ app.get('/', function(req, res){
 });
 
 
+// Extract parameters from REST API calls
+// from http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+function getParameterByName(name, url) {
+  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+  results = regex.exec(url);
+  return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
 /* PASSPORT */
 
 // demo account for Jay, works at localhost:5000
@@ -122,7 +131,36 @@ function(req, res) {
 
 
 app.get('/api/', function(req, res){
-  res.json({answer: "fuckyeah!"});
+  var table = getParameterByName( "table", req.originalUrl);
+  var id = getParameterByName( "id", req.originalUrl);
+  console.log(table);
+  console.log(id);
+
+  var params = {
+    where: {
+      objectId: id
+    },
+    limit: 1
+  }
+  console.log(params);
+
+  kaiseki.getObjects(table, params, function(err, response, body, success) {
+    if(err) {
+      res.json({ error: err });
+    } else {
+      console.log(body);
+      // if post exists
+      if(body[0]) {
+        body = body[0]
+        res.json(body);
+      } else {
+        res.json({error: "No such post"});
+      }
+    }
+  });
+
+
+  //res.json({answer: "fuckyeah!"});
 });
 
 
