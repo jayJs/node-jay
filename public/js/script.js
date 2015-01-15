@@ -14,6 +14,7 @@ $(document).ready(function() {
     otherPage.out();
     admin.out();
     //$("#otherPage, #admin").out(); // For longer lists
+
     frontPage.in();
     l("Front page view shown");
     frontPageFunction();

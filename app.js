@@ -121,6 +121,12 @@ function(req, res) {
 });
 
 
+app.get('/api/', function(req, res){
+  req.logout();
+  res.redirect('/');
+});
+
+
 app.get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
