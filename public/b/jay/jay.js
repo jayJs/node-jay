@@ -43,13 +43,6 @@ function a(message) {
   document.getElementById('alert').classList.remove("hidden");
 }
 
-// shortcut for log to #log
-function l(data) {
-  var log = document.getElementById('log');
-  log.innerHTML = log.innerHTML + data+"<br />";
-  log.scrollTop = log.scrollHeight;
-}
-
 function isUser (isLoggedIn, notLoggedIn) {
   // if it's a user
   if(window.userId != undefined && window.userId != false) {
@@ -95,8 +88,28 @@ function route(crossroads) {
   hasher.init(); //start listening for history change
 }
 
+//var post = get("20346fdgs", "Posts");
+// define get()
+function get(id, table) {
+  return $.ajax({
+    url: "/api/",
+    success: function(data){
+      //cl(data);
+      return data;
+    },
+    fail: function(error) {
+      cl(error);
+      console.error(error);
+      return error;
+    }
+  });
+}
+
+
+
 (function ( $ ) {
 
+  // define out()
   $.fn.out = function(transition) {
     return this.each(function() {
       var elem = $( this );
@@ -113,6 +126,7 @@ function route(crossroads) {
     });
   }
 
+  // define in();
   $.fn.in = function(transition) {
     return this.each(function() {
       var elem = $( this );

@@ -16,7 +16,7 @@ $(document).ready(function() {
     //$("#otherPage, #admin").out(); // For longer lists
 
     frontPage.in();
-    l("Front page view shown");
+    cl("Front page view shown");
     frontPageFunction();
   }
 
@@ -26,7 +26,7 @@ $(document).ready(function() {
     admin.out();
 
     otherPage.in("bounce");
-    l("Other page view shown");
+    cl("Other page view shown");
     otherPageFunction();
   }
 
@@ -34,15 +34,15 @@ $(document).ready(function() {
   var adminView = function () {
     $("#frontPage, #otherPage").out();
     $("#admin").in();
-    l("Admin view shown");
+    cl("Admin view shown");
 
     isUser(function(){ // is a user
-      l("user is logged in and his ID is shown");
+      cl("user is logged in and his ID is shown");
       $("#fbLogin").out();
       $("#userInfo").in();
       $("#userIdShow").empty().append(window.userId);
     }, function() { // is not a user
-      l("user is asked to log in");
+      cl("user is asked to log in");
       $("#userInfo").out();
       $("#fbLogin").in();
     });
@@ -62,17 +62,32 @@ $(document).ready(function() {
   // CONTROLLERS
   // Controller, front page
   function frontPageFunction() {
-    l("Front page function called");
+    cl("Front page function called");
   }
 
   // Controller, other page
   function otherPageFunction() {
-    l("Other page function called");
+    cl("Other page function called");
+
+    //var post = get("20346fdgs", "Posts");
+    //cl("aa "+post);
+
+    get("20346fdgs", "Posts").then(function(data) {
+      cl(data);
+      otherPage.append(data.answer);
+    });
+
+    //cl(post.error.length);
+/*    if(post.error.length) {
+      title.append(post.title)
+    } else {
+      console.log("Error");
+    }*/
   }
 
   // admin view controller
   function adminFunction() {
-    l("Admin function called");
+    cl("Admin function called");
   }
 
 });

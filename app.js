@@ -122,8 +122,7 @@ function(req, res) {
 
 
 app.get('/api/', function(req, res){
-  req.logout();
-  res.redirect('/');
+  res.json({answer: "fuckyeah!"});
 });
 
 
