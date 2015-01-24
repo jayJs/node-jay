@@ -102,62 +102,6 @@ function route(crossroads) {
   hasher.init(); //start listening for history change
 }
 
-/*
-// define post();
-function post(tableName, formName) {
-
-  var fd = new FormData();
-  var titles = {};
-
-  formName = $("#"+formName);
-
-  // go through form and get data
-  formName.find("input, textarea").each(function(){
-    var t = $(this);
-
-    // handle input type text, file, submit differently;
-    switch(t.attr("type")) {
-      case "text":
-      fd.append(t.attr("id"), t.val()); // add the value of the input
-      titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
-      break;
-
-      case "file":
-      // there should something coming here
-      break;
-
-      case "submit":
-      break;
-
-      default:
-      break;
-    }
-  });
-
-  // post the contents of the form
-  $.ajax({
-    url: "/api/?table="+tableName,
-    type: 'POST',
-    processData: false,
-    contentType: false,
-    data: fd
-  })
-  .done(function(response){
-    if(response.objectId != undefined) {
-      // add titles to db via put().
-      put(tableName, response.objectId, {titles: titles} ).then(function(data2) { // this is data2, since we use the data from the post()
-        window.location = "#/p/" + response.objectId;
-      });
-    } else {
-      cl("error - object not found");
-    }
-  })
-  .error(function() {
-    cl("error sending data to API");
-    a("error sending data to API");
-  });
-}
-*/
 
 
 // define save();
@@ -190,7 +134,6 @@ function save(table, formName) {
       break;
     }
   });
-
   // post the contents of the form
   post(table, fd).then(function(data) {
     if(data.objectId != undefined) {
@@ -201,7 +144,6 @@ function save(table, formName) {
     } else {
       cl("error - object not found");
     }
-
   });
 }
 
@@ -215,22 +157,22 @@ function post(table, data) {
     processData: false,
     contentType: false,
     data: data,
-  success: function(response){
-    if(response.objectId != undefined) {
-      // add titles to db via put().
-      cl("post done" - response.objectId);
-    } else {
-      cl("error - object not found");
+    success: function(response){
+      if(response.objectId != undefined) {
+        cl("post done" - response.objectId);
+      } else {
+        cl("error - object not found");
+      }
+      return response;
+    },
+    error: function(error) {
+      a(error.responseText);
+      ce(error);
+      return error;
     }
-    return response;
-  },
-  error: function(error) {
-    a(error.responseText);
-    ce(error);
-    return error;
-  }
-});
+  });
 }
+
 
 // define get()
 function get(table, id) {
