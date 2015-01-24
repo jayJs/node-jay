@@ -134,13 +134,13 @@ $(document).ready(function() {
 
     addPostForm.on("submit", function(event) {
       event.preventDefault();
-      post('Posts', 'addPostForm');
+      save('Posts', 'addPostForm');
     })
   }
 
   // Controller, "/p/{id}"
   function onePostFunction(id) {
-    get("Posts", id).then(function(data) {
+    get("Posts", id).then(function(data) { 
       showPost.empty();
       $.each(data, function(key, value) {
         if(key == "updatedAt" || key == "createdAt" || key == "objectId") {}
