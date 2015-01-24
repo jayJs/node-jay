@@ -67,8 +67,63 @@
     <div id="loading">
       Loading...
     </div>
-    <div id="app" class="hidden">
-      
+    <div id="app" class="hidden container">
+
+      <a href="#" id="home" type="button" class="btn btn-default pull-left" aria-label="Home">
+        <span class="glyphicon glyphicon-home" aria-hidden="true"></span> &nbsp;&nbsp;Home
+      </a>
+
+      <a href="#/add" id="add" type="button" class="btn btn-default pull-right" aria-label="Add new">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> &nbsp;&nbsp;Add post
+      </a>
+
+      <div class="clearfix"></div>
+
+      <div id="listPosts" class="hidden">
+        <ul>
+          <li>
+            <h3><a href="#/p/1">One</a></h3>
+          </li>
+          <li>
+            <h3><a href="#/p/1">Two</a></h3>
+          </li>
+        </ul>
+      </div>
+
+      <div id="onePost" class="hidden">
+        <ul class="nav nav-tabs" style="margin-top: 25px; margin-bottom: 25px;">
+          <li role="presentation" class="active"><a href="#/p/2">View</a></li>
+          <li role="presentation"><a href="#/e/2">Edit</a></li>
+        </ul>
+
+        View post
+      </div>
+
+      <div id="addPost" class="hidden">
+        <form id="addProgramForm" style="text-align: left; margin-top: 25px;">
+          <p>
+            <label for="title">Title</label><br />
+            <input id="title" type="text" class="form-control" /><br />
+          </p>
+          <p>
+            <label for="content">Content</label><br />
+            <textarea id="content" type="text" style="height: 150px;" class="form-control"></textarea><br />
+          </p>
+          <input id="addProgramSubmit" class="btn button" type="submit">
+        </form>
+      </div>
+
+      <div id="editPost" class="hidden">
+        <ul class="nav nav-tabs" style="margin-top: 25px; margin-bottom: 25px;">
+          <li role="presentation"><a href="#/p/2">View</a></li>
+          <li role="presentation" class="active"><a href="#/e/2">Edit</a></li>
+        </ul>
+
+        Edit post
+      </div>
+
+
+      <!--
       <a href="#/" class="btn" style="border: 1px solid #000; color: #fff; background-color: #999;">
         Front page
       </a>
@@ -94,7 +149,13 @@
           userId: <span id="userIdShow"></span><br />
           <a onclick="window.userId; FB.logout();" href="/logout">Log out</a>
         </div>
-      </div>
+      </div> -->
+
+
+
+
+
+
     </div>
 
     <script src="/b/jquery/dist/jquery.min.js"></script>

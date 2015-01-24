@@ -2,7 +2,7 @@
 $(document).ready(function() {
 
   // connect-livereload via Gulp autorefreshes the site.
-  //$("body").append('<script src="http://localhost:35729/livereload.js?snipver=1"></script>');
+  $("body").append('<script src="http://localhost:35729/livereload.js?snipver=1"></script>');
 
   // hide loadin + show app
   $("#loading").addClass("animated fadeOut").addClass("hidden");
@@ -10,25 +10,46 @@ $(document).ready(function() {
 
   // VIEWS
   // Front page view
-  var frontView = function () {
-    otherPage.out();
-    admin.out();
-    //$("#otherPage, #admin").out(); // For longer lists
+  var listPostsView = function () {
+    addPost.out();
+    onePost.out();
+    editPost.out();
 
-    frontPage.in();
-    cl("Front page view shown");
-    frontPageFunction();
+    listPosts.in('fadeIn');
+
+    listPostsFunction();
   }
 
-  // Other page view
-  var otherView = function () {
-    frontPage.out();
-    admin.out();
+  var addPostView = function () {
+    listPosts.out();
+    onePost.out();
+    editPost.out();
 
-    otherPage.in("bounce");
-    cl("Other page view shown");
-    otherPageFunction();
+    addPost.in('fadeIn');
+
+    addPostFunction();
   }
+
+  var onePostView = function () {
+    listPosts.out();
+    addPost.out();
+    editPost.out();
+
+    onePost.in('fadeIn');
+
+    onePostFunction();
+  }
+
+  var editPostView = function () {
+    listPosts.out();
+    addPost.out();
+    onePost.out();
+
+    editPost.in('fadeIn');
+
+    editPostFunction();
+  }
+
 
   // Admin view
   var adminView = function () {
@@ -52,18 +73,37 @@ $(document).ready(function() {
 
   // MODEL
   // Set up routes
-  crossroads.addRoute('/', frontView);
-  crossroads.addRoute('/you', otherView);
-  crossroads.addRoute('/admin', adminView);
+  crossroads.addRoute('/', listPostsView);
+  crossroads.addRoute('/add', addPostView);
+  crossroads.addRoute('/p/{id}', onePostView);
+  crossroads.addRoute('/e/{id}', editPostView);
 
   // start routing
   route(crossroads);
 
+
   // CONTROLLERS
-  // Controller, front page
-  function frontPageFunction() {
-    cl("Front page function called");
+  // Controller, "/"
+  function listPostsFunction() {
+    //cl("Front page function called");
   }
+
+  // Controller, "/add"
+  function addPostFunction() {
+    //cl("Front page function called");
+  }
+
+  // Controller, "/p/{id}"
+  function onePostFunction() {
+    //cl("Front page function called");
+  }
+
+  // Controller, "/e/{id}"
+  function editPostFunction() {
+    //cl("Front page function called");
+  }
+
+
 
   // Controller, other page
   function otherPageFunction() {
@@ -75,9 +115,5 @@ $(document).ready(function() {
     });
   }
 
-  // admin view controller
-  function adminFunction() {
-    cl("Admin function called");
-  }
 
 });

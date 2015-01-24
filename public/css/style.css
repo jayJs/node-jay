@@ -10,9 +10,21 @@ p {
 }
 
 #app {
-  margin-top: 150px;
+  margin-top: 50px;
+  max-width: 600px;
   width: 100%;
-  text-align: center;
+  text-align: left;
+}
+
+#listPosts {
+  margin-top: 30px;
+}
+
+#listPosts>ul,
+#listPosts>ul>li {
+  list-style: none;
+  margin-left: 0;
+  padding-left:0;
 }
 
 #alert {
