@@ -104,16 +104,12 @@ function route(crossroads) {
 
 
 // define post();
-//function post(table, id) {
 function post(formName, tableName) {
 
   var fd = new FormData();
   var titles = {};
 
-  //formName = window[formName];
-
   formName = $("#"+formName);
-
 
   // go through form and get data
   formName.find("input, textarea").each(function(){
@@ -140,16 +136,14 @@ function post(formName, tableName) {
 
   // post the contents of the form
   $.ajax({
-    //url: '/api',
     url: "/api/?table="+tableName,
     type: 'POST',
-    //contentType: 'application/json',
     processData: false,
     contentType: false,
     data: fd
   })
-  .done(function(response){ //cl(response);
-    if(response.objectId != undefined) { //cl(response.objectId);
+  .done(function(response){
+    if(response.objectId != undefined) {
       // add titles to db via put().
       put(tableName, response.objectId, {titles: titles} ).then(function(data2) { // this is data2, since we use the data from the post()
         window.location = "#/p/" + response.objectId;

@@ -94,24 +94,6 @@ $(document).ready(function() {
 
   }
 
-
-  // Admin view
-  var adminView = function () {
-    $("#frontPage, #otherPage").out();
-    $("#admin").in();
-
-    isUser(function(){ // is a user
-      $("#fbLogin").out();
-      $("#userInfo").in();
-      $("#userIdShow").empty().append(window.userId);
-    }, function() { // is not a user
-      $("#userInfo").out();
-      $("#fbLogin").in();
-    });
-
-    adminFunction();
-  }
-
   // MODEL
   // Set up routes
   crossroads.addRoute('/', listPostsView);
@@ -145,8 +127,7 @@ $(document).ready(function() {
 
   // Controller, "/add"
   function addPostFunction() {
-
-    addProgramSubmit.on('click', function(event) {
+    addPostSubmit.on('click', function(event) {
       event.preventDefault();
       addPostForm.submit();
     });
@@ -159,7 +140,7 @@ $(document).ready(function() {
 
   // Controller, "/p/{id}"
   function onePostFunction(id) {
-    get("Posts", id).then(function(data) {
+    get("Posts", id).then(function(data) { cl(data);
       showPost.empty();
       $.each(data, function(key, value) {
         if(key == "updatedAt" || key == "createdAt" || key == "objectId") {}

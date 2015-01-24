@@ -20,6 +20,11 @@ p {
   margin-top: 30px;
 }
 
+#addPostForm {
+  text-align: left;
+  margin-top: 25px;
+}
+
 #onePost {
   margin-top: 50px;
 }
