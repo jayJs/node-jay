@@ -15,6 +15,7 @@ $(document).ready(function() {
     onePost.out();
     editPost.out();
     tabs.out();
+    logIn.out();
 
     listPosts.in('fadeIn');
 
@@ -26,8 +27,13 @@ $(document).ready(function() {
     onePost.out();
     editPost.out();
     tabs.out();
+    logIn.out();
 
-    addPost.in('fadeIn');
+    isUser(function(){ // is a user
+      addPost.in('fadeIn');
+    }, function() { // is not a user
+      window.location = "#/login";
+    });
 
     addPostFunction();
   }
@@ -36,22 +42,56 @@ $(document).ready(function() {
     listPosts.out();
     addPost.out();
     editPost.out();
-    tabs.in();
+    logIn.out();
+
+    isUser(function(){ // is a user
+      //tabs.in();
+    }, function() { // is not a user
+      tabs.out();
+    });
+
+
+    viewLink.attr("href", "#/p/"+id);
+    editLink.attr("href", "#/e/"+id);
+    viewLink.parent().addClass("active");
+    editLink.parent().removeClass("active");
+
 
     onePost.in('fadeIn');
 
     onePostFunction(id);
   }
 
-  var editPostView = function () {
+  var editPostView = function (id) {
     listPosts.out();
     addPost.out();
     onePost.out();
-    tabs.in();
+    logIn.out();
+
+    isUser(function(){ // is a user
+      //tabs.in();
+    }, function() { // is not a user
+      tabs.out();
+    });
+
+    viewLink.attr("href", "#/p/"+id);
+    editLink.attr("href", "#/e/"+id);
+    viewLink.parent().removeClass("active");
+    editLink.parent().addClass("active");
 
     editPost.in('fadeIn');
 
     editPostFunction();
+  }
+
+  var logInView = function() {
+    listPosts.out();
+    addPost.out();
+    onePost.out();
+    tabs.out();
+
+    logIn.in();
+
   }
 
 
@@ -76,6 +116,7 @@ $(document).ready(function() {
   // Set up routes
   crossroads.addRoute('/', listPostsView);
   crossroads.addRoute('/add', addPostView);
+  crossroads.addRoute('/login', logInView);
   crossroads.addRoute('/p/{id}', onePostView);
   crossroads.addRoute('/e/{id}', editPostView);
 
@@ -118,7 +159,6 @@ $(document).ready(function() {
 
   // Controller, "/p/{id}"
   function onePostFunction(id) {
-
     get("Posts", id).then(function(data) {
       showPost.empty();
       $.each(data, function(key, value) {
@@ -131,7 +171,6 @@ $(document).ready(function() {
         }
       })
     });
-
   }
 
   // Controller, "/e/{id}"

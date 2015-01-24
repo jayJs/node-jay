@@ -20,6 +20,10 @@ p {
   margin-top: 30px;
 }
 
+#onePost {
+  margin-top: 50px;
+}
+
 #listPosts>ul,
 #listPosts>ul>li {
   list-style: none;
