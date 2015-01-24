@@ -44,8 +44,17 @@ function ce(data) {
 
 // write to alert
 function a(message) {
-  document.getElementById('alertMessage').innerHTML = message;
-  document.getElementById('alert').classList.remove("hidden");
+  // find if alert exists and if it does, remove it.
+  var elem = document.getElementById("alert")
+  if(elem != null) {
+    var elemParent = elem.parentNode;
+    elemParent.removeChild("alert");
+  }
+  // create the alert HTML
+  var extra = '<div id="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><div id="alertMessage" class="alert alert-danger alert-dismissible" role="alert">'+message+'</div></div>';
+  // add html to beginning of app
+  var app = document.getElementById('app');
+  app.innerHTML = extra + div.innerHTML;
 }
 
 function isUser (isLoggedIn, notLoggedIn) {
