@@ -175,29 +175,8 @@ $(document).ready(function() {
 
   // Controller, "/e/{id}"
   function editPostFunction() {
-    get("Posts", id).then(function(data) {
-      showPost.empty();
-      $.each(data, function(key, value) {
-        if(key == "updatedAt" || key == "createdAt" || key == "objectId") {}
-        else {
-          if(value.length>0) {
-            showPost.append('<p><label for="'+);
-            showPost.append("<h4>"+data.titles[key]+"<h4>");
-            showPost.append("<h4>"+data.titles[key]+"<h4>");
-            showPost.append(value);
-          }
-        }
-      })
-    });
+    // edit posts
   }
-
-
-  <p><label for="title">Title</label><br /><input id="title" type="text" class="form-control" /><br /></p>
-  <p>
-  <label for="content">Content</label><br />
-  <textarea id="content" type="text" style="height: 150px;" class="form-control"></textarea><br />
-  </p>
-  <input id="editProgramSubmit" class="btn button" type="submit">
 
 
 
