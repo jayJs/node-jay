@@ -79,7 +79,7 @@ function isUser (isLoggedIn, notLoggedIn) {
           clearInterval(getStatus);
         } else {
           // FB is not yet available
-          if(i === 20) { // turn off the search after 20 times
+          if(i === 40) { // turn off the search after 40 times
             notLoggedIn();
             a('Unable to authenticate. Refresh page to try again');
             clearInterval(getStatus);
@@ -87,7 +87,7 @@ function isUser (isLoggedIn, notLoggedIn) {
           i++;
         }
       }
-    }, 100); // Ping every 100 ms
+    }, 200); // Ping every 200 ms
   }
 }
 
