@@ -51,7 +51,7 @@ function a(message) {
     elemParent.removeChild("alert");
   }
   // create the alert HTML
-  var extra = '<div id="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><div id="alertMessage" class="alert alert-danger alert-dismissible" role="alert">'+message+'</div></div>';
+  var extra = '<div id="alert" style="z-index: 10;"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><div id="alertMessage" class="alert alert-danger alert-dismissible" role="alert">'+message+'</div></div>';
   // add html to beginning of app
   var app = document.getElementById('app');
   app.innerHTML = extra + div.innerHTML;
