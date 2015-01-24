@@ -163,11 +163,11 @@ app.get('/api/', function(req, res){
   //res.json({answer: "fuckyeah!"});
 });
 
-
+/*
 app.get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
-});
+}); */
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { cl("is authendicated"); return next(); }
