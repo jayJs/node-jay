@@ -70,7 +70,8 @@ $(document).ready(function() {
     cl("Other page function called");
 
     get("Posts", "lQe4VuxRXE").then(function(data) {
-      otherPage.append("<br/>"+data.title);
+      //otherPage.append("<br/>"+data.title);
+      //a(data.title);
     });
   }
 

@@ -54,7 +54,7 @@ function a(message) {
   var extra = '<div id="alert" style="z-index: 10;"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><div id="alertMessage" class="alert alert-danger alert-dismissible" role="alert">'+message+'</div></div>';
   // add html to beginning of app
   var app = document.getElementById('app');
-  app.innerHTML = extra + div.innerHTML;
+  app.innerHTML = extra + app.innerHTML;
 }
 
 function isUser (isLoggedIn, notLoggedIn) {
@@ -102,6 +102,63 @@ function route(crossroads) {
   hasher.init(); //start listening for history change
 }
 
+
+// define post();
+//function post(table, id) {
+function post(formName, tableName) {
+
+  var fd = new FormData();
+  var titles = {};
+
+  // go through form and get data
+  formName.find("input, textarea").each(function(){
+    var t = $(this);
+
+    // handle input type text, file, submit differently;
+    switch(t.attr("type")) {
+      case "text":
+        fd.append(t.attr("id"), t.val()); // add the value of the input
+        titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
+        break;
+
+      case "file":
+        // there should something coming here
+        break;
+
+      case "submit":
+        break;
+
+      default:
+        break;
+    }
+  });
+
+  // post the contents of the form
+  $.ajax({
+    url: '/api',
+    type: 'POST',
+    //contentType: 'application/json',
+    processData: false,
+    contentType: false,
+    data: fd
+  })
+  .done(function(data){
+    if(data.objectId != undefined) {
+      // add titles to db via put().
+      put(tableName, data.objectId, {titles: titles} ).then(function(data2) { // this is data2, since we use the data from the post()
+        window.location = "#/p/" + data.objectId;
+      });
+    }
+  })
+  .error(function() {
+    cl("error sending data to API");
+    a("error sending data to API");
+  });
+}
+
+
+
+
 // define get()
 function get(table, id) {
   return $.ajax({
@@ -117,6 +174,7 @@ function get(table, id) {
   });
 }
 
+// define put()
 function put(table, id, data) {
   data = JSON.stringify(data);
   return $.ajax({
