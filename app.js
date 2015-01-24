@@ -201,6 +201,27 @@ app.put('/api', function(req, res){
 });
 
 
+// Sample
+app.get('/api/posts', function(req, res){
+  var params = {
+    limit: 20,
+    order: '-createdAt'
+  }
+  kaiseki.getObjects("Posts", params, function(err, response, body, success) {
+    if(err) {
+      res.json({ error: err });
+    } else {
+      if(body[0]) {
+        //body = body[0]
+        res.json(body);
+      } else {
+        res.json({error: "No such post"});
+      }
+    }
+  });
+});
+
+
 /*
 app.get('/logout', function(req, res){
   req.logout();

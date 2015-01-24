@@ -14,6 +14,7 @@ $(document).ready(function() {
     addPost.out();
     onePost.out();
     editPost.out();
+    tabs.out();
 
     listPosts.in('fadeIn');
 
@@ -24,6 +25,7 @@ $(document).ready(function() {
     listPosts.out();
     onePost.out();
     editPost.out();
+    tabs.out();
 
     addPost.in('fadeIn');
 
@@ -34,6 +36,7 @@ $(document).ready(function() {
     listPosts.out();
     addPost.out();
     editPost.out();
+    tabs.in();
 
     onePost.in('fadeIn');
 
@@ -44,6 +47,7 @@ $(document).ready(function() {
     listPosts.out();
     addPost.out();
     onePost.out();
+    tabs.in();
 
     editPost.in('fadeIn');
 
@@ -55,15 +59,12 @@ $(document).ready(function() {
   var adminView = function () {
     $("#frontPage, #otherPage").out();
     $("#admin").in();
-    cl("Admin view shown");
 
     isUser(function(){ // is a user
-      cl("user is logged in and his ID is shown");
       $("#fbLogin").out();
       $("#userInfo").in();
       $("#userIdShow").empty().append(window.userId);
     }, function() { // is not a user
-      cl("user is asked to log in");
       $("#userInfo").out();
       $("#fbLogin").in();
     });
@@ -85,33 +86,40 @@ $(document).ready(function() {
   // CONTROLLERS
   // Controller, "/"
   function listPostsFunction() {
-    //cl("Front page function called");
+    $.ajax({
+      url: "/api/posts",
+      success: function(data){
+        postUl.empty();
+        for (var i = 0; i< data.length; i++) {
+          postUl.append('<li><h3><a href="#/p/'+data[i].objectId+'">'+data[i].title+'</a></h3>')
+        }
+      },
+      error: function(error) {
+        a(error.responseText);
+        ce(error);
+      }
+    });
+
   }
 
   // Controller, "/add"
   function addPostFunction() {
-    //cl("Front page function called");
+
     addProgramSubmit.on('click', function(event) {
       event.preventDefault();
       addPostForm.submit();
     });
 
-    addPostForm.on("submit", function(event) { cl('what')
+    addPostForm.on("submit", function(event) {
       event.preventDefault();
       post('addPostForm','Posts');
-      //cl(post);
-      //post("one", "two")
     })
-
   }
 
   // Controller, "/p/{id}"
   function onePostFunction(id) {
-    //cl("Front page function called");
-    //cl(id);
 
-    //m1EXZK0iVk
-    get("Posts", id).then(function(data) { cl(data);
+    get("Posts", id).then(function(data) {
       showPost.empty();
       $.each(data, function(key, value) {
         if(key == "updatedAt" || key == "createdAt" || key == "objectId") {}
@@ -129,18 +137,6 @@ $(document).ready(function() {
   // Controller, "/e/{id}"
   function editPostFunction() {
     //cl("Front page function called");
-  }
-
-
-
-  // Controller, other page
-  function otherPageFunction() {
-    cl("Other page function called");
-
-    get("Posts", "lQe4VuxRXE").then(function(data) {
-      //otherPage.append("<br/>"+data.title);
-      //a(data.title);
-    });
   }
 
 
