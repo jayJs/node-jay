@@ -130,26 +130,31 @@ function(req, res) {
 });
 
 
+// CRUD
+
+// Extract parameters from REST API calls
+// from http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+function getParameterByName(name, url) {
+  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+  results = regex.exec(url);
+  return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+// define get();
 app.get('/api/', function(req, res){
   var table = getParameterByName( "table", req.originalUrl);
   var id = getParameterByName( "id", req.originalUrl);
-  console.log(table);
-  console.log(id);
-
   var params = {
     where: {
       objectId: id
     },
     limit: 1
   }
-  console.log(params);
-
   kaiseki.getObjects(table, params, function(err, response, body, success) {
     if(err) {
       res.json({ error: err });
     } else {
-      console.log(body);
-      // if post exists
       if(body[0]) {
         body = body[0]
         res.json(body);
@@ -158,10 +163,38 @@ app.get('/api/', function(req, res){
       }
     }
   });
-
-
-  //res.json({answer: "fuckyeah!"});
 });
+
+// define post()
+app.post('/api', function(req, res){
+  kaiseki.createObject("Dogs", req.body, function(err, response, body, success) {
+    if(success) {
+      res.json({objectId: body.objectId});
+    } else {
+      res.json({error: err});
+    }
+  });
+});
+
+// define put();
+app.put('/api', function(req, res){
+  var table = getParameterByName("table", req.originalUrl);
+  var id = getParameterByName("id", req.originalUrl);
+  var data = getParameterByName("data", req.originalUrl);
+  data = JSON.parse(data);
+  kaiseki.updateObject(table, id, data, function(err, response, body, success) {
+    if(success) {
+      res.json({status: "object updated at: " + body.updatedAt});
+      console.log('object updated at = ', body.updatedAt);
+    } else {
+      console.log("error");
+      console.log(err);
+      console.log(body);
+      res.json({error: err});
+    }
+  });
+});
+
 
 /*
 app.get('/logout', function(req, res){

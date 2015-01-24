@@ -103,7 +103,6 @@ function route(crossroads) {
 }
 
 // define get()
-//var post = get("20346fdgs", "Posts");
 function get(table, id) {
   return $.ajax({
     url: "/api/?table="+table+'&id='+id,
@@ -118,7 +117,21 @@ function get(table, id) {
   });
 }
 
-
+function put(table, id, data) {
+  data = JSON.stringify(data);
+  return $.ajax({
+    type: 'PUT',
+    url: "/api/?table="+table+'&id='+id+'&data='+data,
+    success: function(data){
+      return data;
+    },
+    error: function(error) {
+      a(error.responseText);
+      cl(error);
+      return error;
+    }
+  });
+}
 
 (function ( $ ) {
 
