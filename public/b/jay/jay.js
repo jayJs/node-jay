@@ -16,7 +16,7 @@ window.fbAsyncInit = function() {
     // FB logged in and this app has permissions
     if (response.status === "connected") {
       window.userId = response.authResponse.userID;
-    // not a user or not authenticated with the app
+      // not a user or not authenticated with the app
     } else {
       window.userId = false;
       //console.log(response);
@@ -118,19 +118,19 @@ function post(formName, tableName) {
     // handle input type text, file, submit differently;
     switch(t.attr("type")) {
       case "text":
-        fd.append(t.attr("id"), t.val()); // add the value of the input
-        titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
-        break;
+      fd.append(t.attr("id"), t.val()); // add the value of the input
+      titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
+      break;
 
       case "file":
-        // there should something coming here
-        break;
+      // there should something coming here
+      break;
 
       case "submit":
-        break;
+      break;
 
       default:
-        break;
+      break;
     }
   });
 
@@ -190,9 +190,9 @@ function put(table, id, data) {
   });
 }
 
+
 (function ( $ ) {
 
-  // define out()
   $.fn.out = function(transition) {
     return this.each(function() {
       var elem = $( this );
@@ -209,7 +209,6 @@ function put(table, id, data) {
     });
   }
 
-  // define in();
   $.fn.in = function(transition) {
     return this.each(function() {
       var elem = $( this );
