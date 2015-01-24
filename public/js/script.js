@@ -30,14 +30,14 @@ $(document).ready(function() {
     addPostFunction();
   }
 
-  var onePostView = function () {
+  var onePostView = function (id) {
     listPosts.out();
     addPost.out();
     editPost.out();
 
     onePost.in('fadeIn');
 
-    onePostFunction();
+    onePostFunction(id);
   }
 
   var editPostView = function () {
@@ -91,11 +91,39 @@ $(document).ready(function() {
   // Controller, "/add"
   function addPostFunction() {
     //cl("Front page function called");
+    addProgramSubmit.on('click', function(event) {
+      event.preventDefault();
+      addPostForm.submit();
+    });
+
+    addPostForm.on("submit", function(event) { cl('what')
+      event.preventDefault();
+      post('addPostForm','Posts');
+      //cl(post);
+      //post("one", "two")
+    })
+
   }
 
   // Controller, "/p/{id}"
-  function onePostFunction() {
+  function onePostFunction(id) {
     //cl("Front page function called");
+    //cl(id);
+
+    //m1EXZK0iVk
+    get("Posts", id).then(function(data) { cl(data);
+      showPost.empty();
+      $.each(data, function(key, value) {
+        if(key == "updatedAt" || key == "createdAt" || key == "objectId") {}
+        else {
+          if(value.length>0) {
+            showPost.append("<h4>"+data.titles[key]+"<h4>");
+            showPost.append(value);
+          }
+        }
+      })
+    });
+
   }
 
   // Controller, "/e/{id}"

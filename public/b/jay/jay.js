@@ -110,6 +110,11 @@ function post(formName, tableName) {
   var fd = new FormData();
   var titles = {};
 
+  //formName = window[formName];
+
+  formName = $("#"+formName);
+
+
   // go through form and get data
   formName.find("input, textarea").each(function(){
     var t = $(this);
@@ -135,19 +140,22 @@ function post(formName, tableName) {
 
   // post the contents of the form
   $.ajax({
-    url: '/api',
+    //url: '/api',
+    url: "/api/?table="+tableName,
     type: 'POST',
     //contentType: 'application/json',
     processData: false,
     contentType: false,
     data: fd
   })
-  .done(function(data){
-    if(data.objectId != undefined) {
+  .done(function(response){ //cl(response);
+    if(response.objectId != undefined) { //cl(response.objectId);
       // add titles to db via put().
-      put(tableName, data.objectId, {titles: titles} ).then(function(data2) { // this is data2, since we use the data from the post()
-        window.location = "#/p/" + data.objectId;
+      put(tableName, response.objectId, {titles: titles} ).then(function(data2) { // this is data2, since we use the data from the post()
+        window.location = "#/p/" + response.objectId;
       });
+    } else {
+      cl("error - object not found");
     }
   })
   .error(function() {
@@ -155,9 +163,6 @@ function post(formName, tableName) {
     a("error sending data to API");
   });
 }
-
-
-
 
 // define get()
 function get(table, id) {

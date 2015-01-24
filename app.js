@@ -167,7 +167,11 @@ app.get('/api/', function(req, res){
 
 // define post()
 app.post('/api', function(req, res){
-  kaiseki.createObject("Dogs", req.body, function(err, response, body, success) {
+
+  var table = getParameterByName("table", req.originalUrl);
+  //var data = getParameterByName("data", req.originalUrl);
+
+  kaiseki.createObject(table, req.body, function(err, response, body, success) {
     if(success) {
       res.json({objectId: body.objectId});
     } else {
@@ -182,6 +186,7 @@ app.put('/api', function(req, res){
   var id = getParameterByName("id", req.originalUrl);
   var data = getParameterByName("data", req.originalUrl);
   data = JSON.parse(data);
+  //console.log(data);
   kaiseki.updateObject(table, id, data, function(err, response, body, success) {
     if(success) {
       res.json({status: "object updated at: " + body.updatedAt});
