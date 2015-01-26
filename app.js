@@ -7,13 +7,18 @@ var express = require('express')
   , Kaiseki = require('kaiseki')
   , passport = require('passport')
   , FacebookStrategy = require('passport-facebook').Strategy
+  , multiparty = require('multiparty')
   , port = process.env.PORT || 5000;
 
 
 app.configure(function() {
   app.use(express.static('public'));
   app.use(express.cookieParser());
-  app.use(express.bodyParser());
+  //app.use(express.bodyParser());
+
+  //app.use(express.urlencoded());
+  //app.use(express.json());
+
   app.use(express.session({ secret: 'asfgsdsfgfdsefrdrggsagofgslghdlvfh6958767gfsfa' }));
   app.use(passport.initialize());
   app.use(passport.session());
@@ -166,17 +171,50 @@ app.get('/api/', function(req, res){
 });
 
 // define post()
-app.post('/api', function(req, res){
+app.post('/api', function(req, resp){
 
   var table = getParameterByName("table", req.originalUrl);
-  //var data = getParameterByName("data", req.originalUrl);
+  var form = new multiparty.Form();
 
-  kaiseki.createObject(table, req.body, function(err, response, body, success) {
-    if(success) {
-      res.json({objectId: body.objectId});
-    } else {
-      res.json({error: err});
+  // we create this in order to connect FormData with Parse
+  var fields2 = {}
+
+  form.parse(req, function(err, fields, files) {
+
+    for(var one in fields) {
+      //console.log(one);
+      fields2[one] = String(fields[one]);
     }
+
+    kaiseki.createObject(table, fields2, function(err, response, body, success) {
+
+      if(success) {
+        // if there's a file, upload it
+        if(files.length>0) {
+          kaiseki.uploadFile(files.addFileInput[0].path, function(err, res, uploadBody, success) {
+            if(success) {
+              var post = { image: { name: uploadBody.name,__type: 'File'}};
+              // update object about file address
+              kaiseki.updateObject(table, body.objectId, post, function(err, response, uploadBody, success) {
+                if (success) {
+                  resp.json({ objectId: body.objectId });
+                } else {
+                  resp.json({ error: "File not uploaded" });
+                  console.log(err);
+                }
+              });
+            } else {
+              console.log(err);
+            }
+          });
+        } else {
+          // no uploading neccessary
+          resp.json({ objectId: body.objectId });
+        }
+      } else {
+        resp.json({error: err});
+      }
+    });
   });
 });
 
