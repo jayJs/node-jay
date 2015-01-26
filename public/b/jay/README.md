@@ -153,52 +153,49 @@ isUser(function() { // logged in users
 
 ```
 
-##CRUD REST API
-You can seda any data to the data table.  
-Every posted entry get's an objectId and if queried returns the same object that was sent to him.
-* you can send any data
-* the data is not modeled in any way.
-* all of the form fields posted will be saved and associated with an objectId.
-* if queried, the API returns exactly what was sent to him.
-* You can create required fields with front end with libraries like Parsley.
+##CRUD (experimental - requires [node-jay](https://github.com/jayJs/node-jay) )  
+Jay features a wrapper for common AJAX REST API calls.  
+**post(table, data)** -  add a row to database.  
+**get(table,objectId)** - get a row from database.  
+**put(table, objectId, data)** - update a row in database.  
+**save(table, formId)** - Save data data from form to database.  
 
+The calls are asynchronous and can be chained with .then().  
 
-##post(table, formId) - Save data to database.  
-formId - id of form, where the data comes (*string*).  
-table - name of the table for saving this data (*string*).  
+**Warning**  
+Without data modelling you can't guarantee data consistency and you will limit your test coverage.  
+Nevertheless you will prototype much quicker.  
 
-HTML  
-```
-<form id="addPostForm">
-  <p>
-    <label for="title">The title</label><br />
-    <input id="title" type="text" class="form-control" /><br />
-  </p>
-  <p>
-    <label for="content">Please write something</label><br />
-    <textarea id="content" type="text" class="form-control"></textarea><br />
-  </p>
-  <input id="addPostSubmit" class="btn button" type="submit">
-</form>
-
-```
-From input or textarea id is saved for key.  
-The value user inserts will be saved as value.  
-The value of label will be saved to variable *titles* (input and label have to be connected via "for" attribute in label).  
-
-Javascript  
-```
-addPostForm.on("submit", function() {
-  post('addPostForm','Posts');
-})
-
-```
-On submitting the form "addPostForm" the contents will be saved to table "Posts".  
-
-
-##get(table,objectId) - get data from database.  
+##post(table, data)  
+**Add a row to database.**  
 table - name of the table in database (*string*).  
-objectId - Id of object in database (*string*).
+data - data to be saved (*FormData*).
+
+Returns objectId of saved data.
+
+```
+var data = new FormData();
+
+var key = "title"; // if key does not exist in the table, it will be created automatically.
+var value = "What the f*ck is FormData?"
+
+data.append(key, value); // add the value of the input
+
+post("Posts", data).then(function(response) {  
+  if(response.objectId != undefined) {
+    console.log("Object created: " + response.objectId);
+  }
+}
+```
+There's an easier way to achieve this with save(). Scroll a bit down.  
+
+
+##get(table,objectId)  
+**Get a row from database.**  
+table - name of the table in database (*string*).  
+objectId - Id of object in database (*string*).  
+
+Returns object with the data.  
 
 ```
 get("Posts", "378QWha5OB").then(function(data) {
@@ -209,7 +206,7 @@ would return
 ```
 {
   objectId: "378QWha5OB",
-  title: "What the user submitted",
+  title: "What the f*ck is FormData?",
   content: "What the user submitted",
   updatedAt: "2015-01-24T13:53:38.498Z",
   createdAt: "2015-01-24T13:53:37.745Z",
@@ -221,22 +218,57 @@ would return
 ```
 
 ##put(table, objectId, data)  
+**Update a row in database.**  
 table - name of the table in database (*string*).  
 objectId - Id of object in database (*string*).  
 data - the data to be changed (*object*)  
 
+Returns updatedAt from the update row.
+
 ```
 var update = {
-  title: "Let me change your title, Sir"
+  content: "I have IE9, I have no idea what FormData is."
 }
 put("Posts", "378QWha5OB", update).then(function(data) {
-  cl(data.updatedAt);
+  cl(data.updatedAt);  
 });
 ```
-Would find objectId "378QWha5OB" and change the value under the key "title" to "Let me change your title, Sir".
 
 
-##Helpers
+##save(table, formId)  
+**Save data data from form to database.**  
+table - name of the table to save this data (*string*).  
+formId - id of form, where the data comes (*string*).  
+
+HTML  
+```
+<form id="addPost">
+  <p>
+    <label for="title">The title</label><br />
+    <input id="title" type="text" class="form-control" /><br />
+  </p>
+  <p>
+    <label for="content">Please write something</label><br />
+    <textarea id="content" type="text" class="form-control"></textarea><br />
+  </p>
+  <input class="btn button" type="submit">
+</form>
+
+```
+**input, textarea** - id is used as key. If such key does not exist, it will be created.  
+**user input** - is saved as value.  
+**label** - if attribute "for" matches with input id, the label value is saved to *titles* array.  
+
+```
+addPost.on("submit", function() {
+  save('Posts', 'addPost');  
+})
+
+```
+Submitting saves contents from form with id addPost to table "Posts"
+
+
+##Helpers  
 
 ##cl(message)  
 A shortcut for console.log(message);  
@@ -245,39 +277,15 @@ console.log(message); // this logs the message to the console
 cl(message); // this does exactly the same thing
 ```
 
-##To put this all into one file
+##a(message)  
+Display an alert to the users.
 ```
-$(document).ready(function() {
-
-  // View comes first
-  var frontView = function () {
-    $("#otherPage, #admin").out();
-    $("#frontPage").in();
-    frontPageFunction();
-  }
-
-  // Then the models
-  crossroads.addRoute('/', frontView);
-  crossroads.addRoute('/you', otherView);
-  crossroads.addRoute('/admin', adminView);
-
-  // start routing
-  route(crossroads);
-
-  // and then controllers
-  function frontPageFunction() {
-    $.ajax({
-      url: "/api/posts",
-      success: function(data){
-        // do something with the data
-        },  
-      fail: function(error) {
-        // show an error
-      }
-    });
-  }
-});
+a("Log in failed"); // this logs the message to the console
 ```
+
+##Compability  
+Visit the site - compatible until IE 6. We use [latest jQuery version 1.x](http://jquery.com/browser-support/).  
+Post data - compatible until IE 10. The bottleneck is [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility).  
 
 ##Why?  
 
@@ -297,16 +305,48 @@ It needs to be figured out how to install Jay via bower so that installing all o
 2. Break front and backend into independent parts.   **done**  
 The current backend would be something like Jay-NodeJs or Jay-Node  
 3. Make a Github organisation that would host Jay & Jay-Node  **done**
-4. Establish a way for CRUD operations.  
+4. Establish a way for CRUD operations.  **done**  
 5. Add WYSISWG editor - perhaps this:  
 https://github.com/Voog/wysihtml  
 6. Add Google Analytics and Facebook Like + Twitter Tweet buttons for demo.  
+
+
+##Roadmap
+
+**0.4.4**  
+Add edit post to sample and tie it with save().  
+
+Add delete().  
+
+Unify get(), post(), put(), delete and save().  
+
+Hide then() in jay or use it constantly.
+
+Add WYSISWG editor
+https://github.com/Voog/wysihtml
+
+dee-jay or jay-one:  
+A index.html+css+js working without backend for easy learning.  
+
+Create public API service for dee-jay.  
+
+
+**0.4.5**
+Expose backend as node middleware.
+
+Make backend always serve index.html:
+( app.get("*", function ) {}
+
+sample page:
+add FB samples - like & comment.  
+Add Google Analytics sample.  
+
 
 ##Licence
 
 The MIT License (MIT)
 
-Copyright (c) 2014 Mark Litwintschik
+Copyright (c) 2015 Martin Sookael
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

@@ -102,39 +102,38 @@ function route(crossroads) {
   hasher.init(); //start listening for history change
 }
 
+
+
 // define save();
 function save(table, formName) {
-
   var fd = new FormData();
   var titles = {};
-
   formName = $("#"+formName);
-
   // go through form and get data
   formName.find("input, textarea").each(function(){
     var t = $(this);
 
     // handle input type text, file, submit differently;
     switch(t.attr("type")) {
-    case "text":
-    fd.append(t.attr("id"), t.val()); // add the value of the input
-    titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
-    break;
+      case "text":
+      fd.append(t.attr("id"), t.val()); // add the value of the input
+      titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
+      break;
 
-    case "textarea":
-    fd.append(t.attr("id"), t.val()); // add the value of the input
-    titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
-    break;
+      case "textarea":
+      fd.append(t.attr("id"), t.val()); // add the value of the input
+      titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
+      break;
 
-    case "file":
-    fd.append(t.attr("id"), $(this)[0].files[0]); // add the value of the input
-    titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
-    break;
+      case "file":
+      fd.append(t.attr("id"), $(this)[0].files[0]); // add the value of the input
+      titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
+      break;
 
-    case "submit":
-    break;
+      case "submit":
+      break;
 
-    default:
+      default:
       // if it's a textarea
       if (t.prop('tagName') === "TEXTAREA") {
         fd.append(t.attr("id"), t.val()); // add the value of the input
@@ -144,10 +143,8 @@ function save(table, formName) {
     }
   });
 
-
   // post the contents of the form
   post(table, fd).then(function(data) { //cl(data);
-
     if(data.objectId != undefined) {
       // add titles to db via put().
       put(table, data.objectId, {titles: titles} ).then(function(data2) { // this is data2, since we use the data from the post()
@@ -163,15 +160,13 @@ function save(table, formName) {
 
 // define post()
 function post(table, data) {
-  //data = [data];
   return $.ajax({
     url: "/api/?table="+table,
     type: 'POST',
     processData: false,
-    //contentType: 'multipart/form-data',
     contentType: false,
     data: data,
-    success: function(response){ cl(response);
+    success: function(response){
       if(response.objectId != undefined) {
         cl("post done" - response.objectId);
       } else {
@@ -186,6 +181,7 @@ function post(table, data) {
     }
   });
 }
+
 
 // define get()
 function get(table, id) {
