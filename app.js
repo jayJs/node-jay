@@ -185,7 +185,7 @@ app.post('/api', function(req, resp){
         fields2[one] = String(fields[one]);
       }
     }
-    
+      
     kaiseki.createObject(table, fields2, function(err, response, body, success) {
         // get first key name
         if(success) {
