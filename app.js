@@ -185,11 +185,9 @@ app.post('/api', function(req, resp){
         fields2[one] = String(fields[one]);
       }
     }
-
+    
     kaiseki.createObject(table, fields2, function(err, response, body, success) {
-
         // get first key name
-
         if(success) {
           var first = null;
           var firstKey = null;
@@ -199,22 +197,10 @@ app.post('/api', function(req, resp){
                 break;
             }
         }
-        console.log(firstKey);
-
-
         // if there's a file, upload it
         if(files[firstKey]) {
-
           // iterate over all files.
           Object.keys(files).forEach(function(key) {
-
-
-
-            //var val = files[key];
-            console.log("aaaa");
-            console.log(files[key]);
-            //console.log(key);
-
             kaiseki.uploadFile(files[key][0].path, function(err, res, uploadBody, success) {
               if(success) {
                 var post = {};
@@ -235,19 +221,11 @@ app.post('/api', function(req, resp){
                 console.log(err);
               }
             });
-
-
-
-
           });
         } else {
           // no uploading neccessary
           resp.json({ objectId: body.objectId });
         }
-
-
-
-
       } else {
         resp.json({error: err});
       }
