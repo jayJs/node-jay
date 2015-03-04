@@ -180,37 +180,74 @@ app.post('/api', function(req, resp){
   var fields2 = {}
 
   form.parse(req, function(err, fields, files) {
-
     for(var one in fields) {
-      //console.log(one);
-      fields2[one] = String(fields[one]);
+      if(String(fields[one]) != "undefined") {
+        fields2[one] = String(fields[one]);
+      }
     }
 
     kaiseki.createObject(table, fields2, function(err, response, body, success) {
 
-      if(success) {
-        // if there's a file, upload it
-        if(files.length>0) {
-          kaiseki.uploadFile(files.addFileInput[0].path, function(err, res, uploadBody, success) {
-            if(success) {
-              var post = { image: { name: uploadBody.name,__type: 'File'}};
-              // update object about file address
-              kaiseki.updateObject(table, body.objectId, post, function(err, response, uploadBody, success) {
-                if (success) {
-                  resp.json({ objectId: body.objectId });
-                } else {
-                  resp.json({ error: "File not uploaded" });
-                  console.log(err);
-                }
-              });
-            } else {
-              console.log(err);
+        // get first key name
+
+        if(success) {
+          var first = null;
+          var firstKey = null;
+          for (var firstKey in files) {
+            first = files[firstKey];
+            if(typeof(first) !== 'function') {
+                break;
             }
+        }
+        console.log(firstKey);
+
+
+        // if there's a file, upload it
+        if(files[firstKey]) {
+
+          // iterate over all files.
+          Object.keys(files).forEach(function(key) {
+
+
+
+            //var val = files[key];
+            console.log("aaaa");
+            console.log(files[key]);
+            //console.log(key);
+
+            kaiseki.uploadFile(files[key][0].path, function(err, res, uploadBody, success) {
+              if(success) {
+                var post = {};
+                var fieldname = String(files[key][0].fieldName);
+                post[fieldname] = {
+                  name: uploadBody.name,
+                  __type: 'File'
+                }
+                kaiseki.updateObject(table, body.objectId, post, function(err, response, uploadBody, success) {
+                  if (success) {
+                    resp.json({ objectId: body.objectId });
+                  } else {
+                    resp.json({ error: "File not uploaded" });
+                    console.log(err);
+                  }
+                });
+              } else {
+                console.log(err);
+              }
+            });
+
+
+
+
           });
         } else {
           // no uploading neccessary
           resp.json({ objectId: body.objectId });
         }
+
+
+
+
       } else {
         resp.json({error: err});
       }

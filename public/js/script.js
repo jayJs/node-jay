@@ -140,14 +140,25 @@ $(document).ready(function() {
 
   // Controller, "/p/{id}"
   function onePostFunction(id) {
-    get("Posts", id).then(function(data) {
+    get("Posts", id).then(function(data) { //console.log(data.image);
+
       showPost.empty();
+      console.log(data);
+
       $.each(data, function(key, value) {
         if(key == "updatedAt" || key == "createdAt" || key == "objectId") {}
         else {
+          //console.log(data.titles);
+          //console.log(key);
+          //console.log(value);
           if(value.length>0) {
             showPost.append("<h4>"+data.titles[key]+"<h4>");
             showPost.append(value);
+          }
+          // if it's a parse url
+          if(value.url) {
+            showPost.append("<h4>"+data.titles[key]+"<h4>");
+            showPost.append("<img src='"+value.url+"' style='width: 300px; height: auto;'>");
           }
         }
       })
