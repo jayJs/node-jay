@@ -5,6 +5,7 @@ if (window.location.hash && window.location.hash == '#_=_') {
 
 if (typeof fbAppId != "undefined") {
   window.fbAsyncInit = function() {
+
     FB.init({
       appId      : fbAppId,
       xfbml      : true,
@@ -103,11 +104,10 @@ function route(crossroads) {
   hasher.init(); //start listening for history change
 }
 
-
-
 // define save();
 function save(table, formName) {
 
+  // added progress bar
   $("body").append('<div style="position: absolute; color: #fff; padding-top: 15px; bottom: 20px; height: 50px; background: #000; opacity: 0.3; width: 0%; text-align: center" id="progress">Upload in progress: <span id="processPercent">45%</span></div>');
 
   var fd = new FormData();
@@ -170,7 +170,7 @@ function save(table, formName) {
   });
 }
 
-
+// handle info coming from upload progress
 function progressHandlingFunction(e){
   if(e.lengthComputable){
     var percent= e.loaded/e.total*100;
@@ -181,7 +181,6 @@ function progressHandlingFunction(e){
     }
   }
 }
-
 
 // define post()
 function post(table, data) {
@@ -247,7 +246,6 @@ function put(table, id, data) {
   });
 }
 
-
 (function ( $ ) {
 
   $.fn.out = function(transition) {
@@ -290,4 +288,5 @@ function put(table, id, data) {
       window[tag.id] = $("#"+tag.id);
     }
   }
+
 }( jQuery ));
