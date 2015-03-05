@@ -106,6 +106,9 @@ function route(crossroads) {
 
 // define save();
 function save(table, formName) {
+
+  $("body").append('<div style="position: absolute; color: #fff; padding-top: 15px; bottom: 20px; height: 50px; background: #000; opacity: 0.3; width: 0%; text-align: center" id="progress">Upload in progress: <span id="processPercent">45%</span></div>');
+
   var fd = new FormData();
   var titles = {};
   formName = $("#"+formName);
@@ -167,6 +170,17 @@ function save(table, formName) {
 }
 
 
+function progressHandlingFunction(e){
+  if(e.lengthComputable){
+    var percent= e.loaded/e.total*100;
+    $("#progress").css("width", percent+"%");
+    $("#processPercent").empty().append(percent+"%");
+    if(percent === 100) {
+      $("#progress").css("width", "0%");
+    }
+  }
+}
+
 
 // define post()
 function post(table, data) {
@@ -183,6 +197,13 @@ function post(table, data) {
         cl("error - object not saved");
       }
       return response;
+    },
+    xhr: function() {  // Custom XMLHttpRequest
+      var myXhr = $.ajaxSettings.xhr();
+      if(myXhr.upload){ // Check if upload property exists
+        myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+      }
+      return myXhr;
     },
     error: function(error) {
       a(error.responseText);
