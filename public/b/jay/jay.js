@@ -143,6 +143,11 @@ function save(table, formName) {
     }
   });
 
+  // prevent double submit
+  formName.find("input:submit").each(function(){
+    $(this).prop('disabled', true);
+  });
+
   // post the contents of the form
   post(table, fd).then(function(data) { //cl(data);
     if(data.objectId != undefined) {
@@ -153,6 +158,11 @@ function save(table, formName) {
     } else {
       cl("error - object not found");
     }
+
+    // make submit active again
+    formName.find("input:submit").each(function(){
+      $(this).prop('disabled', false);
+    });
   });
 }
 
