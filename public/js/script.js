@@ -1,3 +1,4 @@
+"use strict";
 
 $(document).ready(function() {
 
@@ -8,26 +9,29 @@ $(document).ready(function() {
   $("#loading").addClass("animated fadeOut").addClass("hidden");
   $("#app").removeClass("hidden").addClass("animated fadeIn");
 
+  function clearApp(){
+    addPost.out()
+    onePost.out()
+    showPost.empty()
+    listPosts.out()
+    editPost.empty().out()
+    logIn.empty().out()
+    tabs.out()
+
+    //e404.empty().out()
+    $('html,body').scrollTop(0)
+  }
+
   // VIEWS
   // Front page view
   var listPostsView = function () {
-    addPost.out();
-    onePost.out();
-    editPost.out();
-    logIn.out();
-
-    listPosts.in('fadeIn');
-
-    listPostsFunction();
+    clearApp()
+    listPosts.in('fadeIn')
+    listPostsFunction()
   }
 
   var addPostView = function () {
-    listPosts.out();
-    onePost.out();
-    editPost.out();
-    tabs.out();
-    logIn.out();
-
+    clearApp()
     isUser(function(){ // is a user
       addPost.in('fadeIn');
     }, function() { // is not a user
@@ -38,13 +42,10 @@ $(document).ready(function() {
   }
 
   var onePostView = function (id) {
-    listPosts.out();
-    addPost.out();
-    editPost.out();
-    logIn.out();
+    clearApp()
 
     isUser(function(){ // is a user
-      //tabs.in();
+      tabs.in();
     }, function() { // is not a user
       tabs.out();
     });
@@ -62,10 +63,7 @@ $(document).ready(function() {
   }
 
   var editPostView = function (id) {
-    listPosts.out();
-    addPost.out();
-    onePost.out();
-    logIn.out();
+    clearApp()
 
     isUser(function(){ // is a user
       //tabs.in();
@@ -84,10 +82,7 @@ $(document).ready(function() {
   }
 
   var logInView = function() {
-    listPosts.out();
-    addPost.out();
-    onePost.out();
-    tabs.out();
+    clearApp()
 
     logIn.in();
 
