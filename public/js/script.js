@@ -7,7 +7,7 @@ $(document).ready(function() {
 
   // hide loadin + show app
   $("#loading").out()
-  $("#app").in(fadeIn)
+  $("#app").in("fadeIn")
 
   function clearApp(){
     addPost.out()
@@ -79,14 +79,29 @@ $(document).ready(function() {
 
   // Controller, "/add"
   function addPostFunction() {
+
+    // reset form
+    title.val("")
+    content.val("")
+    addCourseFile1.val("")
+    addCourseFile2.val("")
+
     addPostSubmit.on('click', function(event) {
       event.preventDefault();
       addPostForm.submit();
     });
 
-    addPostForm.on("submit", function(event) {
+    var clicked = false;
+    addPostForm.on("submit", function(event) { cl("a")
       event.preventDefault();
-      save('Posts', 'addPostForm');
+      if(clicked === false) { cl("b")
+        addPostSubmit.attr('disabled','disabled')
+        save('Posts', 'addPostForm').then(function(resp){ cl("c")
+          addPostSubmit.removeAttr('disabled');
+          window.location = "#/p/" + resp.objectId
+        })
+        clicked = true;
+      }
     })
   }
 

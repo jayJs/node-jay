@@ -14,12 +14,7 @@ var express = require('express')
 app.configure(function() {
   app.use(express.static('public'));
   app.use(express.cookieParser());
-  //app.use(express.bodyParser());
-
-  //app.use(express.urlencoded());
-  //app.use(express.json());
-
-  app.use(express.session({ secret: 'asfgsdsfgfdsefrdrggsagofgslghdlvfh6958767gfsfa' }));
+  app.use(express.session({ secret: 'Please_change_me_now' }));
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(app.router);
@@ -38,27 +33,15 @@ var kaiseki_rest_api_key = "PJ8sMJzoIqndboAoYOodJHYUglB65NKgW4Kg56oI";
 var kaiseki = new Kaiseki(kaiseki_app_id, kaiseki_rest_api_key);
 // usage: https://github.com/shiki/kaiseki
 
-app.get('/', function(req, res){
-  res.sendfile('./public/index.html');
-});
-
-
-// Extract parameters from REST API calls
-// from http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
-function getParameterByName(name, url) {
-  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-  results = regex.exec(url);
-  return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-}
 
 /* PASSPORT */
-
 // demo account for Jay, works at localhost:5000
 var FACEBOOK_APP_ID = "756437764450452";
 var FACEBOOK_APP_SECRET = "3fcc01cbe7631a706a851aa4c7b4e745";
 
-
+app.get('/', function(req, res){
+  res.sendfile('./public/index.html');
+});
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -185,7 +168,7 @@ app.post('/api', function(req, resp){
         fields2[one] = String(fields[one]);
       }
     }
-      
+
     kaiseki.createObject(table, fields2, function(err, response, body, success) {
         // get first key name
         if(success) {
@@ -254,7 +237,7 @@ app.put('/api', function(req, res){
 });
 
 
-// Sample
+// Get posts for dront page
 app.get('/api/posts', function(req, res){
   var params = {
     limit: 20,
@@ -275,17 +258,10 @@ app.get('/api/posts', function(req, res){
 });
 
 
-/*
-app.get('/logout', function(req, res){
-  req.logout();
-  res.redirect('/');
-}); */
-
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { cl("is authendicated"); return next(); }
   res.redirect('/')
 }
-
 
 server.listen(port, function(){
   console.log('Express server listening on port ' + port);
