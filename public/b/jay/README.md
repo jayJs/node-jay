@@ -164,7 +164,7 @@ isUser(function() { // logged in users
 ##CRUD (experimental - requires [node-jay](https://github.com/jayJs/node-jay) )  
 Jay features a wrapper for common AJAX REST API calls.  
 **post(table, data)** -  add a row to database.  
-**get(table,objectId)** - get a row from database.  
+**get(table, limit, objectId)** - get a row from database. If limit is 1, add objectId, else <limit> last posts are queried.  
 **put(table, objectId, data)** - update a row in database.  
 **save(table, formId)** - Save data data from form to database.  
 
@@ -198,15 +198,16 @@ post("Posts", data).then(function(response) {
 There's an easier way to achieve this with save(). Scroll a bit down.  
 
 
-##get(table,objectId)  
+##get(table, limit, objectId)  
 **Get a row from database.**  
 table - name of the table in database (*string*).  
+limit - if limit is 1, objectId will be use the get the precise object. In any other case the last posts from the table will be retrieved.  
 objectId - Id of object in database (*string*).  
 
 Returns object with the data.  
 
 ```
-get("Posts", "378QWha5OB").then(function(data) {
+get("Posts", 1, "378QWha5OB").then(function(data) {
   console.log(data);
 }
 ```
@@ -214,7 +215,7 @@ would return
 ```
 {
   objectId: "378QWha5OB",
-  title: "What the f*ck is FormData?",
+  title: "What is FormData?",
   content: "What the user submitted",
   updatedAt: "2015-01-24T13:53:38.498Z",
   createdAt: "2015-01-24T13:53:37.745Z",
@@ -247,7 +248,37 @@ put("Posts", "378QWha5OB", update).then(function(data) {
 table - name of the table to save this data (*string*).  
 formId - id of form, where the data comes (*string*).  
 
-Save also disables all <input type="submit"> type elements in the form and shows an upload progress in the bottom of the screen.  
+Save also disables all <input type="submit"> type elements in the form and shows an upload progress in the bottom of the screen.
+
+HTML:
+```
+<form id="addNgoForm">
+  <p>
+    <label for="addNgoName">Name:</label><br />
+    <input id="addNgoName" type="text" class="form-control" /><br />
+  </p>
+  <p>
+    <label for="addNgoType">Type:</label><br />
+    <label><input type="checkbox" name="addNgoType" value="1">Apples</label><br>
+    <label><input type="checkbox" name="addNgoType" value="2">Oranges</label><br>
+    <label><input type="checkbox" name="addNgoType" value="3">Grapes</label><br>
+  </p>
+</form>
+```
+JS:
+```
+save("TableName", "addNgoForm");
+```
+Would save the contents of the form to table called TableName.  
+The table would have only three columns:
+1. one with a title "addNgoName"
+2. Second with a title "addNgoType", user selection as array.
+3. Last for metadata. It's currently saved to column called "titles".
+With the above sample form it would save this:
+```
+{"addNgoName":"Name:", "addNgoType":"Type:"}
+```
+
 
 HTML  
 ```

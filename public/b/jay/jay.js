@@ -104,14 +104,17 @@ function route(crossroads) {
   hasher.init(); //start listening for history change
 }
 
-// define save();
-function save(table, formName) {
+function prepareForm(formName) {
 
+  var checkboxes = [];
+//cl("a")
   // added progress bar
   $("body").append('<div style="position: absolute; color: #fff; padding-top: 15px; bottom: 20px; height: 50px; background: #000; opacity: 0.3; width: 0%; text-align: center" id="progress">Upload in progress: <span id="processPercent">45%</span></div>');
 
+
   var fd = new FormData();
   var titles = {};
+  //$("#"+formName+":submit").attr("disabled", "disabled");
   formName = $("#"+formName);
   // go through form and get data
   formName.find("input, textarea").each(function(){
@@ -119,19 +122,44 @@ function save(table, formName) {
 
     // handle input type text, file, submit differently;
     switch(t.attr("type")) {
-      case "text":
-      fd.append(t.attr("id"), t.val()); // add the value of the input
-      titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
-      break;
+    case "text":
+    fd.append(t.attr("id"), t.val()); // add the value of the input
+    titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
+    break;
 
-      case "textarea":
-      fd.append(t.attr("id"), t.val()); // add the value of the input
-      titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
-      break;
+    case "textarea":
+    fd.append(t.attr("id"), t.val()); // add the value of the input
+    titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
+    break;
 
-      case "file":
-      fd.append(t.attr("id"), $(this)[0].files[0]); // add the value of the input
-      titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
+    case "hidden":
+      if (t.attr("name") === "userId") {
+        fd.append(t.attr("name"), t.attr("value")); // add the value of the input
+        titles[t.attr("name")] = t.attr("value") // at the label to titles array
+      }
+    break;
+
+    case "file":
+    fd.append(t.attr("id"), $(this)[0].files[0]); // add the value of the input
+    titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
+    break;
+
+    case "checkbox":
+    case "radio":
+      if(t.prop("checked")) {
+        if(typeof window[t.attr("name") + "_meta"] === "undefined") { // if array does not exist, create it
+          window[t.attr("name") + "_meta"] = {};
+        }
+        if(typeof window[t.attr("name") + "_data"] === "undefined") { // if array does not exist, create it
+          window[t.attr("name") + "_data"] = [];
+        }
+
+        window[t.attr("name") + "_meta"][t.attr("value")] = t.parent().text();
+        window[t.attr("name") + "_data"].push(t.val());
+      }
+      if($.inArray(t.attr("name"), checkboxes) == "-1") { // if array name not there yet, add it to checkboxes array
+        checkboxes.push(t.attr("name"));
+      }
       break;
 
       case "submit":
@@ -147,28 +175,46 @@ function save(table, formName) {
     }
   });
 
-  // prevent double submit
-  formName.find("input:submit").each(function(){
-    $(this).prop('disabled', true);
-  });
-
-  // post the contents of the form
-  post(table, fd).then(function(data) { //cl(data);
-    if(data.objectId != undefined) {
-      // add titles to db via put().
-      put(table, data.objectId, {titles: titles} ).then(function(data2) { // this is data2, since we use the data from the post()
-        window.location = "#/p/" + data.objectId;
-      });
-    } else {
-      cl("error - object not found");
+  // gather all checboxes to formData
+  for (var i = 0; i < checkboxes.length+1; i++) {
+    var inputId = checkboxes[i];
+    if(inputId) {
+      var metaData = window[checkboxes[i]+"_meta"];
+      var theData = window[checkboxes[i]+"_data"];
+      metaData = JSON.stringify(metaData);
+      fd.append(inputId+"_meta", metaData); // add the value of the input
+      fd.append(inputId, theData); // add the value of the input
+      titles[inputId] = $("label[for='"+inputId+"']").text(); // at the label to titles array
+      if(window[inputId]) window[inputId].length = 0;
     }
+  }
+  checkboxes.length = 0;
 
-    // make submit active again
-    formName.find("input:submit").each(function(){
-      $(this).prop('disabled', false);
-    });
+  titles = JSON.stringify(titles);
+  fd.append("titles", titles); // add titles to fd
+  //$("#"+formName+":submit").removeAttr('disabled');
+  return fd;
+}
+
+// define save();
+function save(table, formName) {
+
+  fd = prepareForm(formName);
+
+  return post(table, fd).then(function(data){
+    return data;
   });
 }
+
+function update(table, id, formName) {
+
+  fd = prepareForm(formName);
+
+  return put(table, id, fd).then(function(data) {
+    return data;
+  });
+}
+
 
 // handle info coming from upload progress
 function progressHandlingFunction(e){
@@ -195,6 +241,7 @@ function post(table, data) {
         cl("post done" - response.objectId);
       } else {
         cl("error - object not saved");
+        cl(response);
       }
       return response;
     },
@@ -215,9 +262,9 @@ function post(table, data) {
 
 
 // define get()
-function get(table, id) {
+function get(table, limit, id) {
   return $.ajax({
-    url: "/api/?table="+table+'&id='+id,
+    url: "/api/?table="+table+'&id='+id+'&limit='+limit,
     success: function(data){
       return data;
     },
@@ -231,10 +278,13 @@ function get(table, id) {
 
 // define put()
 function put(table, id, data) {
-  data = JSON.stringify(data);
+  //data = JSON.stringify(data);
   return $.ajax({
     type: 'PUT',
     url: "/api/?table="+table+'&id='+id+'&data='+data,
+    processData: false,
+    contentType: false,
+    data: data,
     success: function(data){
       return data;
     },

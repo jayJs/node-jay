@@ -14,7 +14,6 @@ $(document).ready(function() {
     addPost.out();
     onePost.out();
     editPost.out();
-    tabs.out();
     logIn.out();
 
     listPosts.in('fadeIn');
@@ -140,7 +139,10 @@ $(document).ready(function() {
 
   // Controller, "/p/{id}"
   function onePostFunction(id) {
-    get("Posts", id).then(function(data) {
+    get("Posts", 1,  id).then(function(data) {
+      if(typeof data.titles === "string") {
+        data.titles = JSON.parse(data.titles);
+      }
       showPost.empty();
       $.each(data, function(key, value) {
         if(key == "updatedAt" || key == "createdAt" || key == "objectId") {}
