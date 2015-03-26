@@ -6,17 +6,15 @@ $(document).ready(function() {
   $("body").append('<script src="http://localhost:35729/livereload.js?snipver=1"></script>');
 
   // hide loadin + show app
-  $("#loading").addClass("animated fadeOut").addClass("hidden");
-  $("#app").removeClass("hidden").addClass("animated fadeIn");
+  $("#loading").out()
+  $("#app").in(fadeIn)
 
   function clearApp(){
     addPost.out()
     onePost.out()
     onePost.empty()
     listPosts.out()
-    editPost.empty().out()
     logIn.empty().out()
-    tabs.out()
 
     //e404.empty().out()
     $('html,body').scrollTop(0)
@@ -37,55 +35,18 @@ $(document).ready(function() {
     }, function() { // is not a user
       window.location = "#/login";
     });
-
     addPostFunction();
   }
 
   var onePostView = function (id) {
     clearApp()
-
-    isUser(function(){ // is a user
-      tabs.in();
-    }, function() { // is not a user
-      tabs.out();
-    });
-
-
-    viewLink.attr("href", "#/p/"+id);
-    editLink.attr("href", "#/e/"+id);
-    viewLink.parent().addClass("active");
-    editLink.parent().removeClass("active");
-
-
     onePost.in('fadeIn');
-
     onePostFunction(id);
-  }
-
-  var editPostView = function (id) {
-    clearApp()
-
-    isUser(function(){ // is a user
-      //tabs.in();
-    }, function() { // is not a user
-      tabs.out();
-    });
-
-    viewLink.attr("href", "#/p/"+id);
-    editLink.attr("href", "#/e/"+id);
-    viewLink.parent().removeClass("active");
-    editLink.parent().addClass("active");
-
-    editPost.in('fadeIn');
-
-    editPostFunction();
   }
 
   var logInView = function() {
     clearApp()
-
     logIn.in();
-
   }
 
   // MODEL
@@ -94,7 +55,6 @@ $(document).ready(function() {
   crossroads.addRoute('/add', addPostView);
   crossroads.addRoute('/login', logInView);
   crossroads.addRoute('/p/{id}', onePostView);
-  crossroads.addRoute('/e/{id}', editPostView);
 
   // start routing
   route(crossroads);
@@ -115,7 +75,6 @@ $(document).ready(function() {
         ce(error);
       }
     });
-
   }
 
   // Controller, "/add"
@@ -154,13 +113,4 @@ $(document).ready(function() {
       })
     });
   }
-
-  // Controller, "/e/{id}"
-  function editPostFunction() {
-    // edit posts
-  }
-
-
-
-
 });
