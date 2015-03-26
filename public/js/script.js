@@ -14,7 +14,8 @@ $(document).ready(function() {
     onePost.out()
     onePost.empty()
     listPosts.out()
-    logIn.empty().out()
+    logIn.out()
+    e404.out()
 
     //e404.empty().out()
     $('html,body').scrollTop(0)
@@ -92,11 +93,11 @@ $(document).ready(function() {
     });
 
     var clicked = false;
-    addPostForm.on("submit", function(event) { cl("a")
+    addPostForm.on("submit", function(event) {
       event.preventDefault();
-      if(clicked === false) { cl("b")
+      if(clicked === false) {
         addPostSubmit.attr('disabled','disabled')
-        save('Posts', 'addPostForm').then(function(resp){ cl("c")
+        save('Posts', 'addPostForm').then(function(resp){ 
           addPostSubmit.removeAttr('disabled');
           window.location = "#/p/" + resp.objectId
         })
@@ -108,24 +109,28 @@ $(document).ready(function() {
   // Controller, "/p/{id}"
   function onePostFunction(id) {
     get("Posts", 1,  id).then(function(data) {
-      if(typeof data.titles === "string") {
-        data.titles = JSON.parse(data.titles);
-      }
-      onePost.empty();
-      $.each(data, function(key, value) {
-        if(key == "updatedAt" || key == "createdAt" || key == "objectId") {}
-        else {
-          if(value.length>0) {
-            onePost.append("<h4>"+data.titles[key]+"<h4>");
-            onePost.append(value);
-          }
-          // if it's a parse url
-          if(value.url) {
-            onePost.append("<h4>"+data.titles[key]+"<h4>");
-            onePost.append("<img src='"+value.url+"' style='width: 300px; height: auto;'>");
-          }
+      if(data.error === "No such post") {
+        e404.in()
+      } else {
+        if(typeof data.titles === "string") {
+          data.titles = JSON.parse(data.titles);
         }
-      })
+        onePost.empty();
+        $.each(data, function(key, value) {
+          if(key == "updatedAt" || key == "createdAt" || key == "objectId") {}
+          else {
+            if(value.length>0) {
+              onePost.append("<h4>"+data.titles[key]+"<h4>");
+              onePost.append(value);
+            }
+            // if it's a parse url
+            if(value.url) {
+              onePost.append("<h4>"+data.titles[key]+"<h4>");
+              onePost.append("<img src='"+value.url+"' style='width: 300px; height: auto;'>");
+            }
+          }
+        })
+      }
     });
   }
 });
