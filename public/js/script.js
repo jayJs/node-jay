@@ -12,7 +12,7 @@ $(document).ready(function() {
   function clearApp(){
     addPost.out()
     onePost.out()
-    showPost.empty()
+    onePost.empty()
     listPosts.out()
     editPost.empty().out()
     logIn.empty().out()
@@ -99,16 +99,15 @@ $(document).ready(function() {
   // start routing
   route(crossroads);
 
-
   // CONTROLLERS
   // Controller, "/"
   function listPostsFunction() {
     $.ajax({
       url: "/api/posts",
       success: function(data){
-        postUl.empty();
+        listPosts.empty();
         for (var i = 0; i< data.length; i++) {
-          postUl.append('<li><h3><a href="#/p/'+data[i].objectId+'">'+data[i].title+'</a></h3>')
+          listPosts.append('<h3><a href="#/p/'+data[i].objectId+'">'+data[i].title+'</a></h3>')
         }
       },
       error: function(error) {
@@ -138,18 +137,18 @@ $(document).ready(function() {
       if(typeof data.titles === "string") {
         data.titles = JSON.parse(data.titles);
       }
-      showPost.empty();
+      onePost.empty();
       $.each(data, function(key, value) {
         if(key == "updatedAt" || key == "createdAt" || key == "objectId") {}
         else {
           if(value.length>0) {
-            showPost.append("<h4>"+data.titles[key]+"<h4>");
-            showPost.append(value);
+            onePost.append("<h4>"+data.titles[key]+"<h4>");
+            onePost.append(value);
           }
           // if it's a parse url
           if(value.url) {
-            showPost.append("<h4>"+data.titles[key]+"<h4>");
-            showPost.append("<img src='"+value.url+"' style='width: 300px; height: auto;'>");
+            onePost.append("<h4>"+data.titles[key]+"<h4>");
+            onePost.append("<img src='"+value.url+"' style='width: 300px; height: auto;'>");
           }
         }
       })
