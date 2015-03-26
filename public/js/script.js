@@ -96,9 +96,11 @@ $(document).ready(function() {
     addPostForm.on("submit", function(event) {
       event.preventDefault();
       if(clicked === false) {
+        pleaseWait.in()
         addPostSubmit.attr('disabled','disabled')
-        save('Posts', 'addPostForm').then(function(resp){ 
+        save('Posts', 'addPostForm').then(function(resp){
           addPostSubmit.removeAttr('disabled');
+          pleaseWait.out()
           window.location = "#/p/" + resp.objectId
         })
         clicked = true;

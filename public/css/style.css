@@ -29,13 +29,6 @@ p {
   margin-top: 50px;
 }
 
-#listPosts>ul,
-#listPosts>ul>li {
-  list-style: none;
-  margin-left: 0;
-  padding-left:0;
-}
-
 #alert {
   position: absolute;
   top: 20px;
@@ -46,13 +39,18 @@ p {
   margin-top: 15px; margin-right: 15px;
 }
 
-#log {
-  border-top: #999 1px solid;
-  height: 130px;
-  bottom: 0;
-  position: absolute;
-  width: 100%;
-  overflow: hidden;
-  font-size: 8pt;
-  color: #999;
+
+.glyphicon-refresh-animate {
+  -animation: spin .7s infinite linear;
+  -webkit-animation: spin2 .7s infinite linear;
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
 }
