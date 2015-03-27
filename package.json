@@ -8,7 +8,8 @@
     "kaiseki": "~0.5.6",
     "passport": "~0.2.1",
     "passport-facebook": "~1.0.3",
-    "multiparty": "~4.1.1"
+    "multiparty": "~4.1.1",
+    "jay-npm": "0.4.17"
   },
   "devDependencies": {
     "gulp": "~3.6.2",
