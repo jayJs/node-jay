@@ -7,8 +7,8 @@ config.app.port =  process.env.PORT || 5000;
 
 // Facebook credidentials
 config.facebook = {};
-config.facebook.client_id = '';
-config.facebook.client_secret = ''
+config.facebook.clientId = '';
+config.facebook.clientSecret = ''
 
 // Parse.com credidentials for Kaiseki
 config.kaiseki = {};
@@ -16,7 +16,7 @@ config.kaiseki.appId = "";
 config.kaiseki.restApiKey = "";
 
 // JWT(JSON Web Token) encode and decode module settings
-config.jwt_simple = {};
-config.jwt_simple.secret = 'foobar'
+config.jwtSimple = {};
+config.jwtSimple.secret = 'foobar'
 
 module.exports = config;

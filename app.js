@@ -32,22 +32,6 @@ app.get('/', function(req, res){
   res.sendfile('./public/index.html');
 });
 
-
-
-
-
-/*
-// demo account for J @ parse.com
-var kaiseki_app_id = "6qpUJ9soNnRiLQLYnEU2dnY6z1qS98bZrsdl1Tcr";
-var kaiseki_rest_api_key = "PJ8sMJzoIqndboAoYOodJHYUglB65NKgW4Kg56oI";
-var kaiseki = new Kaiseki(kaiseki_app_id, kaiseki_rest_api_key);
-// usage: https://github.com/shiki/kaiseki
-*/
-/* PASSPORT */
-// demo account for Jay, works at localhost:5000
-var FACEBOOK_APP_ID = "756437764450452";
-var FACEBOOK_APP_SECRET = "3fcc01cbe7631a706a851aa4c7b4e745";
-
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
@@ -57,8 +41,8 @@ passport.deserializeUser(function(obj, done) {
 });
 
 passport.use(new FacebookStrategy({
-  clientID: FACEBOOK_APP_ID,
-  clientSecret: FACEBOOK_APP_SECRET,
+  clientID: config.facebook.clientId,
+  clientSecret: config.facebook.clientSecret,
   callbackURL: "/auth/facebook/callback",
   scope: ['email']
 },
