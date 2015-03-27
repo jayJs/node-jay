@@ -11,37 +11,26 @@ var express = require('express')
   , port = process.env.PORT || 5000;
 
 
-app.configure(function() {
-  app.use(express.static('public'));
-  app.use(express.cookieParser());
-  app.use(express.session({ secret: 'Please_change_me_now' }));
-  app.use(passport.initialize());
-  app.use(passport.session());
-  app.use(app.router);
-  app.use(require('connect-livereload')());
-  app.use(express.logger('dev'));
-  app.use(express.methodOverride());
-  var hourMs = 1000*60*60;
-  app.use(express.static(__dirname + '/public', { maxAge: hourMs }));
-  app.use(express.directory(__dirname + '/public'));
-  app.use(express.favicon(__dirname + '/public/favicon.ico'));
-});
+var jay = require('jay');
 
+/*
 // demo account for J @ parse.com
 var kaiseki_app_id = "6qpUJ9soNnRiLQLYnEU2dnY6z1qS98bZrsdl1Tcr";
 var kaiseki_rest_api_key = "PJ8sMJzoIqndboAoYOodJHYUglB65NKgW4Kg56oI";
 var kaiseki = new Kaiseki(kaiseki_app_id, kaiseki_rest_api_key);
 // usage: https://github.com/shiki/kaiseki
-
-
+*/
 /* PASSPORT */
 // demo account for Jay, works at localhost:5000
 var FACEBOOK_APP_ID = "756437764450452";
 var FACEBOOK_APP_SECRET = "3fcc01cbe7631a706a851aa4c7b4e745";
 
-app.get('/', function(req, res){
-  res.sendfile('./public/index.html');
-});
+
+function cl(data) {
+  console.log(data);
+}
+
+cl("you")
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -118,151 +107,8 @@ function(req, res) {
 });
 
 
-// CRUD
-
-// Extract parameters from REST API calls
-// from http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
-function getParameterByName(name, url) {
-  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-  results = regex.exec(url);
-  return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-}
-
-// define get();
-app.get('/api/', function(req, res){
-  var table = getParameterByName( "table", req.originalUrl);
-  var id = getParameterByName( "id", req.originalUrl);
-  var params = {
-    where: {
-      objectId: id
-    },
-    limit: 1
-  }
-  kaiseki.getObjects(table, params, function(err, response, body, success) {
-    if(err) {
-      res.json({ error: err });
-    } else {
-      if(body[0]) {
-        body = body[0]
-        res.json(body);
-      } else {
-        res.json({error: "No such post"});
-      }
-    }
-  });
-});
-
-// define post()
-app.post('/api', function(req, resp){
-
-  var table = getParameterByName("table", req.originalUrl);
-  var form = new multiparty.Form();
-
-  // we create this in order to connect FormData with Parse
-  var fields2 = {}
-
-  form.parse(req, function(err, fields, files) {
-    for(var one in fields) {
-      if(String(fields[one]) != "undefined") {
-        fields2[one] = String(fields[one]);
-      }
-    }
-
-    kaiseki.createObject(table, fields2, function(err, response, body, success) {
-        // get first key name
-        if(success) {
-          var first = null;
-          var firstKey = null;
-          for (var firstKey in files) {
-            first = files[firstKey];
-            if(typeof(first) !== 'function') {
-                break;
-            }
-        }
-        // if there's a file, upload it
-        if(files[firstKey]) {
-          // iterate over all files.
-          Object.keys(files).forEach(function(key) {
-            kaiseki.uploadFile(files[key][0].path, function(err, res, uploadBody, success) {
-              if(success) {
-                var post = {};
-                var fieldname = String(files[key][0].fieldName);
-                post[fieldname] = {
-                  name: uploadBody.name,
-                  __type: 'File'
-                }
-                kaiseki.updateObject(table, body.objectId, post, function(err, response, uploadBody, success) {
-                  if (success) {
-                    resp.json({ objectId: body.objectId });
-                  } else {
-                    resp.json({ error: "File not uploaded" });
-                    console.log(err);
-                  }
-                });
-              } else {
-                console.log(err);
-              }
-            });
-          });
-        } else {
-          // no uploading neccessary
-          resp.json({ objectId: body.objectId });
-        }
-      } else {
-        resp.json({error: err});
-      }
-    });
-  });
-});
-
-// define put();
-app.put('/api', function(req, res){
-  var table = getParameterByName("table", req.originalUrl);
-  var id = getParameterByName("id", req.originalUrl);
-  var data = getParameterByName("data", req.originalUrl);
-  data = JSON.parse(data);
-  //console.log(data);
-  kaiseki.updateObject(table, id, data, function(err, response, body, success) {
-    if(success) {
-      res.json({status: "object updated at: " + body.updatedAt});
-      console.log('object updated at = ', body.updatedAt);
-    } else {
-      console.log("error");
-      console.log(err);
-      console.log(body);
-      res.json({error: err});
-    }
-  });
-});
-
-
-// Get posts for dront page
-app.get('/api/posts', function(req, res){
-  var params = {
-    limit: 20,
-    order: '-createdAt'
-  }
-  kaiseki.getObjects("Posts", params, function(err, response, body, success) {
-    if(err) {
-      res.json({ error: err });
-    } else {
-      if(body[0]) {
-        //body = body[0]
-        res.json(body);
-      } else {
-        res.json({error: "No such post"});
-      }
-    }
-  });
-});
-
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { cl("is authendicated"); return next(); }
   res.redirect('/')
 }
-
-server.listen(port, function(){
-  console.log('Express server listening on port ' + port);
-});
