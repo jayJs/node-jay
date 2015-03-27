@@ -7,7 +7,7 @@ var express = require('express')
   , Kaiseki = require('kaiseki')
   , passport = require('passport')
   , FacebookStrategy = require('passport-facebook').Strategy
-  , Jay = require('jay')
+  , Jay = require('jay-npm')
   , config = require(__dirname + '/config')
   , port = process.env.PORT || 5000;
 
