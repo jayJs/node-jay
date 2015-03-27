@@ -7,11 +7,35 @@ var express = require('express')
   , Kaiseki = require('kaiseki')
   , passport = require('passport')
   , FacebookStrategy = require('passport-facebook').Strategy
-  , multiparty = require('multiparty')
+//  , multiparty = require('multiparty')
   , port = process.env.PORT || 5000;
 
 
-var jay = require('jay');
+var Jay = require('jay');
+
+app.configure(function() {
+  app.use(express.static('public'));
+  app.use(express.cookieParser());
+  app.use(express.session({ secret: 'Please_change_me_now' }));
+  app.use(passport.initialize());
+  app.use(passport.session());
+  app.use(app.router);
+  app.use(require('connect-livereload')());
+  app.use(express.logger('dev'));
+  app.use(express.methodOverride());
+  var hourMs = 1000*60*60;
+  app.use(express.static(__dirname + '/public', { maxAge: hourMs }));
+  app.use(express.directory(__dirname + '/public'));
+  app.use(express.favicon(__dirname + '/public/favicon.ico'));
+});
+
+app.get('/', function(req, res){
+  res.sendfile('./public/index.html');
+});
+
+
+
+
 
 /*
 // demo account for J @ parse.com
@@ -30,7 +54,6 @@ function cl(data) {
   console.log(data);
 }
 
-cl("you")
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -108,7 +131,34 @@ function(req, res) {
 
 
 
+
+// define get();
+app.get('/api/', function(req, res){
+  Jay.get(req, res);
+});
+
+// define post()
+app.post('/api', function(req, res){
+  Jay.post(req, res)
+});
+
+// define put();
+app.put('/api', function(req, res){
+  Jay.put(req, res)
+});
+
+
+
+
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { cl("is authendicated"); return next(); }
   res.redirect('/')
 }
+
+
+
+
+
+server.listen(port, function(){
+  console.log('Express server listening on port ' + port);
+});

@@ -63,19 +63,17 @@ $(document).ready(function() {
   // CONTROLLERS
   // Controller, "/"
   function listPostsFunction() {
-    $.ajax({
-      url: "/api/posts",
-      success: function(data){
+
+    get("Posts", 20).then(function(data){ 
+      if(data.error === "No such post") {
+        e404.in()
+      } else {
         listPosts.empty();
         for (var i = 0; i< data.length; i++) {
           listPosts.append('<h3><a href="#/p/'+data[i].objectId+'">'+data[i].title+'</a></h3>')
         }
-      },
-      error: function(error) {
-        a(error.responseText);
-        ce(error);
       }
-    });
+    })
   }
 
   // Controller, "/add"
@@ -111,6 +109,7 @@ $(document).ready(function() {
   // Controller, "/p/{id}"
   function onePostFunction(id) {
     get("Posts", 1,  id).then(function(data) {
+      data = data[0]
       if(data.error === "No such post") {
         e404.in()
       } else {
