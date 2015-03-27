@@ -2,5 +2,8 @@
 .DS_Store
 **/.DS_Store
 
+// ignore config file
+config.js
+
 /node_modules
 /public/b

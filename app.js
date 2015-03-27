@@ -7,11 +7,10 @@ var express = require('express')
   , Kaiseki = require('kaiseki')
   , passport = require('passport')
   , FacebookStrategy = require('passport-facebook').Strategy
-//  , multiparty = require('multiparty')
+  , Jay = require('jay')
+  , config = require(__dirname + '/config')
   , port = process.env.PORT || 5000;
 
-
-var Jay = require('jay');
 
 app.configure(function() {
   app.use(express.static('public'));
@@ -48,12 +47,6 @@ var kaiseki = new Kaiseki(kaiseki_app_id, kaiseki_rest_api_key);
 // demo account for Jay, works at localhost:5000
 var FACEBOOK_APP_ID = "756437764450452";
 var FACEBOOK_APP_SECRET = "3fcc01cbe7631a706a851aa4c7b4e745";
-
-
-function cl(data) {
-  console.log(data);
-}
-
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -148,15 +141,10 @@ app.put('/api', function(req, res){
 });
 
 
-
-
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { cl("is authendicated"); return next(); }
   res.redirect('/')
 }
-
-
-
 
 
 server.listen(port, function(){
