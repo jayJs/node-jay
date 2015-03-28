@@ -1,6 +1,7 @@
 
 var express = require('express')
   , http = require('http')
+  , https = require('https')
   , path = require('path')
   , app = express()
   , server = http.createServer(app)
@@ -27,11 +28,6 @@ app.configure(function() {
   app.use(express.directory(__dirname + '/public'));
   app.use(express.favicon(__dirname + '/public/favicon.ico'));
 });
-
-app.get('/', function(req, res){
-  res.sendfile('./public/index.html');
-});
-
 
 
 function handler (request, response) {
@@ -130,15 +126,19 @@ function(req, res) {
 */
 
 
-app.get('/access_endpoint', function(req, res) {
+app.post('/access_endpoint', function(request, response) {
 
   var data = '';
   request.on('data', function(chunk) {
       data += chunk.toString('utf8');
+      //console.log(chunk)
   });
+
+  //console.log(data)
 
   request.on('end', function() {
     response.writeHead(200, {"Content-Type": "application/json"});
+
 
     var ajax_object = {};
     try { ajax_object = JSON.parse(data) } catch(err) {
@@ -252,7 +252,7 @@ app.get('/access_endpoint', function(req, res) {
 
 
 // define get();
-app.get('/api/', function(req, res){
+app.get('/api', function(req, res){
   Jay.get(req, res);
 });
 
@@ -265,6 +265,12 @@ app.post('/api', function(req, res){
 app.put('/api', function(req, res){
   Jay.put(req, res)
 });
+
+app.get('/', function(req, res){
+  res.sendfile('./public/index.html');
+});
+
+
 
 /*
 function ensureAuthenticated(req, res, next) {
