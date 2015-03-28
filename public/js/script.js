@@ -17,7 +17,6 @@ $(document).ready(function() {
     logIn.out()
     e404.out()
 
-    //e404.empty().out()
     $('html,body').scrollTop(0)
   }
 
@@ -64,7 +63,6 @@ $(document).ready(function() {
   // CONTROLLERS
   // Controller, "/"
   function listPostsFunction() {
-
     get("Posts", 20).then(function(data){
       if(data.error === "No such post") {
         e404.in()

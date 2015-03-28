@@ -5,19 +5,14 @@ var express = require('express')
   , path = require('path')
   , app = express()
   , server = http.createServer(app)
+  , config = require(__dirname + '/config')
   , Kaiseki = require('kaiseki')
+  , kaiseki = new Kaiseki(config.kaiseki.appId, config.kaiseki.restApiKey)
   , Jay = require('jay-npm')
   , J = Jay
-  , config = require(__dirname + '/config')
   , FB = require('fb')
   , jwt = require('jwt-simple')
-  , Sequence = require('sequence').Sequence
-  , sequence = Sequence.create()
-  , async = require('async')
-  , q = require('q')
   , port = process.env.PORT || 5000;
-
-  var kaiseki = new Kaiseki(config.kaiseki.appId, config.kaiseki.restApiKey);
 
 app.configure(function() {
   app.use(express.static('public'));
@@ -39,12 +34,10 @@ function isUser(req) {
   // compares with our token records. returns true or false.
   // if is not user tries to logIn()
   // if logIn fails returns error
-
 }
 
+
 function logIn(request, response) {
-  // req sees peab olema token
-  // returnib credidentialid või errori
 
   var data = '';
   request.on('data', function(chunk) {
@@ -166,7 +159,6 @@ function logIn(request, response) {
           var payload = {};
 
           payload.id = res.id;
-          //payload.username = res.first_name;
           payload.username = res.name;
           payload.email = res.email;
           var secret = config.jwtSimple.secret;
@@ -214,21 +206,23 @@ app.get('/api', function(req, res){
 app.post('/api', function(req, res){
   var token = getParameterByName("token", req.originalUrl);
   var user = getParameterByName("user", req.originalUrl);
-
   if(tokens[user] === token) {
     Jay.post(req, res, tokens)
     console.log("jah")
   } else {
     console.log("ei")
-    // now we would need authentication
-    //res.json({error: true, message: "authentication failed"})
+    // now we would need authentication or... we can just:
+    res.json({error: true, message: "authentication failed"})
   }
 });
 
 // define put();
+// it's basically working, but it's turned out until precise auth workflow is chosen.
+/*
 app.put('/api', function(req, res){
   Jay.put(req, res)
 });
+*/
 
 app.get('/', function(req, res){
   res.sendfile('./public/index.html');

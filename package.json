@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "async": "^0.9.0",
     "connect-livereload": "~0.5.2",
     "express": "3.2.5",
     "fb": "^0.7.0",
@@ -13,8 +12,6 @@
     "multiparty": "~4.1.1",
     "passport": "~0.2.1",
     "passport-facebook": "~1.0.3",
-    "q": "^1.2.0",
-    "sequence": "^3.0.0"
   },
   "devDependencies": {
     "gulp": "~3.6.2",
