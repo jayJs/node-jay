@@ -11,6 +11,8 @@ var express = require('express')
   , config = require(__dirname + '/config')
   , FB = require('fb')
   , jwt = require('jwt-simple')
+  , Sequence = require('sequence').Sequence
+  , sequence = Sequence.create()
   , port = process.env.PORT || 5000;
 
   var kaiseki = new Kaiseki(config.kaiseki.appId, config.kaiseki.restApiKey);
@@ -31,30 +33,46 @@ app.configure(function() {
 
 var tokens = {}
 
-app.post('/auth/fb', function(request, response) {
+function isUser(req) {
+  // compares with our token records. returns true or false.
+  // if is not user tries to logIn()
+  // if logIn fails returns error
+
+}
+
+function logIn(request) {
+  // req sees peab olema token
+  // returnib credidentialid või errori
+
 
   var data = '';
   request.on('data', function(chunk) {
       data += chunk.toString('utf8');
   });
 
-  request.on('end', function() {
-    response.writeHead(200, {"Content-Type": "application/json"});
+  return request.on('end', function() {
+    //response.writeHead(200, {"Content-Type": "application/json"});
 
     var ajax_object = {};
     try { ajax_object = JSON.parse(data) } catch(err) {
-      response.end(JSON.stringify({ error: true, type: 'data', message: 'data could not be parsed'}));
-      return;
+      return JSON.stringify({ error: true, type: 'data', message: 'data could not be parsed'})
+      //response.end(JSON.stringify({ error: true, type: 'data', message: 'data could not be parsed'}));
     };
 
     var short_lived_access_token = ajax_object.access_token;
-    var type = ajax_object.type;
+    var type = ajax_object.access_token;
+    
+    J.cl(type);
 
     if (type == "long") {
+      J.cl("ljjg");
+
       me(short_lived_access_token);
     }
 
     if (type == "short") {
+      J.cl("poi");
+
       var optionsget = {
           host : 'graph.facebook.com',
           port : 443,
@@ -62,12 +80,13 @@ app.post('/auth/fb', function(request, response) {
           method : 'GET' // do GET
         };
 
-      var reqGet = https.request(optionsget, function(res) {
+       var reqGet = https.request(optionsget, function(res) {
         if (res.statusCode != 200) {
-          response.end(JSON.stringify({ error: true, type: 'data', message: 'res.statusCode != 200'}));
+          //response.end(JSON.stringify({ error: true, type: 'data', message: 'res.statusCode != 200'}));
+          return JSON.stringify({ error: true, type: 'data', message: 'res.statusCode != 200'});
         };
 
-        res.on('data', function(d) {
+        return res.on('data', function(d) {
           var decoded_data = d.toString('utf8');
           var access_string = decoded_data;
           try {
@@ -75,7 +94,9 @@ app.post('/auth/fb', function(request, response) {
             var b = a.split('&expires')[0]
             long_lived_access_token = b.split('=')[1];
             me(long_lived_access_token);
-          } catch (err) {return };
+          } catch (err) {
+            return JSON.stringify({ error: true, type: 'data', message: 'oAuth fails'});
+          };
         });
       });
 
@@ -92,11 +113,13 @@ app.post('/auth/fb', function(request, response) {
       J.cl(res.name);
 
       if (res.id === undefined) {
-          response.end(JSON.stringify({ error: true, message: 'could not get res.id'}) );
+          //response.end(JSON.stringify({ error: true, message: 'could not get res.id'}) );
+          return JSON.stringify({ error: true, message: 'could not get res.id'});
       }
 
       if (res.name === undefined) {
-          response.end(JSON.stringify({ error: true, message: 'could not get res.first_name'}) );
+          //response.end(JSON.stringify({ error: true, message: 'could not get res.first_name'}) );
+          return JSON.stringify({ error: true, message: 'could not get res.first_name'});
       }
 
       if (res.email === undefined) {
@@ -135,7 +158,8 @@ app.post('/auth/fb', function(request, response) {
             if(success) {
               return_payload();
             } else {
-              response.end(JSON.stringify({ error: true, message: 'could not create user'}) );
+              //response.end(JSON.stringify({ error: true, message: 'could not create user'}) );
+              return JSON.stringify({ error: true, message: 'could not create user'});
             }
           });
         }
@@ -152,11 +176,25 @@ app.post('/auth/fb', function(request, response) {
 
           tokens[res.id] = token;
 
-          response.end(JSON.stringify({ error: false, message: 'authenticated', token: token, id: res.id }));
+          //response.end(JSON.stringify({ error: false, message: 'authenticated', token: token, id: res.id }));
+          return JSON.stringify({ error: false, message: 'authenticated', token: token, id: res.id });
         }
       });
     });
   }
+
+}
+
+
+app.post('/auth/fb', function(request, response) {
+  J.cl("jo")
+  logIn(request, function(err, response){
+    J.cl("aaa")
+    J.cl(err);
+    J.cl(response);
+  })
+
+
 })
 
 function makePsw() {
@@ -187,19 +225,15 @@ app.get('/api', function(req, res){
 app.post('/api', function(req, res){
   var token = getParameterByName("token", req.originalUrl);
   var user = getParameterByName("user", req.originalUrl);
-  //console.log(req.originalUrl)
-  console.log(tokens[user])
-  console.log(token)
 
   if(tokens[user] === token) {
     Jay.post(req, res, tokens)
     console.log("jah")
   } else {
     console.log("ei")
-    // no we would need authentication
-    //console.log("seen me oleme")
+    // now we would need authentication
+    //res.json({error: true, message: "authentication failed"})
   }
-
 });
 
 // define put();

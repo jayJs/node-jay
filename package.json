@@ -11,7 +11,8 @@
     "kaiseki": "~0.5.6",
     "multiparty": "~4.1.1",
     "passport": "~0.2.1",
-    "passport-facebook": "~1.0.3"
+    "passport-facebook": "~1.0.3",
+    "sequence": "^3.0.0"
   },
   "devDependencies": {
     "gulp": "~3.6.2",

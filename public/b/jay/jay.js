@@ -266,7 +266,7 @@ function progressHandlingFunction(e){
 function post(table, data) {
   // perhaps we should wait here if access_token does not exist yet?
   return $.ajax({
-    url: "/api/?table="+table+"&token="+J.token+"&user="+window.userId,
+    url: "/api/?table="+table+"&token="+J.token+"&user="+window.userId+"&type="+short,
     type: 'POST',
     processData: false,
     contentType: false,
