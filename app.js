@@ -60,18 +60,13 @@ function logIn(request) {
     };
 
     var short_lived_access_token = ajax_object.access_token;
-    var type = ajax_object.access_token;
-    
-    J.cl(type);
+    var type = ajax_object.type;
 
     if (type == "long") {
-      J.cl("ljjg");
-
       me(short_lived_access_token);
     }
 
     if (type == "short") {
-      J.cl("poi");
 
       var optionsget = {
           host : 'graph.facebook.com',
@@ -165,6 +160,7 @@ function logIn(request) {
         }
 
         function return_payload() {
+
           var payload = {};
 
           payload.id = res.id;
@@ -177,7 +173,9 @@ function logIn(request) {
           tokens[res.id] = token;
 
           //response.end(JSON.stringify({ error: false, message: 'authenticated', token: token, id: res.id }));
-          return JSON.stringify({ error: false, message: 'authenticated', token: token, id: res.id });
+          J.cl("tere")
+          var yolo = JSON.stringify({ error: false, message: 'authenticated', token: token, id: res.id })
+          return yolo;
         }
       });
     });
@@ -185,18 +183,24 @@ function logIn(request) {
 
 }
 
-
 app.post('/auth/fb', function(request, response) {
-  J.cl("jo")
-  logIn(request, function(err, response){
-    J.cl("aaa")
+  J.cl("response from post");
+  logIn(request, function(err, foo){
+    J.cl("foo");
     J.cl(err);
-    J.cl(response);
+    J.cl(foo);
   })
-
-
 })
 
+/*
+app.post('/auth/fb', function(request, response) {
+  logIn(request, function(err, foo){
+    J.cl("foo");
+    J.cl(err);
+    J.cl(foo);
+  })
+})
+*/
 function makePsw() {
   var text = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
