@@ -1,3 +1,6 @@
+
+var J = {}
+
 // hello hello, facebook connect and #_=_
 if (window.location.hash && window.location.hash == '#_=_') {
   window.location.hash = '/';
@@ -28,7 +31,6 @@ if (typeof fbAppId != "undefined") {
     // See if user is logged in
     FB.getLoginStatus(function(response){
       if (response.status === 'connected') { // Logged into your app and Facebook
-        cl("in")
         window.userId = response.authResponse.userID;
         var access_token = response.authResponse.accessToken;
         ajax_send(access_token);
@@ -43,26 +45,25 @@ if (typeof fbAppId != "undefined") {
 
     // send access_token
     function ajax_send(access_token) {
-        var ajax_object = {};
+      var ajax_object = {};
 
-        ajax_object.access_token = access_token;
-        ajax_object.type = "short";
-        $.ajax({
-            dataType: 'json',
-            data: JSON.stringify(ajax_object),
-            contentType: 'application/json',
-            type: 'POST',
-            url: "/access_endpoint",
-            success: function(data) {
-                if (data.error == true) { };
-
-                if (data.error == false) {
-                    $('.fb_iframe_widget').css('display', 'none');
-                    var jwt_token = data.token;
-                    console.log(jwt_token);
-                };
+      ajax_object.access_token = access_token;
+      ajax_object.type = "short";
+      $.ajax({
+          dataType: 'json',
+          data: JSON.stringify(ajax_object),
+          contentType: 'application/json',
+          type: 'POST',
+          url: "/auth/fb",
+          success: function(data) {
+            if (data.error == true) {
+              J.token = false;
             }
-        });
+            if (data.error == false) {
+              J.token = data.token;
+            }
+          }
+      });
     }
   };
 }
@@ -263,8 +264,9 @@ function progressHandlingFunction(e){
 
 // define post()
 function post(table, data) {
+  // perhaps we should wait here if access_token does not exist yet?
   return $.ajax({
-    url: "/api/?table="+table,
+    url: "/api/?table="+table+"&token="+J.token+"&user="+window.userId,
     type: 'POST',
     processData: false,
     contentType: false,

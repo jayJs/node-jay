@@ -29,8 +29,9 @@ app.configure(function() {
   app.use(express.favicon(__dirname + '/public/favicon.ico'));
 });
 
-app.post('/access_endpoint', function(request, response) {
+var tokens = {}
 
+app.post('/auth/fb', function(request, response) {
 
   var data = '';
   request.on('data', function(chunk) {
@@ -88,18 +89,17 @@ app.post('/access_endpoint', function(request, response) {
   function me(long_lived_access_token) {
     FB.api('me', { fields: ['id', 'name', 'verified', 'link', 'email'], access_token: long_lived_access_token}, function (res) {
 
-      if (!res.id) {
+      J.cl(res.name);
+
+      if (res.id === undefined) {
           response.end(JSON.stringify({ error: true, message: 'could not get res.id'}) );
       }
 
-      // since Kaiseki query where: { fbId: undefined} returns everyone
-      if(res.id === undefined) { res.id = false; }
-
-      if (!res.first_name) {
+      if (res.name === undefined) {
           response.end(JSON.stringify({ error: true, message: 'could not get res.first_name'}) );
       }
 
-      if (!res.email) {
+      if (res.email === undefined) {
           res.email = '';
       }
 
@@ -111,19 +111,19 @@ app.post('/access_endpoint', function(request, response) {
         limit: 1
       }
 
-      kaiseki.getObjects("_User", params, function(err, response, body, success) {
+      kaiseki.getObjects("_User", params, function(err, resp, body, success) {
         if(body.length > 0) { //user found
-          // jayb also saves has, but we currently not
+          // jayb also saves hash, but we currently not
           //user_db.hash = long_lived_access_token;
           //user_db.save();
           //console.log(body[0].name);
           return_payload();
         } else { // user not found
 
-          var password = makePsw();
+          var password = makePsw(); // since Parse.com won't accept new users without passwords
           var userInfo = {
             username: res.name,
-            password: password, // since Parse.com won't accept new users without passwords
+            password: password,
             link: res.link,
             verified: res.verified,
             fbId: res.id,
@@ -134,9 +134,9 @@ app.post('/access_endpoint', function(request, response) {
           kaiseki.createUser(userInfo, function(err, res, body, success) {
             if(success) {
               return_payload();
+            } else {
+              response.end(JSON.stringify({ error: true, message: 'could not create user'}) );
             }
-            console.log('user created with session token = ', body.sessionToken);
-            console.log('object id = ', body.objectId);
           });
         }
 
@@ -150,8 +150,9 @@ app.post('/access_endpoint', function(request, response) {
           var secret = config.jwtSimple.secret;
           var token = jwt.encode(payload, secret);
 
-          // This should be returned:
-          //response.end(JSON.stringify({ error: false, message: 'authenticated', token: token, id: res.id }));
+          tokens[res.id] = token;
+
+          response.end(JSON.stringify({ error: false, message: 'authenticated', token: token, id: res.id }));
         }
       });
     });
@@ -159,14 +160,23 @@ app.post('/access_endpoint', function(request, response) {
 })
 
 function makePsw() {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for( var i=0; i < 16; i++ )
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for( var i=0; i < 16; i++ ) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
 }
+
+// Extract parameters from REST API calls
+// from http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+function getParameterByName(name, url) {
+  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+  results = regex.exec(url);
+  return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
 
 // define get();
 app.get('/api', function(req, res){
@@ -175,7 +185,21 @@ app.get('/api', function(req, res){
 
 // define post()
 app.post('/api', function(req, res){
-  Jay.post(req, res)
+  var token = getParameterByName("token", req.originalUrl);
+  var user = getParameterByName("user", req.originalUrl);
+  //console.log(req.originalUrl)
+  console.log(tokens[user])
+  console.log(token)
+
+  if(tokens[user] === token) {
+    Jay.post(req, res, tokens)
+    console.log("jah")
+  } else {
+    console.log("ei")
+    // no we would need authentication
+    //console.log("seen me oleme")
+  }
+
 });
 
 // define put();
