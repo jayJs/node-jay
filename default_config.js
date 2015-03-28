@@ -2,8 +2,9 @@ var config = {};
 
 // Server address and port
 config.app = {};
-config.app.host = 'localhost';
+config.app.domain = 'localhost';
 config.app.port =  process.env.PORT || 5000;
+config.app.host = 'localhost:5000';
 
 // Facebook credidentials
 config.facebook = {};
@@ -17,6 +18,6 @@ config.kaiseki.restApiKey = "";
 
 // JWT(JSON Web Token) encode and decode module settings
 config.jwtSimple = {};
-config.jwtSimple.secret = 'foobar'
+config.jwtSimple.secret = 'foobard'
 
 module.exports = config;

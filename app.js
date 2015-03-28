@@ -7,9 +7,13 @@ var express = require('express')
   , server = http.createServer(app)
   , Kaiseki = require('kaiseki')
   , Jay = require('jay-npm')
+  , J = Jay
   , config = require(__dirname + '/config')
+  , FB = require('fb')
+  , jwt = require('jwt-simple')
   , port = process.env.PORT || 5000;
 
+  var kaiseki = new Kaiseki(config.kaiseki.appId, config.kaiseki.restApiKey);
 
 app.configure(function() {
   app.use(express.static('public'));
@@ -26,6 +30,7 @@ app.configure(function() {
 });
 
 app.post('/access_endpoint', function(request, response) {
+
 
   var data = '';
   request.on('data', function(chunk) {
@@ -52,7 +57,7 @@ app.post('/access_endpoint', function(request, response) {
       var optionsget = {
           host : 'graph.facebook.com',
           port : 443,
-          path : '/oauth/access_token?grant_type=fb_exchange_token&client_id=' + config.facebook.client_id + '&client_secret=' + config.facebook.client_secret + '&redirect_uri=http://'+ config.app.host +'/&fb_exchange_token=' + short_lived_access_token,
+          path : '/oauth/access_token?grant_type=fb_exchange_token&client_id=' + config.facebook.clientId + '&client_secret=' + config.facebook.clientSecret + '&redirect_uri=http://'+ config.app.host +'/&fb_exchange_token=' + short_lived_access_token,
           method : 'GET' // do GET
         };
 
@@ -68,9 +73,8 @@ app.post('/access_endpoint', function(request, response) {
             var a = access_string.split('access_token')[1]
             var b = a.split('&expires')[0]
             long_lived_access_token = b.split('=')[1];
-
             me(long_lived_access_token);
-          } catch (err) { return };
+          } catch (err) {return };
         });
       });
 
@@ -82,10 +86,14 @@ app.post('/access_endpoint', function(request, response) {
   });
 
   function me(long_lived_access_token) {
-    FB.api('me', { fields: ['id', 'first_name', 'email'], access_token: long_lived_access_token}, function (res) {
+    FB.api('me', { fields: ['id', 'name', 'verified', 'link', 'email'], access_token: long_lived_access_token}, function (res) {
+
       if (!res.id) {
           response.end(JSON.stringify({ error: true, message: 'could not get res.id'}) );
       }
+
+      // since Kaiseki query where: { fbId: undefined} returns everyone
+      if(res.id === undefined) { res.id = false; }
 
       if (!res.first_name) {
           response.end(JSON.stringify({ error: true, message: 'could not get res.first_name'}) );
@@ -95,55 +103,70 @@ app.post('/access_endpoint', function(request, response) {
           res.email = '';
       }
 
-      User.findOne({id: res.id}, function(err, user_db) {
+      // get the posts from Parse
+      var params = {
+        where: {
+          fbId: res.id
+        },
+        limit: 1
+      }
 
-        // If user does not exist yet
-        if (user_db == null) {
-          var current_time = Date.now();
-          var random_string = String(Math.random()).split('.')[1];
-
-          var user = new User ({
-            id: res.id,
-            email: res.email,
-            username: res.first_name,
-            hash: long_lived_access_token,
-            registered_time: current_time
-          });
-
-          user.save(function (err) {
-            if (err) {
-              response.end(JSON.stringify({ error: true, type: 'database', message: 'could not save to database'}));
-              return
-            };
-
-            //success
-            return_payload();
-          });
-        }
-
-        // user exists
-        if (user_db) {
-          user_db.hash = long_lived_access_token;
-          user_db.save();
-
+      kaiseki.getObjects("_User", params, function(err, response, body, success) {
+        if(body.length > 0) { //user found
+          // jayb also saves has, but we currently not
+          //user_db.hash = long_lived_access_token;
+          //user_db.save();
+          //console.log(body[0].name);
           return_payload();
+        } else { // user not found
+
+          var password = makePsw();
+          var userInfo = {
+            username: res.name,
+            password: password, // since Parse.com won't accept new users without passwords
+            link: res.link,
+            verified: res.verified,
+            fbId: res.id,
+            name: res.name,
+            email: res.email
+          };
+
+          kaiseki.createUser(userInfo, function(err, res, body, success) {
+            if(success) {
+              return_payload();
+            }
+            console.log('user created with session token = ', body.sessionToken);
+            console.log('object id = ', body.objectId);
+          });
         }
 
         function return_payload() {
           var payload = {};
 
           payload.id = res.id;
-          payload.username = res.first_name;
+          //payload.username = res.first_name;
+          payload.username = res.name;
           payload.email = res.email;
-          var secret = config.jwt_simple.secret;
+          var secret = config.jwtSimple.secret;
           var token = jwt.encode(payload, secret);
 
-          response.end(JSON.stringify({ error: false, message: 'authenticated', token: token, id: res.id }));
+          // This should be returned:
+          //response.end(JSON.stringify({ error: false, message: 'authenticated', token: token, id: res.id }));
         }
       });
     });
   }
 })
+
+function makePsw() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < 16; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
 
 // define get();
 app.get('/api', function(req, res){

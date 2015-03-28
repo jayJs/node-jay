@@ -27,7 +27,6 @@ if (typeof fbAppId != "undefined") {
 
     // See if user is logged in
     FB.getLoginStatus(function(response){
-
       if (response.status === 'connected') { // Logged into your app and Facebook
         cl("in")
         window.userId = response.authResponse.userID;
