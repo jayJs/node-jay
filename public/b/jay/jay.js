@@ -28,44 +28,48 @@ if (typeof fbAppId != "undefined") {
       status     : true
     });
 
-    // See if user is logged in
-    FB.getLoginStatus(function(response){
-      if (response.status === 'connected') { // Logged into your app and Facebook
-        window.userId = response.authResponse.userID;
-        var access_token = response.authResponse.accessToken;
-        ajax_send(access_token);
-      } else if (response.status === 'not_authorized') { // The person is logged into Facebook, but not your app.
-        console.log('Please log ' + 'into this app.');
-        window.userId = false;
-      } else { // Not logged into Facebook or app or something else
-        console.log('Please log ' + 'into Facebook.');
-        window.userId = false;
-      }
-    });
+    checkIn();
+  }
+}
 
-    // send access_token
-    function ajax_send(access_token) {
-      var ajax_object = {};
-
-      ajax_object.access_token = access_token;
-      ajax_object.type = "short";
-      $.ajax({
-          dataType: 'json',
-          data: JSON.stringify(ajax_object),
-          contentType: 'application/json',
-          type: 'POST',
-          url: "/auth/fb",
-          success: function(data) {
-            if (data.error == true) {
-              J.token = false;
-            }
-            if (data.error == false) {
-              J.token = data.token;
-            }
-          }
-      });
+function checkIn() {
+  // See if user is logged in
+  FB.getLoginStatus(function(response){
+    if (response.status === 'connected') { // Logged into your app and Facebook
+      window.userId = response.authResponse.userID;
+      var access_token = response.authResponse.accessToken;
+      ajax_send(access_token);
+    } else if (response.status === 'not_authorized') { // The person is logged into Facebook, but not your app.
+      console.log('Please log ' + 'into this app.');
+      window.userId = false;
+    } else { // Not logged into Facebook or app or something else
+      console.log('Please log ' + 'into Facebook.');
+      window.userId = false;
     }
-  };
+  });
+
+  // send access_token
+  function ajax_send(access_token) {
+    var ajax_object = {};
+
+    ajax_object.access_token = access_token;
+    ajax_object.type = "short";
+    $.ajax({
+        dataType: 'json',
+        data: JSON.stringify(ajax_object),
+        contentType: 'application/json',
+        type: 'POST',
+        url: "/auth/fb",
+        success: function(data) {
+          if (data.error == true) {
+            J.token = false;
+          }
+          if (data.error == false) {
+            J.token = data.token;
+          }
+        }
+    });
+  }
 }
 
 // shortcut for console.log

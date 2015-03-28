@@ -48,6 +48,23 @@ $(document).ready(function() {
   var logInView = function() {
     clearApp()
     logIn.in();
+
+
+    fbLogin.on('click', function(){
+      FB.login(function(response) {
+        if (response.authResponse) {
+          console.log('Welcome!  Fetching your information.... ');
+          FB.api('/me', function(response) {
+            window.userId = response.id;
+            checkIn()
+          });
+        } else {
+          console.log('User cancelled login or did not fully authorize.');
+          window.userId = false;
+          window.location = "#/login"
+        }
+      });
+    })
   }
 
   // MODEL
@@ -64,7 +81,7 @@ $(document).ready(function() {
   // Controller, "/"
   function listPostsFunction() {
 
-    get("Posts", 20).then(function(data){ 
+    get("Posts", 20).then(function(data){
       if(data.error === "No such post") {
         e404.in()
       } else {
