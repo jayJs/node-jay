@@ -48,23 +48,7 @@ $(document).ready(function() {
   var logInView = function() {
     clearApp()
     logIn.in();
-
-
-    fbLogin.on('click', function(){
-      FB.login(function(response) {
-        if (response.authResponse) {
-          console.log('Welcome!  Fetching your information.... ');
-          FB.api('/me', function(response) {
-            window.userId = response.id;
-            checkIn()
-          });
-        } else {
-          console.log('User cancelled login or did not fully authorize.');
-          window.userId = false;
-          window.location = "#/login"
-        }
-      });
-    })
+    logInFunction()
   }
 
   // MODEL
@@ -120,6 +104,22 @@ $(document).ready(function() {
         })
         clicked = true;
       }
+    })
+  }
+
+  function logInFunction(){
+    fbLogin.on('click', function(){
+      FB.login(function(response) {
+        if (response.authResponse) {
+          FB.api('/me', function(response) {
+            window.userId = response.id;
+            checkIn()
+          });
+        } else {
+          window.userId = false;
+          window.location = "#/login"
+        }
+      });
     })
   }
 
