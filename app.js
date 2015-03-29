@@ -188,6 +188,24 @@ function makePsw() {
   return text;
 }
 
+// define get();
+app.get('/api', function(req, res){
+  Jay.get(req, res);
+});
+
+// define post()
+app.post('/api', ensureAuthenticated, function(req, res){
+  Jay.post(req, res)
+});
+
+app.put('/api', ensureAuthenticated, function(req, res){
+  Jay.put(req, res)
+});
+
+app.get('/', function(req, res){
+  res.sendfile('./public/index.html');
+});
+
 // Extract parameters from REST API calls
 // from http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
 function getParameterByName(name, url) {
@@ -197,36 +215,15 @@ function getParameterByName(name, url) {
   return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-// define get();
-app.get('/api', function(req, res){
-  Jay.get(req, res);
-});
-
-// define post()
-app.post('/api', function(req, res){
+function ensureAuthenticated(req, res, next){
   var token = getParameterByName("token", req.originalUrl);
   var user = getParameterByName("user", req.originalUrl);
   if(tokens[user] === token) {
-    Jay.post(req, res, tokens)
-    console.log("jah")
+    return next();
   } else {
-    console.log("ei")
-    // now we would need authentication or... we can just:
     res.json({error: true, message: "authentication failed"})
   }
-});
-
-// define put();
-// it's basically working, but it's turned out until precise auth workflow is chosen.
-/*
-app.put('/api', function(req, res){
-  Jay.put(req, res)
-});
-*/
-
-app.get('/', function(req, res){
-  res.sendfile('./public/index.html');
-});
+}
 
 server.listen(port, function(){
   console.log('Express server listening on port ' + port);
