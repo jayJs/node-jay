@@ -126,7 +126,7 @@ $(document).ready(function() {
   function onePostFunction(id) {
     get("Posts", 1,  id).then(function(data_0) {
       var data = data_0[0]
-      if(data_0.error === "No such post") {
+      if(data_0.error === "No such post" || data_0.error === "Query is confused") {
         e404.in()
       } else {
         if(typeof data.titles === "string") {
