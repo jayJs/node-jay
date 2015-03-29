@@ -35,14 +35,14 @@ app.post('/auth/fb', function(req, res) {
 })
 
 // Get content
-app.get('/api', function(req, res){
+app.get('/api/j', function(req, res){
   Jay.get(req, res, function(data){
     res.json(data);
   });
 });
 
 // Post content
-app.post('/api', J.ensureAuthenticated, function(req, res){
+app.post('/api/j', J.ensureAuthenticated, function(req, res){
   Jay.post(req, res, function(data){
     res.json(data);
   })

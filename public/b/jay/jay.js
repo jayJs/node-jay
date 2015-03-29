@@ -270,7 +270,7 @@ function progressHandlingFunction(e){
 function post(table, data) {
   // perhaps we should wait here if access_token does not exist yet?
   return $.ajax({
-    url: "/api/?table="+table+"&token="+J.token+"&user="+J.userId+"&type=short",
+    url: "/api/j/?table="+table+"&token="+J.token+"&user="+J.userId+"&type=short",
     type: 'POST',
     processData: false,
     contentType: false,
@@ -303,7 +303,7 @@ function post(table, data) {
 // define get()
 function get(table, limit, id) {
   return $.ajax({
-    url: "/api/?table="+table+'&id='+id+'&limit='+limit,
+    url: "/api/j/?table="+table+'&id='+id+'&limit='+limit,
     success: function(data){
       return data;
     },
@@ -320,7 +320,7 @@ function put(table, id, data) {
   //data = JSON.stringify(data);
   return $.ajax({
     type: 'PUT',
-    url: "/api/?table="+table+'&id='+id+'&data='+data,
+    url: "/api/j/?table="+table+'&id='+id+'&data='+data,
     processData: false,
     contentType: false,
     data: data,
