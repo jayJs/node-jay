@@ -1,30 +1,28 @@
 Node-Jay
 ===================
 
-Backend for a SPA page relying on [Jay](https://github.com/jayJs/jay).
+A boilerplate for Single Page Apprelying on [Jay](https://github.com/jayJs/jay) in front end and [Jay-npm](https://github.com/jayJs/jay-npm) on back end.  
 
-**Instant back-end**  
-Server via Node
-(Express via Node)  
-Database via Parse  
-Backend via Parse  
-Authentication - currently half there  
-Gulp livereload  
+[**Instant back-end**](https://github.com/jayJs/jay-npm)  
+Express server via Node  
+Database and backend via Parse.com  
+Authentication via FB SDK  
+Gulp livereload
 Heroku Procfile  
 
-**Instant front-end**  
+[**Instant front-end**](https://github.com/jayJs/jay)
 jQuery  
 Bootrap  
 Animate.css  
 Crossroads.js - routing  
 MomentJS - date manipulations  
 FB SDK - Facebook integration  
-Bower - package management  
-Jay
+Bower - package management, configured folder "bower_components" to "b"  
+RespondJs - brings media queries to IE 6-8
+Html5Shiv - brings HTML5 to IE  
+Jay - a jQuery MVC framework for rapid building of Single Page Applications  
 
-Jay is a jQuery MVC framework for rapid building of Single Page Applications.  
-
-##INSTALLATION AND STARTING UP
+##INSTALLATION AND STARTING UP  
 
 (Assuming you have npm & bower installed)  
 
@@ -34,70 +32,43 @@ npm install
 cd public  
 bower install  
 ```  
-
-Run Gulp:  
-```
-gulp  
-```  
+Copy default_config.js to config.js and fill it with correct credentials.  
+In order for everything to work properly Facebook app and parse.com credentials are required.  
+Set config.jwtSimple.secret into a string of your own choice.  
 
 Run the server:  
 ```
-nodemon app.js
+node app.js
 ```  
+Go to: http://localhost:5000/ (or any other port you set at config).  
 
-Go to: http://localhost:5000/
-
+Gulp is set up to reload the client every time a js or html file is changed.
+To run it, open a new terminal in the same directory and (assuming you have Gulp installed):  
+```
+gulp  
+```  
+Then go to /public/js/script js and uncomment this line in the beginning of file:
+```  
+$("body").append('<script src="http://localhost:35729/livereload.js?snipver=1"></script>');
+```  
 
 ##INSTALLATION 2  
 
-I've created a fancy shortcut for .bash_profile.
+I've created a fancy shortcut for .bash_profile.  
 It does most of the things from INSTALLATION 1 automatically:  
-
 ```
 alias initio='git clone git@github.com:jayJs/node-jay.git .;git remote remove origin; npm install; cd public; b install;'
-
 ```
+You might wan't to change "npm install" to "sudo npm install" depending on your npm settings.  
 
-##ABOUT  
+##Licence  
 
+The MIT License (MIT)  
 
-**EXPRESS**  
-Sets up a basic http server that serves the index.html file from public folder.  
+Copyright (c) 2014, 2015 Martin Sookael  
 
-**GULP**  
-Refreshes the browser every time something is edited in public folder.  
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:  
 
-**HEROKU**  
-There is a Heroku specific Procfile present, that starts app.js if uploaded to Heroku.  
-
-**BOWSER**  
-is configured to install everything into folder "b"  
-
-**RESPONDJS**  
-brings media queries to IE 6-8  
-
-**HTML5SHIV**  
-brings HTML5 to IE  
-
-**JQUERY + BOOTSTRAP**  
-These guys do what they've always done.  
-As a side note - Bootstrap also does a CSS reset.  
-
-**ANIMATE.CSS**  
-Provides simple animations through CSS.
-
-**JAY**  
-a jQuery MVC framework
-
-
-##Licence
-
-The MIT License (MIT)
-
-Copyright (c) 2014 Martin Sookael
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.  
+  
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  
