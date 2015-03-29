@@ -1,7 +1,7 @@
 {
   "name": "Jay",
   "description": "jQuery MVC framework for rapid building of Single Page Applications. Instant Crossroads JS routing, FB authentication & Animate.CSS",
-  "version": "0.4.17",
+  "version": "0.5.1",
   "main": "jay.js",
   "keywords": "jQuery, MVC, SPA, Crossroads, Animate, Facebook",
   "homepage": "https://github.com/jayJs/jay",
@@ -25,13 +25,13 @@
     "signals": "~1.0.0"
   },
   "devDependencies": {},
-  "_release": "0.4.17",
+  "_release": "0.5.1",
   "_resolution": {
     "type": "version",
-    "tag": "v0.4.17",
-    "commit": "e907059e1983cf223157bf1f9c4cd1fbb9b36e26"
+    "tag": "v0.5.1",
+    "commit": "c96c93db6eea38af42b635bd399cc6166fb7a3cb"
   },
   "_source": "git://github.com/jayJs/jay.git",
-  "_target": "0.4.17",
+  "_target": "0.5.1",
   "_originalSource": "jay"
 }
