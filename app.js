@@ -30,26 +30,32 @@ app.configure(function() {
 
 var tokens = {}
 
-app.post('/auth/fb', function(request, response) {
-  logIn(request, response)
+app.post('/auth/fb', function(req, res) {
+  logIn(req, res, function(data){
+    res.json(data);
+  })
 })
 
-// define get();
+// Get content
 app.get('/api', function(req, res){
   Jay.get(req, res, function(data){
     res.json(data);
   });
 });
 
-// define post()
+// Post content
 app.post('/api', ensureAuthenticated, function(req, res){
-  Jay.post(req, res)
+  Jay.post(req, res, function(data){
+    res.json(data);
+  })
 });
-
+/*
 app.put('/api', ensureAuthenticated, function(req, res){
   Jay.put(req, res)
 });
+*/
 
+// Send the index.html
 app.get('/', function(req, res){
   res.sendfile('./public/index.html');
 });
@@ -62,7 +68,7 @@ function isUser(req) {
 }
 
 
-function logIn(request, response) {
+function logIn(request, response, callback) {
 
   var data = '';
   request.on('data', function(chunk) {
@@ -70,12 +76,12 @@ function logIn(request, response) {
   });
 
   request.on('end', function() {
-    response.writeHead(200, {"Content-Type": "application/json"});
+    //response.writeHead(200, {"Content-Type": "application/json"});
 
     var ajax_object = {};
     try { ajax_object = JSON.parse(data) } catch(err) {
-      //return JSON.stringify({ error: true, type: 'data', message: 'data could not be parsed'})
-      response.end(JSON.stringify({ error: true, type: 'data', message: 'data could not be parsed'}));
+      callback({ error: true, type: 'data', message: 'data could not be parsed'})
+      //response.end(JSON.stringify({ error: true, type: 'data', message: 'data could not be parsed'}));
     };
 
     var short_lived_access_token = ajax_object.access_token;
@@ -96,8 +102,8 @@ function logIn(request, response) {
 
        var reqGet = https.request(optionsget, function(res) {
         if (res.statusCode != 200) {
-          response.end(JSON.stringify({ error: true, type: 'data', message: 'res.statusCode != 200'}));
-          //return JSON.stringify({ error: true, type: 'data', message: 'res.statusCode != 200'});
+          //response.end(JSON.stringify({ error: true, type: 'data', message: 'res.statusCode != 200'}));
+          return callback({ error: true, type: 'data', message: 'res.statusCode != 200'});
         };
 
         res.on('data', function(d) {
@@ -110,6 +116,7 @@ function logIn(request, response) {
             me(long_lived_access_token);
           } catch (err) {
             //return JSON.stringify({ error: true, type: 'data', message: 'oAuth fails'});
+            callback({ error: true, type: 'data', message: 'oAuth fails'});
           };
         });
       });
@@ -128,13 +135,13 @@ function logIn(request, response) {
       J.cl(res.name);
 
       if (res.id === undefined) {
-          response.end(JSON.stringify({ error: true, message: 'could not get res.id'}) );
-          //return JSON.stringify({ error: true, message: 'could not get res.id'});
+          //response.end(JSON.stringify({ error: true, message: 'could not get res.id'}) );
+          callback({ error: true, message: 'could not get res.id'});
       }
 
       if (res.name === undefined) {
-          response.end(JSON.stringify({ error: true, message: 'could not get res.first_name'}) );
-          //return JSON.stringify({ error: true, message: 'could not get res.first_name'});
+          //response.end(JSON.stringify({ error: true, message: 'could not get res.first_name'}) );
+          callback({ error: true, message: 'could not get res.first_name'});
       }
 
       if (res.email === undefined) {
@@ -173,8 +180,8 @@ function logIn(request, response) {
             if(success) {
               return_payload();
             } else {
-              response.end(JSON.stringify({ error: true, message: 'could not create user'}) );
-              //return JSON.stringify({ error: true, message: 'could not create user'});
+              //response.end(JSON.stringify({ error: true, message: 'could not create user'}) );
+              callback({ error: true, message: 'could not create user'});
             }
           });
         }
@@ -191,9 +198,9 @@ function logIn(request, response) {
 
           tokens[res.id] = token;
 
-          response.end(JSON.stringify({ error: false, message: 'authenticated', token: token, id: res.id }));
-          //var yolo = JSON.stringify({ error: false, message: 'authenticated', token: token, id: res.id })
-          //return yolo;
+          //response.end(JSON.stringify({ error: false, message: 'authenticated', token: token, id: res.id }));
+          //callback(JSON.stringify({ error: false, message: 'authenticated', token: token, id: res.id }));
+          callback({ error: false, message: 'authenticated', token: token, id: res.id });
         }
       });
     });
