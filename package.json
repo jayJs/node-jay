@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "connect-livereload": "~0.5.2",
     "express": "3.2.5",
     "fb": "^0.7.0",
     "jay-npm": "0.5.2",
