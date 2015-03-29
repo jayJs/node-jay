@@ -116,11 +116,11 @@ $(document).ready(function() {
       FB.login(function(response) {
         if (response.authResponse) {
           FB.api('/me', function(response) {
-            window.userId = response.id;
+            J.userId = response.id;
             checkIn()
           });
         } else {
-          window.userId = false;
+          J.userId = false;
           window.location = "#/login"
         }
       });

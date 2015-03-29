@@ -36,15 +36,15 @@ function checkIn() {
   // See if user is logged in
   FB.getLoginStatus(function(response){
     if (response.status === 'connected') { // Logged into your app and Facebook
-      window.userId = response.authResponse.userID;
+      J.userId = response.authResponse.userID;
       var access_token = response.authResponse.accessToken;
       ajax_send(access_token);
     } else if (response.status === 'not_authorized') { // The person is logged into Facebook, but not your app.
       console.log('Please log ' + 'into this app.');
-      window.userId = false;
+      J.userId = false;
     } else { // Not logged into Facebook or app or something else
       console.log('Please log ' + 'into Facebook.');
-      window.userId = false;
+      J.userId = false;
     }
   });
 
@@ -99,7 +99,7 @@ function a(message) {
 
 function isUser (isLoggedIn, notLoggedIn) {
   // if it's a user
-  if(window.userId != undefined && window.userId != false) {
+  if(J.userId != undefined && J.userId != false) {
     //isLoggedIn();
     isLoggedIn();
     // if it's not a user or we are not sure yet
@@ -107,14 +107,14 @@ function isUser (isLoggedIn, notLoggedIn) {
     var i = 0;
     var getStatus = setInterval(function(){
       // is not a user
-      if(window.userId === false) {
+      if(J.userId === false) {
         notLoggedIn();
         clearInterval(getStatus);
       }
       // is a user or not sure yet
       else {
         // is a user
-        if(window.userId != undefined) {
+        if(J.userId != undefined) {
           isLoggedIn();
           clearInterval(getStatus);
         } else {
@@ -270,7 +270,7 @@ function progressHandlingFunction(e){
 function post(table, data) {
   // perhaps we should wait here if access_token does not exist yet?
   return $.ajax({
-    url: "/api/?table="+table+"&token="+J.token+"&user="+window.userId+"&type=short",
+    url: "/api/?table="+table+"&token="+J.token+"&user="+J.userId+"&type=short",
     type: 'POST',
     processData: false,
     contentType: false,
