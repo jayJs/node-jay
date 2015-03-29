@@ -30,6 +30,31 @@ app.configure(function() {
 
 var tokens = {}
 
+app.post('/auth/fb', function(request, response) {
+  logIn(request, response)
+})
+
+// define get();
+app.get('/api', function(req, res){
+  Jay.get(req, res, function(data){
+    res.json(data);
+  });
+});
+
+// define post()
+app.post('/api', ensureAuthenticated, function(req, res){
+  Jay.post(req, res)
+});
+
+app.put('/api', ensureAuthenticated, function(req, res){
+  Jay.put(req, res)
+});
+
+app.get('/', function(req, res){
+  res.sendfile('./public/index.html');
+});
+
+
 function isUser(req) {
   // compares with our token records. returns true or false.
   // if is not user tries to logIn()
@@ -174,28 +199,6 @@ function logIn(request, response) {
     });
   }
 }
-
-app.post('/auth/fb', function(request, response) {
-  logIn(request, response)
-})
-
-// define get();
-app.get('/api', function(req, res){
-  Jay.get(req, res);
-});
-
-// define post()
-app.post('/api', ensureAuthenticated, function(req, res){
-  Jay.post(req, res)
-});
-
-app.put('/api', ensureAuthenticated, function(req, res){
-  Jay.put(req, res)
-});
-
-app.get('/', function(req, res){
-  res.sendfile('./public/index.html');
-});
 
 // Extract parameters from REST API calls
 // from http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
