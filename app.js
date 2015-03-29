@@ -179,15 +179,6 @@ app.post('/auth/fb', function(request, response) {
   logIn(request, response)
 })
 
-function makePsw() {
-  var text = "";
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  for( var i=0; i < 16; i++ ) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return text;
-}
-
 // define get();
 app.get('/api', function(req, res){
   Jay.get(req, res);
@@ -223,6 +214,15 @@ function ensureAuthenticated(req, res, next){
   } else {
     res.json({error: true, message: "authentication failed"})
   }
+}
+
+function makePsw() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for( var i=0; i < 16; i++ ) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
 }
 
 server.listen(port, function(){
