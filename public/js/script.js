@@ -57,6 +57,7 @@ $(document).ready(function() {
   crossroads.addRoute('/login', logInView);
   crossroads.addRoute('/p/{id}', onePostView);
 
+
   // start routing
   route(crossroads);
 
@@ -123,9 +124,9 @@ $(document).ready(function() {
 
   // Controller, "/p/{id}"
   function onePostFunction(id) {
-    get("Posts", 1,  id).then(function(data) {
-      data = data[0]
-      if(data.error === "No such post") {
+    get("Posts", 1,  id).then(function(data_0) {
+      var data = data_0[0]
+      if(data_0.error === "No such post") {
         e404.in()
       } else {
         if(typeof data.titles === "string") {
