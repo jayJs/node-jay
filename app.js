@@ -6,13 +6,9 @@ var express = require('express')
   , app = express()
   , server = http.createServer(app)
   , config = require(__dirname + '/config')
-  , Kaiseki = require('kaiseki')
-  , kaiseki = new Kaiseki(config.kaiseki.appId, config.kaiseki.restApiKey)
   , Jay = require('jay-npm')
   , J = Jay
-  , FB = require('fb')
-  , jwt = require('jwt-simple')
-  , port = process.env.PORT || 5000;
+  , port = process.env.PORT || config.app.port;
 
 app.configure(function() {
   app.use(express.static('public'));
