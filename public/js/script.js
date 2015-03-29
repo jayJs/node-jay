@@ -57,6 +57,11 @@ $(document).ready(function() {
   crossroads.addRoute('/login', logInView);
   crossroads.addRoute('/p/{id}', onePostView);
 
+  // that's a 404 if the route structure is not matched
+  crossroads.bypassed.add(function(request){
+    clearApp()
+    e404.in()
+  })
 
   // start routing
   route(crossroads);
