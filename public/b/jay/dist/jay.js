@@ -114,7 +114,7 @@ function detectFileUpload(){ // from: http://viljamis.com/blog/2012/file-upload-
 // write to alert
 function a(message) {
   // find if alert exists and if it does, remove it.
-  var elem = document.getElementById("alert")
+  var elem = document.getElementById("alert");
   if(elem != null) {
     var elemParent = elem.parentNode;
     elemParent.removeChild("alert");
@@ -202,7 +202,7 @@ function prepareForm(formName) {
     case "hidden":
       if (t.attr("name") === "userId") {
         fd.append(t.attr("name"), t.attr("value")); // add the value of the input
-        titles[t.attr("name")] = t.attr("value") // at the label to titles array
+        titles[t.attr("name")] = t.attr("value"); // at the label to titles array
       }
     break;
 
