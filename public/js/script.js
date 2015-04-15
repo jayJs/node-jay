@@ -97,6 +97,12 @@ $(document).ready(function() {
       }
     })
 
+    var canUploadFiles = detectFileUpload();
+    if(canUploadFiles === false) {
+      a("This browser does not support file uploads");
+      image.out()
+    } 
+
     addPostSubmit.on('click', function(event) {
       event.preventDefault();
       addPostForm.submit();
