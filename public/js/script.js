@@ -87,8 +87,15 @@ $(document).ready(function() {
     // reset form
     title.val("")
     content.val("")
-    addCourseFile1.val("")
-    addCourseFile2.val("")
+    image.val("")
+
+    // create the preview
+    $('#image').change(function(){
+      var blob = preview($(this));
+      if(blob != false) {
+        imagePreview.css("background-image", "url("+blob+")")
+      }
+    })
 
     addPostSubmit.on('click', function(event) {
       event.preventDefault();

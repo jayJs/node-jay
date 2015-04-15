@@ -20,6 +20,22 @@ p {
   position: relative;
 }
 
+#image {
+  width: 48%;
+}
+
+#imagePreview {
+  width: 50%;
+  height: 300px;
+  margin-top: -50px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
 #listPosts {
   margin-top: 30px;
 }

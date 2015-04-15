@@ -82,6 +82,16 @@ function ce(data) {
   console.error(data);
 }
 
+function preview(input) {
+  var file = input[0].files[0];
+  var blob = URL.createObjectURL(file);
+  if(blob) {
+    return blob;
+  } else {
+    return false;
+  }
+}
+
 // write to alert
 function a(message) {
   // find if alert exists and if it does, remove it.
