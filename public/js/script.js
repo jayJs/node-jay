@@ -100,8 +100,8 @@ $(document).ready(function() {
     var canUploadFiles = detectFileUpload();
     if(canUploadFiles === false) {
       a("This browser does not support file uploads");
-      image.out()
-    } 
+      image.parent().out()
+    }
 
     addPostSubmit.on('click', function(event) {
       event.preventDefault();
