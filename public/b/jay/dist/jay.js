@@ -82,7 +82,7 @@ function ce(data) {
   console.error(data);
 }
 
-function preview(input) {
+function getBlobURL(input) {
   var file = input[0].files[0];
   var blob = URL.createObjectURL(file);
   if(blob) {

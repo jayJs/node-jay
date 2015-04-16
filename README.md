@@ -1,7 +1,7 @@
 Node-Jay
 ===================
 
-A boilerplate for Single Page Apprelying on [Jay](https://github.com/jayJs/jay) in front end and [Jay-npm](https://github.com/jayJs/jay-npm) on back end.  
+A boilerplate for Single Page App relying on [Jay](https://github.com/jayJs/jay) in front end and [Jay-npm](https://github.com/jayJs/jay-npm) on back end.  
 
 [**Instant back-end**](https://github.com/jayJs/jay-npm)  
 Express server via Node  
@@ -20,7 +20,7 @@ FB SDK - Facebook integration
 Bower - package management, configured folder "bower_components" to "b"  
 RespondJs - brings media queries to IE 6-8
 Html5Shiv - brings HTML5 to IE  
-Jay - a jQuery MVC framework for rapid building of Single Page Applications  
+Jay - jQuery MVC framework for rapid building Single Page Applications  
 
 ##INSTALLATION AND STARTING UP  
 

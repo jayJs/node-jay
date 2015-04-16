@@ -91,7 +91,7 @@ $(document).ready(function() {
 
     // create the preview
     $('#image').change(function(){
-      var blob = preview($(this));
+      var blob = getBlobURL($(this));
       if(blob != false) {
         imagePreview.css("background-image", "url("+blob+")")
       }
