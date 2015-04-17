@@ -121,6 +121,7 @@ function canCache(){
 }
 
 function resetForm(formName) {
+  // set normal form members
   $("#"+formName+" input").each(function( one ) {
     var type = $(this).attr("type");
     if(type === "text") {
@@ -132,6 +133,13 @@ function resetForm(formName) {
     if(type === "radio") {
       $(this).removeAttr('checked');
     }
+    if(type === "file") {
+      $(this).replaceWith($(this).clone(true));
+    }
+  });
+  // clear textareas
+  $("#"+formName+" textarea").each(function( one ) {
+    $(this).val('');
   });
 }
 

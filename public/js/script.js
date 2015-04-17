@@ -101,6 +101,7 @@ $(document).ready(function() {
 
     // reset the form
     resetForm("addPostForm");
+    imagePreview.css("background-image", "")
 
     // handle clicking the submit button
     addPostSubmit.on('click', function(event) {
