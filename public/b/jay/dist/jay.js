@@ -120,6 +120,20 @@ function canCache(){
   }
 }
 
+function resetForm(formName) {
+  $("#"+formName+" input").each(function( one ) {
+    var type = $(this).attr("type");
+    if(type === "text") {
+      $(this).val('');
+    }
+    if(type === "checkbox") {
+      $(this).removeAttr('checked');
+    }
+    if(type === "radio") {
+      $(this).removeAttr('checked');
+    }
+  });
+}
 
 // write to alert
 function a(message) {
@@ -343,7 +357,6 @@ function post(table, data) {
 
 // define get()
 function get(table, limit, id) {
-
   return $.ajax({
     url: "/api/j/?table="+table+'&id='+id+'&limit='+limit,
     cache: canCache(),
