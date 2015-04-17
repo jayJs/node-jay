@@ -5,11 +5,12 @@ A boilerplate for Single Page App relying on [Jay](https://github.com/jayJs/jay)
 
 [**Instant back-end**](https://github.com/jayJs/jay-npm)  
 Express server via Node  
+REST API service with JSONP replies.  
 Database and backend via Parse.com  
 Authentication via FB SDK  
 Gulp livereload
-Heroku Procfile  
-
+Heroku Procfile
+  
 [**Instant front-end**](https://github.com/jayJs/jay)  
 jQuery  
 Bootrap  
