@@ -5,6 +5,7 @@
 * fast development time  
 * good code maintainability  
 
+The focus is to provide superfast prototyping possibilities for building Minimum Viable Products.  
 
 ##Installation  
 ```
@@ -116,18 +117,24 @@ function frontPageFunction() {
 
 
 ##Authentication
-**Facebook SDK**  
+**Facebook SDK**
 
-If fbAppId is set before Jay is loaded, the whole Facebook SDK is added to the site. You can add fbAppId like this:
+If fbAppId is set before Jay is loaded, the whole Facebook SDK is added to the site.
+
+If you want to use it for authentication, [jay-npm](https://github.com/jayJs/jay-npm) is currently required.
+
+You can add fbAppId like this to HTML:  
 ```
 <script>
   // test account for jay, works on localhost:5000
   var fbAppId = "756437764450452" // if fbAppId is undefined, FB SDK is not added
 </script>
 ```
-Jay loads the whole Facebook SDK for you. Currently we use it only for authentication.  
+Jay loads the whole Facebook SDK for you.
+Users who have authorized the Facebook app receive a client ID (available as J.userId) and a token (available as J.token) that enables them to send data to the server.  
 
-isUser() provides the possibility to apply different commands to anonymous or logged-in users. isUser() determines that you are logged in before executing the functions. window.userId contains the user Facebook ID.
+**isUser()**  
+isUser() provides the possibility to apply different commands to anonymous or logged-in users. isUser() determines that you are logged in before executing the functions. J.userId contains the user Facebook ID.
 
 A user is logged in if its logged in to Facebook and a user of a Facebook app.  
 (Keep in mind that Facebook apps only work if the Settings -> Site URL matches your URL).  
@@ -135,7 +142,7 @@ A user is logged in if its logged in to Facebook and a user of a Facebook app.
 function isLoggedIn() {
   $("#logInBox").hide();
   $("#logOutBox").show();  
-  $("#content").append("Your user id is: " + window.userId);
+  $("#content").append("Your user id is: " + J.userId);
 }
 
 function isNotLoggedIn() {
@@ -152,30 +159,46 @@ OR
 isUser(function() { // logged in users
   $("#logInBox").hide();
   $("#logOutBox").show();  
-  $("#content").append("Your user id is: " + window.userId);
+  $("#content").append("Your user id is: " + J.userId);
   }, function (){ // not logged in users
     $("#logOutBox").hide();  
     $("#logInBox").show();
   }
 );  
-
 ```
 
-##CRUD (experimental - requires [node-jay](https://github.com/jayJs/node-jay) )  
+**Facebook SDK debugging**  
+Keep in mind, that if you use it for authenthication then there also has to be a backend - like jay-npm - which also needs the credidetials.
+
+In order to make FB authentication work outside localhost, you have to set the FB app status to "Live".  
+In order to do this you need to enter your e-mail here:
+https://developers.facebook.com/apps/1652366571652103/settings/  
+
+and turn the switch here:  
+https://developers.facebook.com/apps/1652366571652103/review-status/  
+
+Sometimes it's not FB, it's Parse.com, cl() / console.log() ought to print you it's errors.  
+
+
+##CRUD  
+requires [Jay-npm](https://github.com/jayJs/jay-npm)  
+
 Jay features a wrapper for common AJAX REST API calls.  
+Calls ($.ajax JSONP) are made to address "/api/j".  
+
 **post(table, data)** -  add a row to database.  
 **get(table, limit, objectId)** - get a row from database. If limit is 1, add objectId, else <limit> last posts are queried.  
-**put(table, objectId, data)** - update a row in database.  
+**put(table, objectId, data)** - update a row in database. **NB** currently (0.5.0x) not supported.
 **save(table, formId)** - Save data data from form to database.  
 
 The calls are asynchronous and can be chained with .then().  
 
 **Warning**  
-Without data modelling you can't guarantee data consistency and you will limit your test coverage.  
+Without data modeling you can't guarantee data consistency and you will limit your test coverage.  
 Nevertheless you will prototype much quicker.  
 
 ##post(table, data)  
-**Add a row to database.**  
+**Add a row to database via a $.ajax JSONP call.**  
 table - name of the table in database (*string*).  
 data - data to be saved (*FormData*).
 
@@ -199,7 +222,7 @@ There's an easier way to achieve this with save(). Scroll a bit down.
 
 
 ##get(table, limit, objectId)  
-**Get a row from database.**  
+**Get a row from database via a $.ajax JSONP call**  
 table - name of the table in database (*string*).  
 limit - if limit is 1, objectId will be use the get the precise object. In any other case the last posts from the table will be retrieved.  
 objectId - Id of object in database (*string*).  
@@ -226,8 +249,8 @@ would return
 }
 ```
 
-##put(table, objectId, data)  
-**Update a row in database.**  
+##put(table, objectId, data)  **NB** currently (0.5.0x) not supported.
+**Update a row in database via a $.ajax JSONP call.**  
 table - name of the table in database (*string*).  
 objectId - Id of object in database (*string*).  
 data - the data to be changed (*object*)  
@@ -244,7 +267,7 @@ put("Posts", "378QWha5OB", update).then(function(data) {
 ```
 
 ##save(table, formId)  
-**Save data data from form to database.**  
+**Save data data from form to database via a $.ajax JSONP call.**  
 table - name of the table to save this data (*string*).  
 formId - id of form, where the data comes (*string*).  
 
@@ -270,15 +293,14 @@ JS:
 save("TableName", "addNgoForm");
 ```
 Would save the contents of the form to table called TableName.  
-The table would have only three columns:
-1. one with a title "addNgoName"
-2. Second with a title "addNgoType", user selection as array.
-3. Last for metadata. It's currently saved to column called "titles".
-With the above sample form it would save this:
+The table would have only three columns:  
+1. one with a title "addNgoName"  
+2. Second with a title "addNgoType", user selection as array.  
+3. Last for metadata. It's currently saved to column called "titles".  
+With the above sample form it would save this:  
 ```
 {"addNgoName":"Name:", "addNgoType":"Type:"}
 ```
-
 
 HTML  
 ```
@@ -308,7 +330,7 @@ addPost.on("submit", function() {
 Submitting saves contents from form with id addPost to table "Posts"
 
 
-##Helpers  
+##Little helpers  
 
 ##cl(message)  
 A shortcut for console.log(message);  
@@ -320,8 +342,48 @@ cl(message); // this does exactly the same thing
 ##a(message)  
 Display an alert to the users.
 ```
-a("Log in failed"); // this logs the message to the console
-```
+a("Log in failed");
+```  
+
+##getBlobURL(elementId)  
+In case the browser supports it, gets the URL of the blob of the image attached to the element.  
+Otherwise returns false.  
+Can be useful for creating previews of images the user has submitted.  
+```  
+$('#image').change(function(){  
+  var blob = getBlobURL($(this));
+  if(blob != false) {
+    imagePreview.css("background-image", "url("+blob+")")
+  }
+})
+```  
+
+##detectFileUpload()  
+Does the browser supports file uploading at all?  
+Returns true or false.  
+Since the early smartphones did not support file uploading via browsers, it might make debugging your webapp painfull (example - the user reports, that he just clicks on the button and nothing happends).  
+detectFileUpload() can help you detect the problem and alert the user.  
+```  
+var canUploadFiles = detectFileUpload();
+if(canUploadFiles === false) {
+  alert("This browser does not support file uploads");
+}
+```  
+
+##resetForm('formId')  
+Resets elements in the form in a way a reset form button would.  
+Currently handles input type text, checkbox, radio, file and textareas.  
+Useful since Single Page Apps itself don't refresh the form after submitting.  
+```  
+resetForm("addPostForm");
+imagePreview.css("background-image", "")
+```  
+
+##canCache()  
+Detect if the client can handle cache.  
+Returns true or false.
+The reason for this is, that some browsers (looking at you, winphone) just can't handle their cache.
+Currently it's used internally inside the get() function.  
 
 ##Compability  
 Visit the site - compatible until IE 6. We use [latest jQuery version 1.x](http://jquery.com/browser-support/).  
@@ -334,62 +396,17 @@ After some time I've found the code getting cluttered, some things not working i
 
 A Single Page App (SPA) architecture relying on a REST API has become my weapon of choice. The jQuery part I did not choose, this is derived from all of the clients who cannot choose their browsers. Nevertheless, a SPA architecture with jQuery can cause quite a lot of stress, especially when I try to add new features later on. To quote a former coworker - this javascript thing can become a flea circus real easy.  
 
-The name J or Jay is a wordplay with the name jQuery.  
+The name J or Jay is a wordplay with the name jQuery. The idea of Jay is to be a shorthand for most common things that people might use jQuery for Single Page Applications.  
 I also like Jay-Z.  
-
-
-##Goals for January:  
-
-1. Make Jay installable via bower.  **done**  
-It needs to be figured out how to install Jay via bower so that installing all of the dependencies is understandable for all (it currently relies on jquery, bootstrap, crossroads, signals and hasher).  
-2. Break front and backend into independent parts.   **done**  
-The current backend would be something like Jay-NodeJs or Jay-Node  
-3. Make a Github organisation that would host Jay & Jay-Node  **done**
-4. Establish a way for CRUD operations.  **done**  
-5. Add WYSISWG editor - perhaps this:  
-https://github.com/Voog/wysihtml  
-6. Add Google Analytics and Facebook Like + Twitter Tweet buttons for demo.  
-
-
-##Roadmap
-
-**0.4.4**  
-Add edit post to sample and tie it with save().  
-
-Add delete().  
-
-Unify get(), post(), put(), delete and save().  
-
-Hide then() in jay or use it constantly.
-
-Add WYSISWG editor - OK
-https://github.com/Voog/wysihtml
-
-dee-jay or jay-one:  
-A index.html+css+js working without backend for easy learning.  
-
-Create public API service for dee-jay.  
-
-
-**0.4.5**
-Expose backend as node middleware.
-
-Make backend always serve index.html:
-( app.get("*", function ) {}
-
-sample page:
-add FB samples - like & comment.  
-Add Google Analytics sample.  
-
 
 ##Licence
 
 The MIT License (MIT)
 
-Copyright (c) 2015 Martin Sookael
+Copyright (c) 2015 Martin Sookael  
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:  
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.  
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
