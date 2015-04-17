@@ -26,26 +26,27 @@ app.configure(function() {
 
 app.post('/auth/fb', function(req, res) {
   Jay.logIn(req, res, function(data){
-    res.json(data);
+    res.jsonp(data);
   })
 })
 
 // Get content
 app.get('/api/j', function(req, res){
   Jay.get(req, res, function(data){
-    res.json(data);
+    res.jsonp(data);
   });
 });
 
 // Post content
 app.post('/api/j', J.ensureAuthenticated, function(req, res){
   Jay.post(req, res, function(data){
-    res.json(data);
+    res.jsonp(data);
   })
 });
 /*
 app.put('/api', ensureAuthenticated, function(req, res){
   Jay.put(req, res)
+  // jsonp added to frontend component
 });
 */
 

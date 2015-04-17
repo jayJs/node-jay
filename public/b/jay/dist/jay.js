@@ -55,11 +55,11 @@ function checkIn() {
     ajax_object.access_token = access_token;
     ajax_object.type = "short";
     $.ajax({
-        dataType: 'json',
         data: JSON.stringify(ajax_object),
-        contentType: 'application/json',
         type: 'POST',
         url: "/auth/fb",
+        dataType: 'jsonp',
+        jsonp: "callback",
         success: function(data) {
           if (data.error == true) {
             J.token = false;
@@ -110,6 +110,16 @@ function detectFileUpload(){ // from: http://viljamis.com/blog/2012/file-upload-
       return false;
   }
 }
+
+// detect if the client can handle cache
+function canCache(){
+  if (navigator.userAgent.match(/(Windows Phone)/)) { // For a start, WinPhone can't handle it's cache
+    return false;
+  } else {
+    return true;
+  }
+}
+
 
 // write to alert
 function a(message) {
@@ -304,6 +314,8 @@ function post(table, data) {
     processData: false,
     contentType: false,
     data: data,
+    dataType: 'jsonp',
+    jsonp: "callback",
     success: function(response){
       if(response.objectId != undefined) {
         cl("post done" - response.objectId);
@@ -331,8 +343,13 @@ function post(table, data) {
 
 // define get()
 function get(table, limit, id) {
+
   return $.ajax({
     url: "/api/j/?table="+table+'&id='+id+'&limit='+limit,
+    cache: canCache(),
+    dataType: 'jsonp',
+    jsonp: "callback",
+    type: 'GET',
     success: function(data){
       return data;
     },
@@ -353,6 +370,8 @@ function put(table, id, data) {
     processData: false,
     contentType: false,
     data: data,
+    dataType: 'jsonp',
+    jsonp: "callback",
     success: function(data){
       return data;
     },
