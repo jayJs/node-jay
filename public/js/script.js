@@ -84,12 +84,14 @@ $(document).ready(function() {
   // Controller, "/add"
   function addPostFunction() {
 
-    // reset form
-    title.val("")
-    content.val("")
-    image.val("")
+    // detect if browser is able to accept uploading files.
+    var canUploadFiles = detectFileUpload();
+    if(canUploadFiles === false) {
+      a("This browser does not support file uploads");
+      image.parent().out()
+    }
 
-    // create the preview
+    // create the preview for image
     $('#image').change(function(){
       var blob = getBlobURL($(this));
       if(blob != false) {
@@ -97,17 +99,16 @@ $(document).ready(function() {
       }
     })
 
-    var canUploadFiles = detectFileUpload();
-    if(canUploadFiles === false) {
-      a("This browser does not support file uploads");
-      image.parent().out()
-    }
+    // reset the form
+    resetForm("addPostForm");
 
+    // handle clicking the submit button
     addPostSubmit.on('click', function(event) {
       event.preventDefault();
       addPostForm.submit();
     });
 
+    // handle sending the form
     var clicked = false;
     addPostForm.on("submit", function(event) {
       event.preventDefault();
