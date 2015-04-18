@@ -3,7 +3,7 @@
 $(document).ready(function() {
 
   // connect-livereload via Gulp autorefreshes the site.
-  //$("body").append('<script src="http://localhost:35729/livereload.js?snipver=1"></script>');
+  $("body").append('<script src="http://localhost:35729/livereload.js?snipver=1"></script>');
 
   // hide loadin + show app
   $("#loading").out()
@@ -44,6 +44,12 @@ $(document).ready(function() {
     onePostFunction(id);
   }
 
+  var editPostView = function (id) {
+    clearApp()
+    addPost.in('fadeIn');
+    editPostFunction(id);
+  }
+
   var logInView = function() {
     clearApp()
     logIn.in();
@@ -56,6 +62,7 @@ $(document).ready(function() {
   crossroads.addRoute('/add', addPostView);
   crossroads.addRoute('/login', logInView);
   crossroads.addRoute('/p/{id}', onePostView);
+  crossroads.addRoute('/e/{id}', editPostView);
 
   // that's a 404 if the route structure is not matched
   crossroads.bypassed.add(function(request){
@@ -152,4 +159,10 @@ $(document).ready(function() {
       }
     });
   }
+
+  // Controller, "/e/{id}"
+  function editPostFunction(id){
+    cl("yolo + "+id)
+  }
+
 });

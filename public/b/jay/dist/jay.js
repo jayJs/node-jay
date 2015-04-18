@@ -146,24 +146,23 @@ function resetForm(formName) {
 function saveForm(Table, formId) {
 
   // handle clicking the submit button
-  var submitButton = false;
-  formId.each(function(){
+  $("#"+formId + " :submit").each(function(){
     $(this).on('click', function(event) {
       event.preventDefault();
       submitButton = $(this);
-      formId.submit();
+      $("#"+formId).submit();
     });
   });
 
   // handle sending the form
   var clicked = false;
-  formId.on("submit", function(event) {
+  $("#"+formId).on("submit", function(event) {
     event.preventDefault();
     if(clicked === false) {
       pleaseWait.in()
-      submitButton.attr('disabled','disabled')
+      if(typeof submitButton !== 'undefined') { submitButton.attr('disabled','disabled'); }
       save(Table, formId).then(function(resp){
-        submitButton.removeAttr('disabled');
+        if(typeof submitButton !== 'undefined') { submitButton.removeAttr('disabled'); }
         pleaseWait.out()
         window.location = "#/p/" + resp.objectId
       })
