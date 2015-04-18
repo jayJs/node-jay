@@ -88,9 +88,7 @@ $(document).ready(function() {
     })
   }
 
-  // Controller, "/add"
-  function addPostFunction() {
-
+  function editPost() {
     // detect if browser is able to accept uploading files.
     var canUploadFiles = detectFileUpload();
     if(canUploadFiles === false) {
@@ -109,10 +107,26 @@ $(document).ready(function() {
     // reset the form
     resetForm("addPostForm");
     imagePreview.css("background-image", "")
+  }
 
-    // save
+  // Controller, "/add"
+  function addPostFunction() {
+    editPost();
     saveForm("Posts", 'addPostForm');
+  }
 
+  // Controller, "/e/{id}"
+  function editPostFunction(id){
+    editPost();
+    get("Posts", 1, id).then(function(data){
+      var d = data[0];
+      title.val(d.title)
+      content.val(d.content)
+      if(d.image && d.image.url) { imagePreview.css("background-image", "url("+d.image.url+")"); }
+      //image.cal('d[image]')
+
+    })
+    //saveForm("Posts", 'addPostForm', id);
   }
 
   function logInFunction(){
@@ -156,13 +170,10 @@ $(document).ready(function() {
             }
           }
         })
+        onePost.append("<br /><br /><br /><a href='#/e/"+id+"'>Edit this post</a>")
+
       }
     });
-  }
-
-  // Controller, "/e/{id}"
-  function editPostFunction(id){
-    cl("yolo + "+id)
   }
 
 });
