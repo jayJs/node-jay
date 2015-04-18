@@ -97,33 +97,15 @@ $(document).ready(function() {
       if(blob != false) {
         imagePreview.css("background-image", "url("+blob+")")
       }
-    })
+    });
 
     // reset the form
     resetForm("addPostForm");
     imagePreview.css("background-image", "")
 
-    // handle clicking the submit button
-    addPostSubmit.on('click', function(event) {
-      event.preventDefault();
-      addPostForm.submit();
-    });
+    // save
+    saveForm("Posts", 'addPostForm');
 
-    // handle sending the form
-    var clicked = false;
-    addPostForm.on("submit", function(event) {
-      event.preventDefault();
-      if(clicked === false) {
-        pleaseWait.in()
-        addPostSubmit.attr('disabled','disabled')
-        save('Posts', 'addPostForm').then(function(resp){
-          addPostSubmit.removeAttr('disabled');
-          pleaseWait.out()
-          window.location = "#/p/" + resp.objectId
-        })
-        clicked = true;
-      }
-    })
   }
 
   function logInFunction(){

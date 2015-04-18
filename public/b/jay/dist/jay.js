@@ -143,6 +143,36 @@ function resetForm(formName) {
   });
 }
 
+function saveForm(Table, formId) {
+
+  // handle clicking the submit button
+  var submitButton = false;
+  formId.each(function(){
+    $(this).on('click', function(event) {
+      event.preventDefault();
+      submitButton = $(this);
+      formId.submit();
+    });
+  });
+
+  // handle sending the form
+  var clicked = false;
+  formId.on("submit", function(event) {
+    event.preventDefault();
+    if(clicked === false) {
+      pleaseWait.in()
+      submitButton.attr('disabled','disabled')
+      save(Table, formId).then(function(resp){
+        submitButton.removeAttr('disabled');
+        pleaseWait.out()
+        window.location = "#/p/" + resp.objectId
+      })
+      clicked = true;
+    }
+  })
+}
+
+
 // write to alert
 function a(message) {
   // find if alert exists and if it does, remove it.
