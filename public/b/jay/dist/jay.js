@@ -143,8 +143,8 @@ function resetForm(formName) {
   });
 }
 
-function saveForm(Table, formId) {
-
+function saveForm(Table, formId, objectId) {
+cl("a")
   // handle clicking the submit button
   $("#"+formId + " :submit").each(function(){
     $(this).on('click', function(event) {
@@ -161,14 +161,23 @@ function saveForm(Table, formId) {
     if(clicked === false) {
       pleaseWait.in()
       if(typeof submitButton !== 'undefined') { submitButton.attr('disabled','disabled'); }
-      save(Table, formId).then(function(resp){
-        if(typeof submitButton !== 'undefined') { submitButton.removeAttr('disabled'); }
-        pleaseWait.out()
-        window.location = "#/p/" + resp.objectId
-      })
+      if(objectId === false) {
+        save(Table, formId).then(function(resp){
+          if(typeof submitButton !== 'undefined') { submitButton.removeAttr('disabled'); }
+          pleaseWait.out()
+          window.location = "#/p/" + resp.objectId
+        })
+      } else {
+        update(Table, formId).then(function(resp){
+          if(typeof submitButton !== 'undefined') { submitButton.removeAttr('disabled'); }
+          pleaseWait.out()
+          window.location = "#/p/" + objectId
+        })
+      }
       clicked = true;
     }
   })
+
 }
 
 
@@ -348,7 +357,7 @@ function save(table, formName) {
   });
 }
 
-function update(table, id, formName) {
+function update(table, formName, id) {
 
   fd = prepareForm(formName);
 
