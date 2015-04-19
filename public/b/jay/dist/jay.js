@@ -324,6 +324,20 @@ function prepareForm(formName) {
   return fd;
 }
 
+function rebuildForm(formId, data) {
+  $("#"+formId + " :input").each(function(){
+    if($(this).attr("type") != "submit") {
+      if($(this).attr("id") in data) {
+        if($(this).attr("type") === "text") {
+          $(this).val(data[$(this).attr("id")])
+        }
+        if($(this).attr("type") === "file") {
+        }
+      }
+    }
+  })
+}
+
 // define save();
 function save(table, formName) {
 

@@ -126,8 +126,8 @@ $(document).ready(function() {
     editPost();
     get("Posts", 1, id).then(function(data){
       var d = data[0];
-      if(d.title) { title.val(d.title) }
-      if(d.content) { content.val(d.content) }
+      rebuildForm("addPostForm", d);
+      // rebuildForm() does not take input file yet, so:
       if(d.image && d.image.url) { imagePreview.css("background-image", "url("+d.image.url+")"); }
     })
     //saveForm("Posts", 'addPostForm', id);
