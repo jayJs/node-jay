@@ -32,10 +32,10 @@ $(document).ready(function() {
     clearApp()
     isUser(function(){ // is a user
       addPost.in('fadeIn');
+      addPostFunction();
     }, function() { // is not a user
       window.location = "#/login";
     });
-    addPostFunction();
   }
 
   var onePostView = function (id) {
@@ -46,8 +46,13 @@ $(document).ready(function() {
 
   var editPostView = function (id) {
     clearApp()
-    addPost.in('fadeIn');
-    editPostFunction(id);
+    isUser(function(){ // is a user
+      addPost.in('fadeIn');
+      editPostFunction(id);
+    }, function() { // is not a user
+      window.location = "#/login";
+    });
+
   }
 
   var logInView = function() {
@@ -88,6 +93,7 @@ $(document).ready(function() {
     })
   }
 
+  // common things for new posts and posts editing.
   function editPost() {
     // detect if browser is able to accept uploading files.
     var canUploadFiles = detectFileUpload();
@@ -123,8 +129,6 @@ $(document).ready(function() {
       title.val(d.title)
       content.val(d.content)
       if(d.image && d.image.url) { imagePreview.css("background-image", "url("+d.image.url+")"); }
-      //image.cal('d[image]')
-
     })
     //saveForm("Posts", 'addPostForm', id);
   }
