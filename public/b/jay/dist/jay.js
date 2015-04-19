@@ -144,7 +144,6 @@ function resetForm(formName) {
 }
 
 function saveForm(Table, formId, objectId) {
-cl("a")
   // handle clicking the submit button
   $("#"+formId + " :submit").each(function(){
     $(this).on('click', function(event) {
@@ -161,14 +160,14 @@ cl("a")
     if(clicked === false) {
       pleaseWait.in()
       if(typeof submitButton !== 'undefined') { submitButton.attr('disabled','disabled'); }
-      if(objectId === false) {
+      if(objectId === undefined) {
         save(Table, formId).then(function(resp){
           if(typeof submitButton !== 'undefined') { submitButton.removeAttr('disabled'); }
           pleaseWait.out()
           window.location = "#/p/" + resp.objectId
         })
       } else {
-        update(Table, formId).then(function(resp){
+        update(Table, formId, objectId).then(function(resp){
           if(typeof submitButton !== 'undefined') { submitButton.removeAttr('disabled'); }
           pleaseWait.out()
           window.location = "#/p/" + objectId

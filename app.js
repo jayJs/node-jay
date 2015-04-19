@@ -43,12 +43,14 @@ app.post('/api/j', J.ensureAuthenticated, function(req, res){
     res.jsonp(data);
   })
 });
-/*
-app.put('/api', ensureAuthenticated, function(req, res){
-  Jay.put(req, res)
+
+app.put('/api/j', function(req, res){
+  Jay.put(req, res, function(data){
+    Jay.cl(data)
+    res.jsonp(data);
+  })
   // jsonp added to frontend component
 });
-*/
 
 // Send the index.html
 app.get('/', function(req, res){

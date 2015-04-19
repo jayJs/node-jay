@@ -31,6 +31,7 @@ $(document).ready(function() {
   var addPostView = function () {
     isUser(function(){ // is a user
       clearApp()
+      resetForm("addPostForm")
       addPost.in('fadeIn');
       addPostFunction();
     }, function() { // is not a user
@@ -123,6 +124,7 @@ $(document).ready(function() {
 
   // Controller, "/e/{id}"
   function editPostFunction(id){
+
     editPost();
     get("Posts", 1, id).then(function(data){
       var d = data[0];
@@ -130,7 +132,7 @@ $(document).ready(function() {
       // rebuildForm() does not take input file yet, so:
       if(d.image && d.image.url) { imagePreview.css("background-image", "url("+d.image.url+")"); }
     })
-    //saveForm("Posts", 'addPostForm', id);
+    saveForm("Posts", 'addPostForm', id);
   }
 
   function logInFunction(){
