@@ -29,8 +29,8 @@ $(document).ready(function() {
   }
 
   var addPostView = function () {
-    clearApp()
     isUser(function(){ // is a user
+      clearApp()
       addPost.in('fadeIn');
       addPostFunction();
     }, function() { // is not a user
@@ -45,8 +45,8 @@ $(document).ready(function() {
   }
 
   var editPostView = function (id) {
-    clearApp()
     isUser(function(){ // is a user
+      clearApp()
       addPost.in('fadeIn');
       editPostFunction(id);
     }, function() { // is not a user
@@ -126,8 +126,8 @@ $(document).ready(function() {
     editPost();
     get("Posts", 1, id).then(function(data){
       var d = data[0];
-      title.val(d.title)
-      content.val(d.content)
+      if(d.title) { title.val(d.title) }
+      if(d.content) { content.val(d.content) }
       if(d.image && d.image.url) { imagePreview.css("background-image", "url("+d.image.url+")"); }
     })
     //saveForm("Posts", 'addPostForm', id);
