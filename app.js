@@ -46,10 +46,8 @@ app.post('/api/j', J.ensureAuthenticated, function(req, res){
 
 app.put('/api/j', function(req, res){
   Jay.put(req, res, function(data){
-    Jay.cl(data)
     res.jsonp(data);
   })
-  // jsonp added to frontend component
 });
 
 // Send the index.html
