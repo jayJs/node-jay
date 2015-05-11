@@ -19,12 +19,18 @@ or download [jQuery](http://jquery.com/download/), [Bootstrap](http://getbootstr
 <link rel="stylesheet" href="/bower_components/animate.css/animate.min.css">
 
 // Add javascript right to the end of file before the closing </body> tag
+
+// Easy way:  (all of the same files as debuggers way, but minified and uglified)
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>  
+<script src="/bower_components/jay/dist/all.min.js"></script>  
+
+// or the debuggers way:  
 <script src="/bower_components/jquery/dist/jquery.min.js"></script>
 <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="/bower_components/js-signals/dist/signals.min.js"></script>
 <script src="/bower_components/hasher/dist/js/hasher.min.js"></script>
 <script src="/bower_components/crossroads/dist/crossroads.min.js"></script>
-<script src="/bower_components/jay/jay.js"></script>
+<script src="/bower_components/jay/dist/jay.js"></script>
 ```
 Put your fbAppId into html head like this
 ```
@@ -267,7 +273,7 @@ put("Posts", "378QWha5OB", update).then(function(data) {
 ```
 
 ##save(table, formId)  
-**Save data data from form to database via a $.ajax JSONP call.**  
+**Save data from form to database via a $.ajax JSONP call.**  
 table - name of the table to save this data (*string*).  
 formId - id of form, where the data comes (*string*).  
 
@@ -327,8 +333,15 @@ addPost.on("submit", function() {
 })
 
 ```
-Submitting saves contents from form with id addPost to table "Posts"
+Submitting saves contents from form with id addPost to table "Posts".
 
+##update(table, formId, objectId)  
+**update data from formId to table in objectId via a $.ajax JSONP call.**  
+table - name of the table to save this data (*string*).  
+formId - id of form, where the data comes (*string*).  
+objectId - object to be updated (*string*).  
+
+update() acts the same as save() the only difference being, it updates instead of creates a new post.  
 
 ##Little helpers  
 
@@ -380,6 +393,34 @@ resetForm("addPostForm");
 imagePreview.css("background-image", "")
 ```  
 
+##rebuildForm('formId', data)  
+If in from there exists an input with the same name as a key in data, the value from the data will be appended to the input.  
+```  
+function editPostFunction(id){
+  resetForm("addPostForm"); // search resetForm from this Readme
+  get("Posts", 1, id).then(function(data){
+    var d = data[0];
+    rebuildForm("addPostForm", d);
+    // rebuildForm() does not take input="file" yet, so:
+    if(d.image && d.image.url) { imagePreview.css("background-image", "url("+d.image.url+")"); }
+  })
+  saveForm("Posts", 'addPostForm', id); // search saveForm() from this Readme.  
+}
+```  
+##saveForm(Table, formId, objectId)
+saveForm performs the same things as save() & update() combined with handling all the stupid things you need to know with Single Page Apps forms, most notably preventing same click from triggering multiple events.  
+
+##prepareForm('formName')  
+Turns from contents into FormData. Used internally by save() and update():
+```  
+function save(table, formName) {
+  fd = prepareForm(formName);
+  return post(table, fd).then(function(data){
+    return data;
+  });
+}
+```  
+
 ##canCache()  
 Detect if the client can handle cache.  
 Returns true or false.
@@ -391,7 +432,7 @@ saveForm(Table, formId, objectId)
 prepareForm  
 rebuildForm  
 update()  
-  
+
 ##Compability  
 Visit the site - compatible until IE 6. We use [latest jQuery version 1.x](http://jquery.com/browser-support/).  
 Post data - compatible until IE 10. The bottleneck is [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility).  

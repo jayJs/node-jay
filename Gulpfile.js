@@ -7,14 +7,6 @@ var EXPRESS_ROOT = __dirname;
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 
-/*
-gulp.task('scripts', function() {
-  gulp.src(['./public/b/jay/dist/jay.js', './public/b/momentjs/min/moment.min.js'])
-    .pipe(concat('all.js'))
-    .pipe(uglify())
-    .pipe(gulp.dest('./dist/'))
-});
-*/
 function startLivereload() {
   lr = require('tiny-lr')();
   lr.listen(35729);
