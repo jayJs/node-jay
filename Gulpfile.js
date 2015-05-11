@@ -32,9 +32,7 @@ function notifyLivereload(event) {
 }
 
 gulp.task('default', function () {
-  startLivereload();
-  gulp.watch('./public/**/*.*', notifyLivereload);
-
+  // minify and uglify the js dependencies:
   gulp.src([
     './public/b/signals/dist/signals.min.js',
     './public/b/hasher/dist/js/hasher.min.js',
@@ -49,4 +47,6 @@ gulp.task('default', function () {
     .pipe(uglify())
     .pipe(gulp.dest('./public/dist/'));
 
+  startLivereload();
+  gulp.watch('./public/**/*.*', notifyLivereload);
 });
