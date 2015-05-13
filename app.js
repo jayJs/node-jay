@@ -25,29 +25,36 @@ app.configure(function() {
 });
 
 app.post('/auth/fb', function(req, res) {
-  Jay.logIn(req, res, function(data){
+  Jay.logIn(req, res, config, function(data){
     res.jsonp(data);
   })
 })
 
 // Get content
 app.get('/api/j', function(req, res){
-  Jay.get(req, res, function(data){
+  Jay.get(req, res, config, function(data){
     res.jsonp(data);
   });
 });
 
 // Post content
 app.post('/api/j', J.ensureAuthenticated, function(req, res){
-  Jay.post(req, res, function(data){
+  Jay.post(req, res, config, function(data){
     res.jsonp(data);
   })
 });
 
 app.put('/api/j', function(req, res){
-  Jay.put(req, res, function(data){
+  Jay.put(req, res, config, function(data){
     res.jsonp(data);
   })
+});
+
+// Get query
+app.get('/api/j/query', function(req, res){
+  Jay.query(req, res, config, function(data){
+    res.jsonp(data);
+  });
 });
 
 // Send the index.html

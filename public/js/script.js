@@ -92,6 +92,12 @@ $(document).ready(function() {
         }
       }
     })
+
+    // this is just a sample query, check the result from console.
+    query("Posts", 2, "content", "Yo", 'createdAt').then(function(d){
+      cl(d)
+    });
+
   }
 
   // common things for new posts and posts editing.
