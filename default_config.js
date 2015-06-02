@@ -20,4 +20,9 @@ config.kaiseki.restApiKey = "";
 config.jwtSimple = {};
 config.jwtSimple.secret = 'foobard'
 
+config.thumbnails = {}
+config.thumbnails.enabled = false;
+config.thumbnails.quality = 20;
+// config.thumbnails = [1200, 600, 300]; // not usable yet
+
 module.exports = config;
