@@ -77,12 +77,22 @@ function checkIn() {
 
 // shortcut for console.log
 function cl(data) {
-  console.log(data);
+  // IE only allows console if developer window is open.
+  if (typeof console === "undefined") {
+    // I'm so failing sailently
+  } else {
+    console.log(data);
+  }
 }
 
 // shortcut for console.error
 function ce(data) {
-  console.error(data);
+  // IE only allows console if developer window is open.
+  if (typeof console === "undefined") {
+    // I'm so failing sailently
+  } else {
+    console.error(data);
+  }
 }
 
 function getBlobURL(input) {
@@ -146,6 +156,57 @@ function resetForm(formName) {
   });
 }
 
+function rebuildForm(formId, data) {
+  $("#"+formId + " :input").each(function(){
+    if($(this).attr("type") != "submit") {
+      if($(this).attr("id") in data) {
+        if($(this).attr("type") === "text") {
+          $(this).val(data[$(this).attr("id")])
+        }
+        if($(this).attr("type") === "file") {
+        }
+      }
+    }
+  })
+}
+
+function saveForm(Table, formId, objectId) {
+  // handle clicking the submit button
+  $("#"+formId + " :submit").each(function(){
+    $(this).on('click', function(event) {
+      event.preventDefault();
+      submitButton = $(this);
+      $("#"+formId).submit();
+    });
+  });
+
+  // handle sending the form
+  var clicked = false;
+  $("#"+formId).on("submit", function(event) {
+    event.preventDefault();
+    if(clicked === false) {
+      $(pleaseWait).show()
+      if(typeof submitButton !== 'undefined') { submitButton.attr('disabled','disabled'); }
+      if(objectId === undefined) {
+        save(Table, formId).then(function(resp){
+          if(typeof submitButton !== 'undefined') { submitButton.removeAttr('disabled'); }
+          $(pleaseWait).hide()
+          window.location = "#/p/" + resp.objectId
+        })
+      } else {
+        update(Table, formId, objectId).then(function(resp){
+          if(typeof submitButton !== 'undefined') { submitButton.removeAttr('disabled'); }
+          $(pleaseWait).hide()
+          window.location = "#/p/" + objectId
+        })
+      }
+      clicked = true;
+    }
+  })
+}
+
+
+
 // write to alert
 function a(message) {
   // find if alert exists and if it does, remove it.
@@ -164,7 +225,6 @@ function a(message) {
 function isUser (isLoggedIn, notLoggedIn) {
   // if it's a user
   if(J.userId != undefined && J.userId != false) {
-    //isLoggedIn();
     isLoggedIn();
     // if it's not a user or we are not sure yet
   } else {
@@ -195,10 +255,84 @@ function isUser (isLoggedIn, notLoggedIn) {
   }
 }
 
+// rebuild links for HTML5 mode.
+function rebuildLinks(){
+  // this makes a long circle, since jQuery does not support invoking $("a").on("click") directly
+  // Find all links and go over them
+  var list = document.getElementsByTagName("A");
+  for( var i = 0; i < list.length; i++ ) {
+    // if link does not have a id, give one
+    if(list[i].id.length === 0) {
+      var newId = makePsw();
+      list[i].id = newId;
+    }
+    // attach a listener to all <a>-s
+    $("#" + list[i].id).on("click", function(e){
+      e.preventDefault()
+
+      //  get the original URL
+      var originalUrl = $(this).attr("href");
+
+      // put hash back to window.location, so that "#/" links would work again.
+      var host = window.location.protocol + "//" + window.location.host
+      var href = window.location.href
+
+        // Find if there's a hash
+        if(href.charAt(host.length+1) === "#") {
+          // there already is a hash at the correct place
+        } else  {
+          // detect if browser supports pushState
+          if (window.history && window.history.replaceState) {
+            // put the hashtab back
+            var hashTagBack = host + "/#" + window.location.pathname;
+            history.replaceState("", document.title, hashTagBack);
+          // It's an old browser
+          // so we downgrade to just normal links.
+          } else {
+            if(originalUrl === "#" || originalUrl === "#/") {
+              //alert("originalUrl + " / " + host")
+              window.location = host;
+            } else {
+              window.location = href;
+            }
+          }
+
+        }
+        // and go!
+        window.location = originalUrl;
+    })
+  }
+}
+
+function makePsw() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for( var i=0; i < 16; i++ ) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+}
+
+function removeHash(){
+  var host = window.location.protocol + "//" + window.location.host
+  var _hashValRegexp = /#(.*)$/;
+  var result = _hashValRegexp.exec(hasher.getURL());
+  if(result) {
+    if (window.history && window.history.pushState) {     //
+      window.history.pushState("", document.title, host + result[1]);
+    } else {
+      window.location = result[1];
+    }
+  }
+}
+
 function route(crossroads) {
   //setup hasher
   // hasher let's you know when route is changed
   function parseHash(newHash, oldHash){
+    if(J.html5 === true) {
+      removeHash(); // if HTML5 mode is on, remove hash from URL
+    }
     crossroads.parse(newHash);
   }
   hasher.initialized.add(parseHash); //parse initial hash
@@ -308,7 +442,7 @@ function save(table, formName) {
   });
 }
 
-function update(table, id, formName) {
+function update(table, formName, id) {
 
   fd = prepareForm(formName);
 
@@ -454,7 +588,7 @@ function query(table, limit, key, value, order) {
 
 (function ( $ ) {
 
-  $.fn.out = function(transition) {
+  $.fn.hide = function(transition) {
     return this.each(function() {
       var elem = $( this );
       if (transition === undefined) {
@@ -470,7 +604,7 @@ function query(table, limit, key, value, order) {
     });
   }
 
-  $.fn.in = function(transition) {
+  $.fn.show = function(transition) {
     return this.each(function() {
       var elem = $( this );
       if (transition === undefined) {
@@ -484,15 +618,6 @@ function query(table, limit, key, value, order) {
       }
       return this;
     });
-  }
-
-  // get all tags from HTML and assign foo = $("#foo") & bar = $(".bar")
-  var allTags = document.body.getElementsByTagName('*');
-  for (var tg = 0; tg< allTags.length; tg++) {
-    var tag = allTags[tg];
-    if (tag.id && tag.id != "fb-root" && tag.id != "fb_xdm_frame_http" && tag.id != "fb_xdm_frame_http" && tag.id != "facebook-jssdk") {
-      window[tag.id] = $("#"+tag.id);
-    }
   }
 
 }( jQuery ));
