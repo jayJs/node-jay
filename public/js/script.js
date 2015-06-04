@@ -125,7 +125,10 @@ $(document).ready(function() {
   // Controller, "/add"
   function addPostFunction() {
     editPost();
-    saveForm("Posts", 'addPostForm');
+    saveForm("Posts", 'addPostForm', function(data){
+      // todo: error handling
+      window.location = "#/p/" + data.objectId;
+    });
   }
 
   // Controller, "/e/{id}"
@@ -138,7 +141,10 @@ $(document).ready(function() {
       // rebuildForm() does not take input file yet, so:
       if(d.image && d.image.url) { $(imagePreview).css("background-image", "url("+d.image.url+")"); }
     })
-    saveForm("Posts", 'addPostForm', id);
+    updateForm("Posts", 'addPostForm', id, function(data){
+      // todo: error handling
+      window.location = "#/p/" + id;
+    });
   }
 
   function logInFunction(){
