@@ -33,6 +33,7 @@ gulp.task('default', function () {
     './public/b/respond/dest/respond.min.js',
     './public/b/bootstrap/dist/js/bootstrap.min.js',
     './public/b/momentjs/min/moment.min.js',
+    './public/b/trumbowyg/dist/trumbowyg.min.js',
     './public/b/jay/dist/jay.js'
     ])
     .pipe(concat('all.js'))
