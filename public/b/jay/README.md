@@ -17,6 +17,7 @@ or download [jQuery](http://jquery.com/download/), [Bootstrap](http://getbootstr
 <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
 <link rel="stylesheet" href="/bower_components/animate.css/animate.min.css">
+<link rel="stylesheet" href="/bower_components/trumbowyg/dist/ui/trumbowyg.min.css">
 
 // Add javascript right to the end of file before the closing </body> tag
 
@@ -30,6 +31,7 @@ or download [jQuery](http://jquery.com/download/), [Bootstrap](http://getbootstr
 <script src="/bower_components/js-signals/dist/signals.min.js"></script>
 <script src="/bower_components/hasher/dist/js/hasher.min.js"></script>
 <script src="/bower_components/crossroads/dist/crossroads.min.js"></script>
+<script src="/bower_components/trumbowyg/dist/trumbowyg.min.js"></script>
 <script src="/bower_components/jay/dist/jay.js"></script>
 ```
 If you plan to use Facebook SDK, put this into html head like this
@@ -174,7 +176,7 @@ Sometimes it's not FB, it's Parse.com.
 ##.wysiwg  
 If you add class .wysiwg to a textarea, then it will automatically turned into a WYSIWG editor.  
 Such editor is aknologed by prepareForm() and rebuildForm().  
-  
+
 ##cl(message)  
 A shortcut for console.log(message);  
 ```
@@ -231,19 +233,18 @@ $(imagePreview).css("background-image", "")
 ```  
 
 ##Use without /#/ in URL  
-**experimental**  
-Since v0.7 Jay supports URL-s without /#/.  
+**beta**  
+Since v0.7 Jay supports URL-s without /#/.
 In order to use it set J.html5 to true in the beginning of your HTML.  
 ```
 //HTML:
 var J = {}
 J.html5 = true;
 ```
-This makes it basically work.
-Other things to keep in mind.  
+This makes it basically work.  
+Other things to keep in mind.
 1. Hasher might not always read URL-s without hashtags present. For that please find Shredder in the extra folder of Jay. It's basically Hasher but with a little hack to also support URL-s without hashtags.  
-2. Use rebuildLinks() after you have added new links to the DOM.  
-3. Whatever is serving your page, make sure it's not just serving the html to ("/"), but rather to ("*").  
+2. Make sure your server is not just serving the html to ("/"), but rather to ("*").  
 
 ##CRUD  
 requires [Jay-npm](https://github.com/jayJs/jay-npm)  
