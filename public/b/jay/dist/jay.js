@@ -181,9 +181,9 @@ function saveForm(Table, formId, callback) {
     event.preventDefault();
     if(clicked === false) {
       $("#pleaseWait").show()
-      if(typeof submitButton !== 'undefined') { submitButton.attr('disabled','disabled'); }
+      $("#"+formId + " input:submit").attr('disabled','disabled');
       save(Table, formId).then(function(resp){
-        if(typeof submitButton !== 'undefined') { submitButton.removeAttr('disabled'); }
+        $("#"+formId + " input:submit").removeAttr('disabled');
         $("#pleaseWait").hide()
         callback(resp);
       })
@@ -200,9 +200,9 @@ function updateForm(Table, formId, objectId, callback) {
     event.preventDefault();
     if(clicked === false) {
       $("#pleaseWait").show()
-      if(typeof submitButton !== 'undefined') { submitButton.attr('disabled','disabled'); }
+      $("#"+formId + " input:submit").attr('disabled','disabled');
       update(Table, formId, objectId).then(function(resp){
-        if(typeof submitButton !== 'undefined') { submitButton.removeAttr('disabled'); }
+        $("#"+formId + " input:submit").removeAttr('disabled');
         $("#pleaseWait").hide()
         callback(resp);
       })
@@ -310,8 +310,6 @@ function route(crossroads) {
 function prepareForm(formId) {
 
   var checkboxes = [];
-  // added progress bar
-  $("body").append('<div style="position: absolute; color: #fff; padding-top: 15px; bottom: 20px; height: 50px; background: #000; opacity: 0.3; width: 0%; text-align: center" id="progress">Upload in progress: <span id="processPercent">45%</span></div>');
 
   var fd = new FormData();
   var titles = {};
@@ -408,19 +406,6 @@ function update(table, formName, id) {
   });
 }
 
-
-// handle info coming from upload progress
-function progressHandlingFunction(e){
-  if(e.lengthComputable){
-    var percent= e.loaded/e.total*100;
-    $("#progress").css("width", percent+"%");
-    $("#processPercent").empty().append(percent+"%");
-    if(percent === 100) {
-      $("#progress").css("width", "0%");
-    }
-  }
-}
-
 function post(table, data) {
   // TODO wait until access_token exists
 
@@ -446,13 +431,6 @@ function post(table, data) {
         cl(response);
       }
       return response;
-    },
-    xhr: function() {  // Custom XMLHttpRequest
-      var myXhr = $.ajaxSettings.xhr();
-      if(myXhr.upload){ // Check if upload property exists
-        myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
-      }
-      return myXhr;
     },
     error: function(error) {
       a(error.responseText);
