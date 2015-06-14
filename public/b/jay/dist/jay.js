@@ -1,131 +1,77 @@
-"use strict";
+/*jslint indent: 2*/
+/*global window, console*/
 
-var J = J || {};
+window.J = (function (jQuery) {
+  'use strict';
 
-(function(jQuery, J){
+  var jay = {
+    get: function (table, limit, id) {
+      var url = "/api/j/?table=" + table + '&id=' + id + '&limit=' + limit;
+      if (J.host) { url = J.host + url; }
 
-  J.get = function( table, limit, id ) {
-   var url = "/api/j/?table="+table+'&id='+id+'&limit='+limit;
-   if(J.host) { url = J.host + url; }
-   return $.ajax({
-     url: url,
-     cache: canCache(),
-     dataType: 'jsonp',
-     jsonp: "callback",
-     type: 'GET',
-     success: function(data){
-       return data;
-     },
-     error: function(error) {
-       a(error.responseText);
-       ce(error);
-       return error;
-     }
-   });
-  }
+      return $.ajax({
+        url: url,
+        cache: true,
+        dataType: 'jsonp',
+        jsonp: "callback",
+        type: 'GET',
+        success: function (data) {
+          return data;
+        },
+        error: function (error) {
+          a(error.responseText);
+          ce(error);
+          return error;
+        }
+      })
+    },
 
-  J.post = function(table, data ) {
-   // TODO wait until access_token exists
-   var url = "/api/j/?table="+table+"&token="+J.token+"&user="+J.userId+"&type=short";
-   if(J.host) { url = J.host + url; }
-
-   return $.ajax({
-     url: url,
-     type: 'POST',
-     processData: false,
-     contentType: false,
-     data: data,
-     dataType: 'jsonp',
-     jsonp: "callback",
-     success: function(response){
-       if(response.objectId != undefined) {
-         cl("post done" - response.objectId);
-       } else {
-         cl("error - object not saved");
-         cl(response);
-       }
-       return response;
-     },
-     error: function(error) {
-       a(error.responseText);
-       ce(error);
-       return error;
-     }
-   });
-  }
-
-  J.put = function(table, id, data) {
-
-   var url = "/api/j/?table="+table+'&id='+id+'&data='+data;
-   if(J.host) { url = J.host + url; }
-
-   return $.ajax({
-     type: 'PUT',
-     url: url,
-     processData: false,
-     contentType: false,
-     data: data,
-     dataType: 'jsonp',
-     jsonp: "callback",
-     success: function(data){
-       return data;
-     },
-     error: function(error) {
-       a(error.responseText);
-       cl(error);
-       return error;
-     }
-   });
-  }
-
-  J.query = function(table, limit, key, value, order) {
-
-    var url = "/api/j/query/?table="+table+'&key='+key+'&value='+value+'&limit='+limit+'&order='+order;
-    if(J.host) { url = J.host + url; }
-
-    return $.ajax({
-     url: url,
-     cache: canCache(),
-     dataType: 'jsonp',
-     jsonp: "callback",
-     type: 'GET',
-     success: function(data){
-       return data;
-     },
-     error: function(error) {
-       a(error.responseText);
-       ce(error);
-       return error;
-     }
-    });
-  }
-
-  J.save = function (table, formId, callback) {
-    var clicked = false;
-    $("#"+formId).on("submit", function(event) {
-      event.preventDefault();
-      if(clicked === false) {
-        $("#pleaseWait").show()
-        $("#"+formId + " input:submit").attr('disabled','disabled');
-        var fd = prepareForm(formId);
-        J.post(table, fd).then(function(data){
-          $("#"+formId + " input:submit").removeAttr('disabled');
-          $("#pleaseWait").hide()
-          callback(data);
-        });
-        clicked = true;
+    isUser: function(isLoggedIn, notLoggedIn) {
+      // if it's a user
+      if(J.userId != undefined && J.userId != false) {
+        isLoggedIn();
+        // if it's not a user or we are not sure yet
+      } else {
+        var i = 0;
+        var getStatus = setInterval(function(){
+          // is not a user
+          if(J.userId === false) {
+            notLoggedIn();
+            clearInterval(getStatus);
+          }
+          // is a user or not sure yet
+          else {
+            // is a user
+            if(J.userId != undefined) {
+              isLoggedIn();
+              clearInterval(getStatus);
+            } else {
+              // FB is not yet available
+              if(i === 40) { // turn off the search after 40 times
+                notLoggedIn();
+                a('Unable to authenticate. Refresh page to try again');
+                clearInterval(getStatus);
+              }
+              i++;
+            }
+          }
+        }, 200); // Ping every 200 ms
       }
-    })
+    }
   }
 
-})(jQuery, J)
+  return jay;
+}(jQuery));
+
+
+
 
 // hello hello, facebook connect and #_=_
 if (window.location.hash && window.location.hash == '#_=_') {
   window.location.hash = '/';
 }
 
-if (typeof fbAppId != "undefined") {
+if (typeof J.fbAppId != "undefined") {
 
   // Get FB SDK
   (function(d, s, id){
@@ -141,7 +87,7 @@ if (typeof fbAppId != "undefined") {
 
     // Initialise FB
     FB.init({
-      appId      : fbAppId,
+      appId      : J.fbAppId,
       xfbml      : true,
       version    : 'v2.2',
       status     : true
@@ -244,6 +190,15 @@ function detectFileUpload(){ // from: http://viljamis.com/blog/2012/file-upload-
   }
 }
 
+// detect if the client can handle cache
+function canCache(){
+  if (navigator.userAgent.match(/(Windows Phone)/)) { // For a start, WinPhone can't handle it's cache
+    return false;
+  } else {
+    return true;
+  }
+}
+
 function resetForm(formName) {
   $("#"+formName)[0].reset()
   $(".trumbowyg-editor").html("")
@@ -280,62 +235,10 @@ function rebuildForm(formId, data) {
   })
 }
 
-
-function updateForm(Table, formId, objectId, callback) {
-
-  var clicked = false;
-  $("#"+formId).on("submit", function(event) {
-    event.preventDefault();
-    if(clicked === false) {
-      $("#pleaseWait").show()
-      $("#"+formId + " input:submit").attr('disabled','disabled');
-      update(Table, formId, objectId).then(function(resp){
-        $("#"+formId + " input:submit").removeAttr('disabled');
-        $("#pleaseWait").hide()
-        callback(resp);
-      })
-      clicked = true;
-    }
-  })
-}
-
 // write to alert
 function a(message) {
   $("#alert").remove();
   $("body").append('<div id="alert" style="z-index: 10; margin-left: auto;  margin-right: auto; left: 0; right: 0;"><button type="button" class="close" style="opacity: 1;  z-index: 11;  position: relative; color: #fff;  margin-right: 15px; margin-top: 7px; font-size: 23pt; text-shadow: none;" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><div id="alertMessage" class="alert alert-black alert-dismissible" role="alert">'+message+'</div></div>')
-}
-
-function isUser (isLoggedIn, notLoggedIn) {
-  // if it's a user
-  if(J.userId != undefined && J.userId != false) {
-    isLoggedIn();
-    // if it's not a user or we are not sure yet
-  } else {
-    var i = 0;
-    var getStatus = setInterval(function(){
-      // is not a user
-      if(J.userId === false) {
-        notLoggedIn();
-        clearInterval(getStatus);
-      }
-      // is a user or not sure yet
-      else {
-        // is a user
-        if(J.userId != undefined) {
-          isLoggedIn();
-          clearInterval(getStatus);
-        } else {
-          // FB is not yet available
-          if(i === 40) { // turn off the search after 40 times
-            notLoggedIn();
-            a('Unable to authenticate. Refresh page to try again');
-            clearInterval(getStatus);
-          }
-          i++;
-        }
-      }
-    }, 200); // Ping every 200 ms
-  }
 }
 
 // rebuild links for HTML5 mode.
@@ -366,33 +269,6 @@ if(J.html5 === true) {
       window.location = originalUrl;
     }
   })
-}
-
-function removeHash(){
-  var host = window.location.protocol + "//" + window.location.host
-  var _hashValRegexp = /#(.*)$/;
-  var result = _hashValRegexp.exec(hasher.getURL());
-  if(result) {
-    if (window.history && window.history.pushState) {     //
-      window.history.pushState("", document.title, host + result[1]);
-    } else {
-      window.location = result[1];
-    }
-  }
-}
-
-function route(crossroads) {
-  //setup hasher
-  // hasher let's you know when route is changed
-  function parseHash(newHash, oldHash){
-    if(J.html5 === true) {
-      removeHash(); // if HTML5 mode is on, remove hash from URL
-    }
-    crossroads.parse(newHash);
-  }
-  hasher.initialized.add(parseHash); //parse initial hash
-  hasher.changed.add(parseHash); //parse hash changes
-  hasher.init(); //start listening for history change
 }
 
 function prepareForm(formId) {
@@ -475,14 +351,41 @@ function prepareForm(formId) {
   return fd;
 }
 
-function update(table, formName, id) {
 
-  var fd = prepareForm(formName);
 
-  return put(table, id, fd).then(function(data) {
-    return data;
-  });
+function removeHash(){
+  var host = window.location.protocol + "//" + window.location.host
+  var _hashValRegexp = /#(.*)$/;
+  var result = _hashValRegexp.exec(hasher.getURL());
+  if(result) {
+    if (window.history && window.history.pushState) {     //
+      window.history.pushState("", document.title, host + result[1]);
+    } else {
+      window.location = result[1];
+    }
+  }
 }
+
+function route(crossroads) {
+  //setup hasher
+  // hasher let's you know when route is changed
+  function parseHash(newHash, oldHash){
+    if(J.html5 === true) {
+      removeHash(); // if HTML5 mode is on, remove hash from URL
+    }
+    crossroads.parse(newHash);
+  }
+  hasher.initialized.add(parseHash); //parse initial hash
+  hasher.changed.add(parseHash); //parse hash changes
+  hasher.init(); //start listening for history change
+}
+
+
+/*
+(function (jQuery, J) {
+
+})(jQuery, J); */
+
 
 (function ( $ ) {
 
@@ -508,7 +411,7 @@ function update(table, formName, id) {
       if (transition === undefined) {
         elem.removeClass("hidden");
       } else {
-        elem.addClass("animated " + transition).removeClass("hidden");
+        elem.removeClass("hidden").addClass("animated " + transition);
         elem.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
           elem.removeClass("animated " + transition);
         });
@@ -517,12 +420,5 @@ function update(table, formName, id) {
       return this;
     });
   }
-
-  $(".wysiwg").trumbowyg({
-    autogrow: true,
-    btns: ['bold', 'italic', 'link', 'unorderedList'],
-    fullscreenable: false,
-    removeformatPasted: true,
-  })
 
 }( jQuery ));

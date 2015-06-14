@@ -1,5 +1,7 @@
 "use strict";
 
+//J.fbAppId = "756437764450452" // if fbAppId is undefined, FB SDK is not added
+
 $(document).ready(function() {
 
   // connect-livereload via Gulp autorefreshes the site.
@@ -29,7 +31,7 @@ $(document).ready(function() {
   }
 
   var addPostView = function () {
-    isUser(function(){ // is a user
+    J.isUser(function(){ // is a user
       clearApp()
       resetForm("addPostForm")
       $(addPost).show('fadeIn');
@@ -41,12 +43,12 @@ $(document).ready(function() {
 
   var onePostView = function (id) {
     clearApp()
-    $(onePost).show('fadeIn');
+    $(onePost).show();
     onePostFunction(id);
   }
 
   var editPostView = function (id) {
-    isUser(function(){ // is a user
+    J.isUser(function(){ // is a user
       clearApp()
       $(addPost).show('fadeIn');
       editPostFunction(id);
@@ -94,9 +96,9 @@ $(document).ready(function() {
     })
 
     // this is just a sample query, check the result from console.
-    J.query("Posts", 2, "content", "Yo", 'createdAt').then(function(d){
+    /*J.query("Posts", 2, "content", "Yo", 'createdAt').then(function(d){
       cl(d)
-    });
+    }); */
 
   }
 
@@ -141,14 +143,14 @@ $(document).ready(function() {
       // rebuildForm() does not take input file yet, so:
       if(d.image && d.image.url) { $(imagePreview).css("background-image", "url("+d.image.url+")"); }
     })
-    updateForm("Posts", 'addPostForm', id, function(data){
+    J.update("Posts", 'addPostForm', id, function(data){
       // todo: error handling
       window.location = "#/p/" + id;
     });
   }
 
   function logInFunction(){
-    fbLogin.on('click', function(){
+    $(fbLogin).on('click', function(){
       FB.login(function(response) {
         if (response.authResponse) {
           FB.api('/me', function(response) {
