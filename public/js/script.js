@@ -82,7 +82,7 @@ $(document).ready(function() {
   // CONTROLLERS
   // Controller, "/"
   function listPostsFunction() {
-    get("Posts", 20).then(function(data){
+    J.get("Posts", 20).then(function(data){
       if(data.error === "No such post") {
         $(e404).show()
       } else {
@@ -94,7 +94,7 @@ $(document).ready(function() {
     })
 
     // this is just a sample query, check the result from console.
-    query("Posts", 2, "content", "Yo", 'createdAt').then(function(d){
+    J.query("Posts", 2, "content", "Yo", 'createdAt').then(function(d){
       cl(d)
     });
 
@@ -125,7 +125,7 @@ $(document).ready(function() {
   // Controller, "/add"
   function addPostFunction() {
     editPost();
-    saveForm("Posts", 'addPostForm', function(data){
+    J.save("Posts", 'addPostForm', function(data){
       // todo: error handling
       window.location = "#/p/" + data.objectId;
     });
@@ -135,7 +135,7 @@ $(document).ready(function() {
   function editPostFunction(id){
 
     editPost();
-    get("Posts", 1, id).then(function(data){
+    J.get("Posts", 1, id).then(function(data){
       var d = data[0];
       rebuildForm("addPostForm", d);
       // rebuildForm() does not take input file yet, so:
@@ -165,7 +165,7 @@ $(document).ready(function() {
 
   // Controller, "/p/{id}"
   function onePostFunction(id) {
-    get("Posts", 1,  id).then(function(data_0) {
+    J.get("Posts", 1,  id).then(function(data_0) {
       var data = data_0[0]
       if(data_0.error === "No such post" || data_0.error === "Query is confused") {
         $(e404).show()

@@ -1,9 +1,124 @@
 "use strict";
 
-// if J is not set in index.html, set it here.
-if(typeof J === "undefined") {
-  var J = {}
-}
+var J = J || {};
+
+(function(jQuery, J){
+
+  J.get = function( table, limit, id ) {
+   var url = "/api/j/?table="+table+'&id='+id+'&limit='+limit;
+   if(J.host) { url = J.host + url; }
+   return $.ajax({
+     url: url,
+     cache: canCache(),
+     dataType: 'jsonp',
+     jsonp: "callback",
+     type: 'GET',
+     success: function(data){
+       return data;
+     },
+     error: function(error) {
+       a(error.responseText);
+       ce(error);
+       return error;
+     }
+   });
+  }
+
+  J.post = function(table, data ) {
+   // TODO wait until access_token exists
+   var url = "/api/j/?table="+table+"&token="+J.token+"&user="+J.userId+"&type=short";
+   if(J.host) { url = J.host + url; }
+
+   return $.ajax({
+     url: url,
+     type: 'POST',
+     processData: false,
+     contentType: false,
+     data: data,
+     dataType: 'jsonp',
+     jsonp: "callback",
+     success: function(response){
+       if(response.objectId != undefined) {
+         cl("post done" - response.objectId);
+       } else {
+         cl("error - object not saved");
+         cl(response);
+       }
+       return response;
+     },
+     error: function(error) {
+       a(error.responseText);
+       ce(error);
+       return error;
+     }
+   });
+  }
+
+  J.put = function(table, id, data) {
+
+   var url = "/api/j/?table="+table+'&id='+id+'&data='+data;
+   if(J.host) { url = J.host + url; }
+
+   return $.ajax({
+     type: 'PUT',
+     url: url,
+     processData: false,
+     contentType: false,
+     data: data,
+     dataType: 'jsonp',
+     jsonp: "callback",
+     success: function(data){
+       return data;
+     },
+     error: function(error) {
+       a(error.responseText);
+       cl(error);
+       return error;
+     }
+   });
+  }
+
+  J.query = function(table, limit, key, value, order) {
+
+    var url = "/api/j/query/?table="+table+'&key='+key+'&value='+value+'&limit='+limit+'&order='+order;
+    if(J.host) { url = J.host + url; }
+
+    return $.ajax({
+     url: url,
+     cache: canCache(),
+     dataType: 'jsonp',
+     jsonp: "callback",
+     type: 'GET',
+     success: function(data){
+       return data;
+     },
+     error: function(error) {
+       a(error.responseText);
+       ce(error);
+       return error;
+     }
+    });
+  }
+
+  J.save = function (table, formId, callback) {
+    var clicked = false;
+    $("#"+formId).on("submit", function(event) {
+      event.preventDefault();
+      if(clicked === false) {
+        $("#pleaseWait").show()
+        $("#"+formId + " input:submit").attr('disabled','disabled');
+        var fd = prepareForm(formId);
+        J.post(table, fd).then(function(data){
+          $("#"+formId + " input:submit").removeAttr('disabled');
+          $("#pleaseWait").hide()
+          callback(data);
+        });
+        clicked = true;
+      }
+    })
+  }
+
+})(jQuery, J)
 
 // hello hello, facebook connect and #_=_
 if (window.location.hash && window.location.hash == '#_=_') {
@@ -129,15 +244,6 @@ function detectFileUpload(){ // from: http://viljamis.com/blog/2012/file-upload-
   }
 }
 
-// detect if the client can handle cache
-function canCache(){
-  if (navigator.userAgent.match(/(Windows Phone)/)) { // For a start, WinPhone can't handle it's cache
-    return false;
-  } else {
-    return true;
-  }
-}
-
 function resetForm(formName) {
   $("#"+formName)[0].reset()
   $(".trumbowyg-editor").html("")
@@ -170,24 +276,6 @@ function rebuildForm(formId, data) {
           $field.prop('checked', true);
         }
       }
-    }
-  })
-}
-
-function saveForm(Table, formId, callback) {
-
-  var clicked = false;
-  $("#"+formId).on("submit", function(event) {
-    event.preventDefault();
-    if(clicked === false) {
-      $("#pleaseWait").show()
-      $("#"+formId + " input:submit").attr('disabled','disabled');
-      save(Table, formId).then(function(resp){
-        $("#"+formId + " input:submit").removeAttr('disabled');
-        $("#pleaseWait").hide()
-        callback(resp);
-      })
-      clicked = true;
     }
   })
 }
@@ -387,133 +475,12 @@ function prepareForm(formId) {
   return fd;
 }
 
-// define save();
-function save(table, formName) {
-
-  var fd = prepareForm(formName);
-
-  return post(table, fd).then(function(data){
-    return data;
-  });
-}
-
 function update(table, formName, id) {
 
   var fd = prepareForm(formName);
 
   return put(table, id, fd).then(function(data) {
     return data;
-  });
-}
-
-function post(table, data) {
-  // TODO wait until access_token exists
-
-  var url = "/api/j/?table="+table+"&token="+J.token+"&user="+J.userId+"&type=short";
-
-  if(J.host) {
-    url = J.host + url;
-  }
-
-  return $.ajax({
-    url: url,
-    type: 'POST',
-    processData: false,
-    contentType: false,
-    data: data,
-    dataType: 'jsonp',
-    jsonp: "callback",
-    success: function(response){
-      if(response.objectId != undefined) {
-        cl("post done" - response.objectId);
-      } else {
-        cl("error - object not saved");
-        cl(response);
-      }
-      return response;
-    },
-    error: function(error) {
-      a(error.responseText);
-      ce(error);
-      return error;
-    }
-  });
-}
-
-function get(table, limit, id) {
-
-  var url = "/api/j/?table="+table+'&id='+id+'&limit='+limit;
-
-  if(J.host) {
-    url = J.host + url;
-  }
-
-  return $.ajax({
-    url: url,
-    cache: canCache(),
-    dataType: 'jsonp',
-    jsonp: "callback",
-    type: 'GET',
-    success: function(data){
-      return data;
-    },
-    error: function(error) {
-      a(error.responseText);
-      ce(error);
-      return error;
-    }
-  });
-}
-
-function put(table, id, data) {
-
-  var url = "/api/j/?table="+table+'&id='+id+'&data='+data;
-
-  if(J.host) {
-    url = J.host + url;
-  }
-
-  return $.ajax({
-    type: 'PUT',
-    url: url,
-    processData: false,
-    contentType: false,
-    data: data,
-    dataType: 'jsonp',
-    jsonp: "callback",
-    success: function(data){
-      return data;
-    },
-    error: function(error) {
-      a(error.responseText);
-      cl(error);
-      return error;
-    }
-  });
-}
-
-function query(table, limit, key, value, order) {
-
-  var url = "/api/j/query/?table="+table+'&key='+key+'&value='+value+'&limit='+limit+'&order='+order;
-
-  if(J.host) {
-    url = J.host + url;
-  }
-
-  return $.ajax({
-    url: url,
-    cache: canCache(),
-    dataType: 'jsonp',
-    jsonp: "callback",
-    type: 'GET',
-    success: function(data){
-      return data;
-    },
-    error: function(error) {
-      a(error.responseText);
-      ce(error);
-      return error;
-    }
   });
 }
 
