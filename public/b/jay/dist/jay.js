@@ -5,6 +5,7 @@ window.J = (function (jQuery) {
   'use strict';
 
   var jay = {
+
     get: function (table, limit, id) {
       var url = "/api/j/?table=" + table + '&id=' + id + '&limit=' + limit;
       if (J.host) { url = J.host + url; }
@@ -23,26 +24,136 @@ window.J = (function (jQuery) {
           ce(error);
           return error;
         }
-      })
+      });
     },
 
-    isUser: function(isLoggedIn, notLoggedIn) {
+    post: function (table, data) {
+      // TODO wait until access_token exists
+      var url = "/api/j/?table=" + table + "&token=" + J.token + "&user=" + J.userId + "&type=short";
+      if (J.host) { url = J.host + url; }
+
+      return $.ajax({
+        url: url,
+        type: 'POST',
+        processData: false,
+        contentType: false,
+        data: data,
+        dataType: 'jsonp',
+        jsonp: "callback",
+        success: function (response) {
+          if (response.objectId !== undefined) {
+            cl("post done" + response.objectId);
+          } else {
+            cl("error - object not saved");
+            cl(response);
+          }
+          return response;
+        },
+        error: function (error) {
+          a(error.responseText);
+          ce(error);
+          return error;
+        }
+      });
+    },
+
+    put: function (table, id, data) {
+
+      var url = "/api/j/?table=" + table + '&id=' + id + '&data=' + data;
+      if (J.host) { url = J.host + url; }
+
+      return $.ajax({
+        type: 'PUT',
+        url: url,
+        processData: false,
+        contentType: false,
+        data: data,
+        dataType: 'jsonp',
+        jsonp: "callback",
+        success: function (data) {
+          return data;
+        },
+        error: function (error) {
+          a(error.responseText);
+          cl(error);
+          return error;
+        }
+      });
+    },
+
+    query: function (table, limit, key, value, order) {
+
+      var url = "/api/j/query/?table=" + table + '&key=' + key + '&value=' + value + '&limit=' + limit + '&order=' + order;
+      if (J.host) { url = J.host + url; }
+
+      return $.ajax({
+        url: url,
+        cache: canCache(),
+        dataType: 'jsonp',
+        jsonp: "callback",
+        type: 'GET',
+        success: function (data) {
+          return data;
+        },
+        error: function (error) {
+          a(error.responseText);
+          ce(error);
+          return error;
+        }
+      });
+    },
+
+    save: function (table, formId, callback) {
+      var clicked = false;
+      $("#" + formId).on("submit", function (event) {
+        event.preventDefault();
+        if (clicked === false) {
+          $("#pleaseWait").show();
+          $("#" + formId + " input:submit").attr('disabled', 'disabled');
+          var fd = prepareForm(formId);
+          J.post(table, fd).then(function (data) {
+            $("#" + formId + " input:submit").removeAttr('disabled');
+            $("#pleaseWait").hide();
+            callback(data);
+          });
+          clicked = true;
+        }
+      });
+    },
+
+    update: function (table, formId, objectId, callback) {
+      var clicked = false;
+      $("#" + formId).on("submit", function (event) {
+        event.preventDefault();
+        if (clicked === false) {
+          $("#pleaseWait").show();
+          $("#" + formId + " input:submit").attr('disabled', 'disabled');
+          var fd = prepareForm(formId);
+          J.put(table, objectId, fd).then(function (resp) {
+            $("#" + formId + " input:submit").removeAttr('disabled');
+            $("#pleaseWait").hide();
+            callback(resp);
+          });
+          clicked = true;
+        }
+      });
+    },
+
+    isUser: function (isLoggedIn, notLoggedIn) {
       // if it's a user
-      if(J.userId != undefined && J.userId != false) {
+      if (J.userId != undefined && J.userId !== false) {
         isLoggedIn();
         // if it's not a user or we are not sure yet
       } else {
         var i = 0;
-        var getStatus = setInterval(function(){
+        var getStatus = setInterval(function () {
           // is not a user
-          if(J.userId === false) {
+          if (J.userId === false) {
             notLoggedIn();
             clearInterval(getStatus);
-          }
-          // is a user or not sure yet
-          else {
+          } else { // is a user or not sure yet
             // is a user
-            if(J.userId != undefined) {
+            if (J.userId !== undefined) {
               isLoggedIn();
               clearInterval(getStatus);
             } else {
@@ -57,6 +168,78 @@ window.J = (function (jQuery) {
           }
         }, 200); // Ping every 200 ms
       }
+    },
+
+    addFB: function (fbAppId) {
+      // Get FB SDK
+      (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/all.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+
+      // If FB SDK is loaded:
+      window.fbAsyncInit = function() {
+
+        // Initialise FB
+        FB.init({
+          appId      : fbAppId,
+          xfbml      : true,
+          version    : 'v2.2',
+          status     : true
+        });
+
+        J.checkIn();
+      }
+
+
+      // hello hello, facebook connect and #_=_
+      if (window.location.hash && window.location.hash == '#_=_') {
+        window.location.hash = '/';
+      }
+
+    },
+
+    checkIn: function() {
+      // See if user is logged in
+      FB.getLoginStatus(function(response){
+        if (response.status === 'connected') { // Logged into your app and Facebook
+          J.userId = response.authResponse.userID;
+          var access_token = response.authResponse.accessToken;
+          ajax_send(access_token);
+        } else if (response.status === 'not_authorized') { // The person is logged into Facebook, but not your app.
+          console.log('Please log ' + 'into this app.');
+          J.userId = false;
+        } else { // Not logged into Facebook or app or something else
+          console.log('Please log ' + 'into Facebook.');
+          J.userId = false;
+        }
+      });
+
+      // send access_token
+      function ajax_send(access_token) {
+        var ajax_object = {};
+
+        ajax_object.access_token = access_token;
+        ajax_object.type = "short";
+        $.ajax({
+            data: JSON.stringify(ajax_object),
+            type: 'POST',
+            url: "/auth/fb",
+            dataType: 'jsonp',
+            jsonp: "callback",
+            success: function(data) {
+              if (data.error == true) {
+                J.token = false;
+              }
+              if (data.error == false) {
+                J.token = data.token;
+              }
+            }
+        });
+      }
     }
   }
 
@@ -64,78 +247,6 @@ window.J = (function (jQuery) {
 }(jQuery));
 
 
-
-
-// hello hello, facebook connect and #_=_
-if (window.location.hash && window.location.hash == '#_=_') {
-  window.location.hash = '/';
-}
-
-if (typeof J.fbAppId != "undefined") {
-
-  // Get FB SDK
-  (function(d, s, id){
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) {return;}
-    js = d.createElement(s); js.id = id;
-    js.src = "https://connect.facebook.net/en_US/all.js";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
-
-  // If FB SDK is loaded:
-  window.fbAsyncInit = function() {
-
-    // Initialise FB
-    FB.init({
-      appId      : J.fbAppId,
-      xfbml      : true,
-      version    : 'v2.2',
-      status     : true
-    });
-
-    checkIn();
-  }
-}
-
-function checkIn() {
-  // See if user is logged in
-  FB.getLoginStatus(function(response){
-    if (response.status === 'connected') { // Logged into your app and Facebook
-      J.userId = response.authResponse.userID;
-      var access_token = response.authResponse.accessToken;
-      ajax_send(access_token);
-    } else if (response.status === 'not_authorized') { // The person is logged into Facebook, but not your app.
-      console.log('Please log ' + 'into this app.');
-      J.userId = false;
-    } else { // Not logged into Facebook or app or something else
-      console.log('Please log ' + 'into Facebook.');
-      J.userId = false;
-    }
-  });
-
-  // send access_token
-  function ajax_send(access_token) {
-    var ajax_object = {};
-
-    ajax_object.access_token = access_token;
-    ajax_object.type = "short";
-    $.ajax({
-        data: JSON.stringify(ajax_object),
-        type: 'POST',
-        url: "/auth/fb",
-        dataType: 'jsonp',
-        jsonp: "callback",
-        success: function(data) {
-          if (data.error == true) {
-            J.token = false;
-          }
-          if (data.error == false) {
-            J.token = data.token;
-          }
-        }
-    });
-  }
-}
 
 // shortcut for console.log
 function cl(data) {
@@ -351,8 +462,6 @@ function prepareForm(formId) {
   return fd;
 }
 
-
-
 function removeHash(){
   var host = window.location.protocol + "//" + window.location.host
   var _hashValRegexp = /#(.*)$/;
@@ -379,13 +488,6 @@ function route(crossroads) {
   hasher.changed.add(parseHash); //parse hash changes
   hasher.init(); //start listening for history change
 }
-
-
-/*
-(function (jQuery, J) {
-
-})(jQuery, J); */
-
 
 (function ( $ ) {
 

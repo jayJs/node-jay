@@ -2,6 +2,18 @@
 
 //J.fbAppId = "756437764450452" // if fbAppId is undefined, FB SDK is not added
 
+//script.js
+/*
+J.configure({
+  html5: true,
+  host: "http://jay1.eu"
+}) ;
+*/
+
+J.addFB(756437764450452);
+//J.html5 = true;
+J.host = "http://jay1.eu";
+
 $(document).ready(function() {
 
   // connect-livereload via Gulp autorefreshes the site.
@@ -155,7 +167,7 @@ $(document).ready(function() {
         if (response.authResponse) {
           FB.api('/me', function(response) {
             J.userId = response.id;
-            checkIn()
+            J.checkIn()
           });
         } else {
           J.userId = false;
