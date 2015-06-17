@@ -1,7 +1,7 @@
 /*jslint indent: 2*/
 /*global window, console*/
 
-window.J = (function (jQuery) {
+window.J = (function ($) {
   'use strict';
 
   var jay = {
@@ -42,12 +42,12 @@ window.J = (function (jQuery) {
         jsonp: "callback",
         success: function (response) {
           if (response.objectId !== undefined) {
-            cl("post done" + response.objectId);
+            //cl("post done" + response.objectId);
+            return response;
           } else {
             cl("error - object not saved");
             cl(response);
           }
-          return response;
         },
         error: function (error) {
           a(error.responseText);
@@ -110,7 +110,7 @@ window.J = (function (jQuery) {
         if (clicked === false) {
           $("#pleaseWait").show();
           $("#" + formId + " input:submit").attr('disabled', 'disabled');
-          var fd = prepareForm(formId);
+          var fd = J.prepareForm(formId);
           J.post(table, fd).then(function (data) {
             $("#" + formId + " input:submit").removeAttr('disabled');
             $("#pleaseWait").hide();
@@ -128,7 +128,7 @@ window.J = (function (jQuery) {
         if (clicked === false) {
           $("#pleaseWait").show();
           $("#" + formId + " input:submit").attr('disabled', 'disabled');
-          var fd = prepareForm(formId);
+          var fd = J.prepareForm(formId);
           J.put(table, objectId, fd).then(function (resp) {
             $("#" + formId + " input:submit").removeAttr('disabled');
             $("#pleaseWait").hide();
@@ -194,8 +194,7 @@ window.J = (function (jQuery) {
         J.checkIn();
       }
 
-
-      // hello hello, facebook connect and #_=_
+      //  Fix facebook connect ""#_=_" direction
       if (window.location.hash && window.location.hash == '#_=_') {
         window.location.hash = '/';
       }
@@ -240,256 +239,233 @@ window.J = (function (jQuery) {
             }
         });
       }
-    }
-  }
+    },
 
-  return jay;
-}(jQuery));
-
-
-
-// shortcut for console.log
-function cl(data) {
-  // IE only allows console if developer window is open.
-  if (typeof console === "undefined") {
-    // I'm so failing sailently
-  } else {
-    console.log(data);
-  }
-}
-
-// shortcut for console.error
-function ce(data) {
-  // IE only allows console if developer window is open.
-  if (typeof console === "undefined") {
-    // I'm so failing sailently
-  } else {
-    console.error(data);
-  }
-}
-
-function getBlobURL($input) {
-  var file = $input[0].files[0];
-  if(URL) { // this is for you, IE7, IE8
-    var blob = URL.createObjectURL(file);
-    if(blob) {
-      return blob;
-    } else {
-      return false;
-    }
-  } else {
-    return false;
-  }
-}
-
-function detectFileUpload(){ // from: http://viljamis.com/blog/2012/file-upload-support-on-mobile/
-  var isFileInputSupported = (function () {
-    // Handle devices which falsely report support
-    if (navigator.userAgent.match(/(Android (1.0|1.1|1.5|1.6|2.0|2.1))|(Windows Phone (OS 7|8.0))|(XBLWP)|(ZuneWP)|(w(eb)?OSBrowser)|(webOS)|(Kindle\/(1.0|2.0|2.5|3.0))/)) {
-     return false;
-    }
-    // Create test element
-    var el = document.createElement("input");
-    el.type = "file";
-    return !el.disabled;
-  })();
-
-  if (isFileInputSupported) {
-      return true;
-    } else { // the browser does not support file="input"
-      return false;
-  }
-}
-
-// detect if the client can handle cache
-function canCache(){
-  if (navigator.userAgent.match(/(Windows Phone)/)) { // For a start, WinPhone can't handle it's cache
-    return false;
-  } else {
-    return true;
-  }
-}
-
-function resetForm(formName) {
-  $("#"+formName)[0].reset()
-  $(".trumbowyg-editor").html("")
-}
-
-function rebuildForm(formId, data) {
-  $("#"+formId + " :input:not(:submit)").each(function(){
-    var $field = $(this);
-    if($field.attr("id") in data) {
-      if($field.attr("type") === "text") {
-        if ($field.hasClass("wysiwg")) {
-          $field.parent().find(".trumbowyg-editor").html(data[$field.attr("id")])
+    getBlobURL: function($input) {
+      var file = $input[0].files[0];
+      if(URL) { // this is for you, IE7, IE8
+        var blob = URL.createObjectURL(file);
+        if(blob) {
+          return blob;
         } else {
-          $field.val(data[$field.attr("id")])
+          return false;
         }
+      } else {
+        return false;
       }
-      if($field.attr("type") === "file") {
-        // todo
-      }
-    }
-    // if it uses name instead if ID, like checkbox
-    else if($field.attr("name") in data) {
-      if($field.attr("type") === "checkbox") {
-        // turn to array
-        var toArray = data[$field.attr("name")].split(",");
-        // find if current checkbox value is in array
-        var findFromArray = toArray.indexOf($field.attr("value"));
-        // if it is, then mark it as checked
-        if(findFromArray != -1) {
-          $field.prop('checked', true);
+    },
+
+
+    detectFileUpload: function(){ // from: http://viljamis.com/blog/2012/file-upload-support-on-mobile/
+      var isFileInputSupported = (function () {
+        // Handle devices which falsely report support
+        if (navigator.userAgent.match(/(Android (1.0|1.1|1.5|1.6|2.0|2.1))|(Windows Phone (OS 7|8.0))|(XBLWP)|(ZuneWP)|(w(eb)?OSBrowser)|(webOS)|(Kindle\/(1.0|2.0|2.5|3.0))/)) {
+         return false;
         }
+        // Create test element
+        var el = document.createElement("input");
+        el.type = "file";
+        return !el.disabled;
+      })();
+
+      if (isFileInputSupported) {
+          return true;
+        } else { // the browser does not support file="input"
+          return false;
       }
-    }
-  })
-}
+    },
 
-// write to alert
-function a(message) {
-  $("#alert").remove();
-  $("body").append('<div id="alert" style="z-index: 10; margin-left: auto;  margin-right: auto; left: 0; right: 0;"><button type="button" class="close" style="opacity: 1;  z-index: 11;  position: relative; color: #fff;  margin-right: 15px; margin-top: 7px; font-size: 23pt; text-shadow: none;" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><div id="alertMessage" class="alert alert-black alert-dismissible" role="alert">'+message+'</div></div>')
-}
+    // detect if the client can handle cache
+    canCache: function (){
+      if (navigator.userAgent.match(/(Windows Phone)/)) { // For a start, WinPhone can't handle it's cache
+        return false;
+      } else {
+        return true;
+      }
+    },
 
-// rebuild links for HTML5 mode.
-if(J.html5 === true) {
-  $("body").on("click", "a", function (event) {
-    if($(this).attr("target") != "_blank") {
-      event.preventDefault()
-      //  get the original URL from link
-      var originalUrl = $(this).attr("href");
-      // get current URL
-      var host = window.location.protocol + "//" + window.location.host
-      var href = window.location.href
-      // Make sure it isn't already a correct url
-      if(href.charAt(host.length+1) === "#") {
-        // there already is a hash at the correct place, so don't to anything
-      } else  { //  if browser supports pushState, remove piece of old URL and put just what was after hashtag.
-        if (window.history && window.history.replaceState) {
-          var hashTagBack = host + "/#" + window.location.pathname;
-          history.replaceState("", document.title, hashTagBack);
-        } else {   // It's an old browser, so we downgrade to just normal links.
-          if(originalUrl === "#" || originalUrl === "#/") {
-            window.location = host;
-          } else {
-            window.location = href;
+    resetForm: function (formName) {
+      $("#"+formName)[0].reset()
+      $(".trumbowyg-editor").html("")
+    },
+
+    rebuildForm: function (formId, data) {
+      $("#"+formId + " :input:not(:submit)").each(function(){
+        var $field = $(this);
+        if($field.attr("id") in data) {
+          if($field.attr("type") === "text") {
+            if ($field.hasClass("wysiwg")) {
+              $field.parent().find(".trumbowyg-editor").html(data[$field.attr("id")])
+              $field.val($(".trumbowyg-editor").html());
+            } else {
+              $field.val(data[$field.attr("id")])
+            }
+          }
+          if($field.attr("type") === "file") {
+            // todo
           }
         }
-      }
-      window.location = originalUrl;
-    }
-  })
-}
-
-function prepareForm(formId) {
-
-  var checkboxes = [];
-
-  var fd = new FormData();
-  var titles = {};
-  var $form = $("#"+formId);
-  // go through form and get data
-  $form.find("input, textarea").each(function(){
-    var t = $(this);
-
-    // handle input type text, file, submit differently;
-    switch(t.attr("type")) {
-    case "text":
-    case "textarea":
-    fd.append(t.attr("id"), t.val()); // add the value of the input
-    titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
-    break;
-
-    case "hidden":
-    fd.append(t.attr("name"), t.attr("value"));
-    break;
-
-    case "file":
-    fd.append(t.attr("id"), this.files[0]); // add the value of the input
-    titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
-    break;
-
-    case "checkbox":
-    case "radio":
-      if(t.prop("checked")) {
-        if(typeof window[t.attr("name") + "_meta"] === "undefined") { // if array does not exist, create it
-          window[t.attr("name") + "_meta"] = {};
+        // if it uses name instead if ID, like checkbox
+        else if($field.attr("name") in data) {
+          if($field.attr("type") === "checkbox") {
+            // turn to array
+            var toArray = data[$field.attr("name")].split(",");
+            // find if current checkbox value is in array
+            var findFromArray = toArray.indexOf($field.attr("value"));
+            // if it is, then mark it as checked
+            if(findFromArray != -1) {
+              $field.prop('checked', true);
+            }
+          }
         }
-        if(typeof window[t.attr("name") + "_data"] === "undefined") { // if array does not exist, create it
-          window[t.attr("name") + "_data"] = [];
-        }
+      })
+    },
 
-        window[t.attr("name") + "_meta"][t.attr("value")] = t.parent().text();
-        window[t.attr("name") + "_data"].push(t.val());
-      }
-      if($.inArray(t.attr("name"), checkboxes) == "-1") { // if array name not there yet, add it to checkboxes array
-        checkboxes.push(t.attr("name"));
-      }
-      break;
+    prepareForm: function (formId) {
 
-      case "submit":
-      break;
+      var checkboxes = [];
 
-      default:
-      // if it's a textarea
-      if (t.prop('tagName') === "TEXTAREA") {
+      var fd = new FormData();
+      var titles = {};
+      var $form = $("#"+formId);
+      // go through form and get data
+      $form.find("input, textarea").each(function(){
+        var t = $(this);
+
+        // handle input type text, file, submit differently;
+        switch(t.attr("type")) {
+        case "text":
+        case "textarea":
         fd.append(t.attr("id"), t.val()); // add the value of the input
         titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
+        break;
+
+        case "hidden":
+        fd.append(t.attr("name"), t.attr("value"));
+        break;
+
+        case "file":
+        fd.append(t.attr("id"), this.files[0]); // add the value of the input
+        titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
+        break;
+
+        case "checkbox":
+        case "radio":
+          if(t.prop("checked")) {
+            if(typeof window[t.attr("name") + "_meta"] === "undefined") { // if array does not exist, create it
+              window[t.attr("name") + "_meta"] = {};
+            }
+            if(typeof window[t.attr("name") + "_data"] === "undefined") { // if array does not exist, create it
+              window[t.attr("name") + "_data"] = [];
+            }
+
+            window[t.attr("name") + "_meta"][t.attr("value")] = t.parent().text();
+            window[t.attr("name") + "_data"].push(t.val());
+          }
+          if($.inArray(t.attr("name"), checkboxes) == "-1") { // if array name not there yet, add it to checkboxes array
+            checkboxes.push(t.attr("name"));
+          }
+          break;
+
+          case "submit":
+          break;
+
+          default:
+          // if it's a textarea
+          if (t.prop('tagName') === "TEXTAREA") {
+            fd.append(t.attr("id"), t.val()); // add the value of the input
+            titles[t.attr("id")] = $("label[for='"+this.id+"']").text(); // at the label to titles array
+          }
+          break;
+        }
+      });
+
+      // gather all checboxes to formData
+      for (var i = 0; i < checkboxes.length+1; i++) {
+        var inputId = checkboxes[i];
+        if(inputId) {
+          var metaData = window[checkboxes[i]+"_meta"];
+          var theData = window[checkboxes[i]+"_data"];
+          metaData = JSON.stringify(metaData);
+          fd.append(inputId+"_meta", metaData); // add the value of the input
+          fd.append(inputId, theData); // add the value of the input
+          titles[inputId] = $("label[for='"+inputId+"']").text(); // at the label to titles array
+          if(window[inputId]) window[inputId].length = 0;
+        }
       }
-      break;
+      checkboxes.length = 0;
+
+      titles = JSON.stringify(titles);
+      fd.append("titles", titles); // add titles to fd
+
+      return fd;
+    },
+
+    html5: function(choice){
+      if(choice === true) {
+        $("body").on("click", "a", function (event) {
+          if($(this).attr("target") != "_blank") {
+            event.preventDefault()
+            //  get the original URL from link
+            var originalUrl = $(this).attr("href");
+            // get current URL
+            var host = window.location.protocol + "//" + window.location.host
+            var href = window.location.href
+            // Make sure it isn't already a correct url
+            if(href.charAt(host.length+1) === "#") {
+              // there already is a hash at the correct place, so don't to anything
+            } else  { //  if browser supports pushState, remove piece of old URL and put just what was after hashtag.
+              if (window.history && window.history.replaceState) {
+                var hashTagBack = host + "/#" + window.location.pathname;
+                history.replaceState("", document.title, hashTagBack);
+              } else {   // It's an old browser, so we downgrade to just normal links.
+                if(originalUrl === "#" || originalUrl === "#/") {
+                  window.location = host;
+                } else {
+                  window.location = href;
+                }
+              }
+            }
+            window.location = originalUrl;
+          }
+        })
+      }
+    },
+
+    removeHash: function(){
+      var host = window.location.protocol + "//" + window.location.host
+      var _hashValRegexp = /#(.*)$/;
+      var result = _hashValRegexp.exec(hasher.getURL());
+      if(result) {
+        if (window.history && window.history.pushState) {     //
+          window.history.pushState("", document.title, host + result[1]);
+        } else {
+          window.location = result[1];
+        }
+      }
+    },
+
+    route: function (crossroads) {
+      //setup hasher
+      // hasher let's you know when route is changed
+      function parseHash(newHash, oldHash){
+        if(J.html5 === true) {
+          J.removeHash(); // if HTML5 mode is on, remove hash from URL
+        }
+        crossroads.parse(newHash);
+      }
+      hasher.initialized.add(parseHash); //parse initial hash
+      hasher.changed.add(parseHash); //parse hash changes
+      hasher.init(); //start listening for history change
     }
+  }
+
+  $(".wysiwg").trumbowyg({
+    autogrow: true,
+    btns: ['bold', 'italic', 'link', 'unorderedList'],
+    fullscreenable: false,
+    removeformatPasted: true,
   });
-
-  // gather all checboxes to formData
-  for (var i = 0; i < checkboxes.length+1; i++) {
-    var inputId = checkboxes[i];
-    if(inputId) {
-      var metaData = window[checkboxes[i]+"_meta"];
-      var theData = window[checkboxes[i]+"_data"];
-      metaData = JSON.stringify(metaData);
-      fd.append(inputId+"_meta", metaData); // add the value of the input
-      fd.append(inputId, theData); // add the value of the input
-      titles[inputId] = $("label[for='"+inputId+"']").text(); // at the label to titles array
-      if(window[inputId]) window[inputId].length = 0;
-    }
-  }
-  checkboxes.length = 0;
-
-  titles = JSON.stringify(titles);
-  fd.append("titles", titles); // add titles to fd
-
-  return fd;
-}
-
-function removeHash(){
-  var host = window.location.protocol + "//" + window.location.host
-  var _hashValRegexp = /#(.*)$/;
-  var result = _hashValRegexp.exec(hasher.getURL());
-  if(result) {
-    if (window.history && window.history.pushState) {     //
-      window.history.pushState("", document.title, host + result[1]);
-    } else {
-      window.location = result[1];
-    }
-  }
-}
-
-function route(crossroads) {
-  //setup hasher
-  // hasher let's you know when route is changed
-  function parseHash(newHash, oldHash){
-    if(J.html5 === true) {
-      removeHash(); // if HTML5 mode is on, remove hash from URL
-    }
-    crossroads.parse(newHash);
-  }
-  hasher.initialized.add(parseHash); //parse initial hash
-  hasher.changed.add(parseHash); //parse hash changes
-  hasher.init(); //start listening for history change
-}
-
-(function ( $ ) {
 
   $.fn.hide = function(transition) {
     return this.each(function() {
@@ -523,4 +499,32 @@ function route(crossroads) {
     });
   }
 
-}( jQuery ));
+  return jay;
+}(jQuery));
+
+/*
+  Add some shortcuts to make life sweeter
+*/
+
+function cl(data) { // shortcut for console.log
+  if (typeof console === "undefined") {
+    // I'm so failing sailently
+  } else {
+    console.log(data);
+  }
+}
+
+// shortcut for console.error
+function ce(data) {
+  if (typeof console === "undefined") {   // IE only allows console if developer window is open.
+    // I'm so failing sailently
+  } else {
+    console.error(data);
+  }
+}
+
+// write to alert
+function a(message) {
+  $("#alert").remove();
+  $("body").append('<div id="alert" style="z-index: 10; margin-left: auto;  margin-right: auto; left: 0; right: 0;"><button type="button" class="close" style="opacity: 1;  z-index: 11;  position: relative; color: #fff;  margin-right: 15px; margin-top: 7px; font-size: 23pt; text-shadow: none;" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><div id="alertMessage" class="alert alert-black alert-dismissible" role="alert">'+message+'</div></div>')
+}

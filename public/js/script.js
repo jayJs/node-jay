@@ -12,7 +12,7 @@ J.configure({
 
 J.addFB(756437764450452);
 //J.html5 = true;
-J.host = "http://jay1.eu";
+//J.host = "http://jay1.eu";
 
 $(document).ready(function() {
 
@@ -45,7 +45,7 @@ $(document).ready(function() {
   var addPostView = function () {
     J.isUser(function(){ // is a user
       clearApp()
-      resetForm("addPostForm")
+      J.resetForm("addPostForm")
       $(addPost).show('fadeIn');
       addPostFunction();
     }, function() { // is not a user
@@ -91,7 +91,7 @@ $(document).ready(function() {
   })
 
   // start routing
-  route(crossroads);
+  J.route(crossroads);
 
   // CONTROLLERS
   // Controller, "/"
@@ -117,7 +117,7 @@ $(document).ready(function() {
   // common things for new posts and posts editing.
   function editPost() {
     // detect if browser is able to accept uploading files.
-    var canUploadFiles = detectFileUpload();
+    var canUploadFiles = J.detectFileUpload();
     if(canUploadFiles === false) {
       a("This browser does not support file uploads");
       image.parent().hide()
@@ -125,14 +125,14 @@ $(document).ready(function() {
 
     // create the preview for image
     $('#image').change(function(){
-      var blob = getBlobURL($(this));
+      var blob = J.getBlobURL($(this));
       if(blob != false) {
         $(imagePreview).css("background-image", "url("+blob+")")
       }
     });
 
     // reset the form
-    resetForm("addPostForm");
+    J.resetForm("addPostForm");
     $(imagePreview).css("background-image", "")
   }
 
@@ -151,7 +151,7 @@ $(document).ready(function() {
     editPost();
     J.get("Posts", 1, id).then(function(data){
       var d = data[0];
-      rebuildForm("addPostForm", d);
+      J.rebuildForm("addPostForm", d);
       // rebuildForm() does not take input file yet, so:
       if(d.image && d.image.url) { $(imagePreview).css("background-image", "url("+d.image.url+")"); }
     })
