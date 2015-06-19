@@ -23,7 +23,7 @@ function ce(data) {
   }
 }
 
-// write to alert
+// Create a notification
 function a(message) {
   $("#alert").remove();
   $("body").append('<div id="alert" style="z-index: 10; margin-left: auto;  margin-right: auto; left: 0; right: 0;"><button type="button" class="close" style="opacity: 1;  z-index: 11;  position: relative; color: #fff;  margin-right: 15px; margin-top: 7px; font-size: 23pt; text-shadow: none;" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><div id="alertMessage" class="alert alert-black alert-dismissible" role="alert">' + message + '</div></div>');
