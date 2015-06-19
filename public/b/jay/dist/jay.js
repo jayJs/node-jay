@@ -1,5 +1,5 @@
 /*jslint indent: 2*/
-/*global window, console*/
+/*global window, console, J*/
 
 window.J = (function ($) {
   'use strict';
@@ -88,7 +88,7 @@ window.J = (function ($) {
 
       return $.ajax({
         url: url,
-        cache: canCache(),
+        cache: J.canCache(),
         dataType: 'jsonp',
         jsonp: "callback",
         type: 'GET',
@@ -403,6 +403,7 @@ window.J = (function ($) {
 
     html5: function(choice){
       if(choice === true) {
+        J.isHTHML5 = true;
         $("body").on("click", "a", function (event) {
           if($(this).attr("target") != "_blank") {
             event.preventDefault()
@@ -449,7 +450,7 @@ window.J = (function ($) {
       //setup hasher
       // hasher let's you know when route is changed
       function parseHash(newHash, oldHash){
-        if(J.html5 === true) {
+        if(J.isHTHML5 === true) {
           J.removeHash(); // if HTML5 mode is on, remove hash from URL
         }
         crossroads.parse(newHash);
