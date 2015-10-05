@@ -107,6 +107,29 @@ window.J = (function ($) {
       });
     },
 
+    delete: function (table, id) {
+
+      var url = "/api/j/?table=" + table + '&id=' + id;
+      if (J.host) { url = J.host + url; }
+
+      return $.ajax({
+        type: 'DELETE',
+        url: url,
+        processData: false,
+        contentType: false,
+        dataType: 'jsonp',
+        jsonp: "callback",
+        success: function (data) {
+          return data;
+        },
+        error: function (error) {
+          a(error.responseText);
+          cl(error);
+          return error;
+        }
+      });
+    },
+
     query: function (table, limit, key, value, order) {
 
       var url = "/api/j/query/?table=" + table + '&key=' + key + '&value=' + value + '&limit=' + limit + '&order=' + order;
@@ -131,7 +154,7 @@ window.J = (function ($) {
 
     save: function (table, formId, callback) {
       var clicked = false;
-      $("#" + formId).on("submit", function (event) {
+      $("#" + formId).unbind("submit").one("submit", function (event) {
         event.preventDefault();
         if (clicked === false) {
           $("#pleaseWait").show();
@@ -149,7 +172,7 @@ window.J = (function ($) {
 
     update: function (table, formId, objectId, callback) {
       var clicked = false;
-      $("#" + formId).on("submit", function (event) {
+      $("#" + formId).unbind("submit").one("submit", function (event) {
         event.preventDefault();
         if (clicked === false) {
           $("#pleaseWait").show();
@@ -217,8 +240,9 @@ window.J = (function ($) {
           version    : 'v2.2',
           status     : true
         });
-
-        J.checkIn();
+        if (J.logInFB === true) {
+          J.checkIn();
+        }
       };
 
       //  Fix facebook connect ""#_=_" direction
@@ -270,7 +294,7 @@ window.J = (function ($) {
     },
 
     getBlobURL: function ($input) {
-      if (URL) { // this is for you, IE7, IE8
+      if (window.URL) { // this is for you, IE7, IE8
         var file = $input[0].files[0];
         var blob = URL.createObjectURL(file);
         if (blob) {
@@ -315,7 +339,7 @@ window.J = (function ($) {
     rebuildForm: function (formId, data) {
       $("#" + formId + " :input:not(:submit)").each(function () {
         var $field = $(this);
-        if (data.hasOwnProperty($field.attr("id"))) {
+        if (data && data.hasOwnProperty($field.attr("id"))) {
           if ($field.attr("type") === "text") {
             if ($field.hasClass("wysiwg")) {
               $field.parent().find(".trumbowyg-editor").html(data[$field.attr("id")]);
@@ -327,7 +351,7 @@ window.J = (function ($) {
           if ($field.attr("type") === "file") {
             // todo
           }
-        } else if (data.hasOwnProperty($field.attr("name"))) { // if it uses name instead if ID, like checkbox
+        } else if (data && data.hasOwnProperty($field.attr("name"))) { // if it uses name instead if ID, like checkbox
           if ($field.attr("type") === "checkbox") {
             // turn to array
             var toArray = data[$field.attr("name")].split(",");
@@ -430,9 +454,16 @@ window.J = (function ($) {
             event.preventDefault();
             //  get the original URL from link
             var originalUrl = $(this).attr("href");
+
             // get current URL
-            var host = window.location.protocol + "//" + window.location.host;
+            var host;
+            if (J.host) {
+              host = J.host.substring(0, J.host.length - 1); // J.host minus "/" from the end
+            } else {
+              host = window.location.protocol + "//" + window.location.host;
+            }
             var href = window.location.href;
+
             // Make sure it isn't already a correct url
             if (href.charAt(host.length + 1) === "#") {
               // there already is a hash at the correct place, so don't to anything
@@ -455,14 +486,29 @@ window.J = (function ($) {
     },
 
     removeHash: function () {
-      var host = window.location.protocol + "//" + window.location.host;
+      var host;
+      if (J.host) {
+        host = J.host.substring(0, J.host.length - 1); // J.host minus "/" from the end
+      } else {
+        host = window.location.protocol + "//" + window.location.host;
+      }
+
       var hashValRegexp = /#(.*)$/;
       var result = hashValRegexp.exec(hasher.getURL());
+
       if (result) {
-        if (window.history && window.history.pushState) {     //
-          window.history.pushState("", document.title, host + result[1]);
+        if (window.history && window.history.pushState) {
+          if (result[1] === "/") {
+            window.history.pushState("", document.title, host);
+          } else {
+            window.history.pushState("", document.title, host + result[1]);
+          }
         } else {
-          window.location = result[1];
+          if (J.host) {
+            window.location = host + "/" + result[1];
+          } else {
+            window.location = result[1];
+          }
         }
       }
     },
@@ -479,15 +525,20 @@ window.J = (function ($) {
       hasher.initialized.add(parseHash); //parse initial hash
       hasher.changed.add(parseHash); //parse hash changes
       hasher.init(); //start listening for history change
-    }
-  };
+    },
 
-  $(".wysiwg").trumbowyg({
-    autogrow: true,
-    btns: ['bold', 'italic', 'link', 'unorderedList'],
-    fullscreenable: false,
-    removeformatPasted: true
-  });
+    wysiwg: function (choice) {
+      if (choice === true) {
+        $(".wysiwg").trumbowyg({
+          autogrow: true,
+          btns: ['bold', 'italic', 'link', 'unorderedList'],
+          fullscreenable: false,
+          removeformatPasted: true
+        });
+      }
+    }
+
+  };
 
   $.fn.hide = function (transition) {
     return this.each(function () {
