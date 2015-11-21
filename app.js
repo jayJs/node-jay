@@ -15,7 +15,6 @@ app.configure(function() {
   app.use(express.cookieParser());
   app.use(express.session({ secret: 'Please_change_me_now' }));
   app.use(app.router);
-  app.use(require('connect-livereload')());
   app.use(express.logger('dev'));
   app.use(express.methodOverride());
   var hourMs = 1000*60*60;
