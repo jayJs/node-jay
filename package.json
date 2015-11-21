@@ -4,7 +4,8 @@
   "private": true,
   "dependencies": {
     "express": "3.2.5",
-    "jay-npm": "0.10.0"
+    "jay-npm": "0.10.0",
+    "sanitize-html": "^1.11.1"
   },
   "devDependencies": {
     "connect-livereload": "~0.4.0",
