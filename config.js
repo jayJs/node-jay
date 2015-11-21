@@ -6,8 +6,6 @@ config.app.domain = 'localhost';
 config.app.port =  process.env.PORT || 5000;
 config.app.host = 'localhost:5000';
 
-config.https = false;
-
 // Facebook credidentials
 config.facebook = {};
 config.facebook.clientId = process.env.FBID;
