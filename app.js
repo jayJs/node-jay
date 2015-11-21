@@ -24,6 +24,17 @@ app.configure(function() {
   app.use(express.favicon(__dirname + '/public/favicon.ico'));
 });
 
+if(config.https === true) {
+  app.get('*',function(req,res,next){
+    if(req.headers['x-forwarded-proto']!='https') {
+      console.log(req.headers.host)
+      res.redirect('https://' + req.headers.host + req.url);
+    } else {
+      next(); /* Continue to other routes if we're not redirecting */
+    }
+  });
+}
+
 app.post('/auth/fb', function(req, res) {
   Jay.logIn(req, res, config, function(data){
     res.jsonp(data);
