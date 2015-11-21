@@ -10,7 +10,7 @@ Database and backend via Parse.com
 Authentication via FB SDK  
 Gulp livereload
 Heroku Procfile
-  
+
 [**Instant front-end**](https://github.com/jayJs/jay)  
 jQuery  
 Bootrap  
@@ -33,14 +33,14 @@ npm install
 cd public  
 bower install  
 ```  
-Copy default_config.js to config.js and fill it with correct credentials.  
-In order for everything to work properly Facebook app and parse.com credentials are required.  
-Set config.jwtSimple.secret into a string of your own choice.  
 
-Run the server:  
+Set your settings at config.js. It also accepts process.env variables so you can run it like this:  
 ```
-node app.js
-```  
+PARSEID='myParseId' PARSEKEY='MyParseRESTAPIKey' FBID='MyFBID' FBSECRET='MyFbSecret' node app.js
+```
+In order for everything to work properly and Parse.com (for authentication Facebook) credentials are required.    
+Set config.jwtSimple.secret into a string of your own choice.    
+
 Go to: http://localhost:5000/ (or any other port you set at config).  
 
 Gulp is set up to reload the client every time a js or html file is changed.
