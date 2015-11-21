@@ -8,8 +8,6 @@
 $(document).ready(function () {
   "use strict";
 
-  J.addFB(756437764450452);
-
   // connect-livereload via Gulp autorefreshes the site.
   //$("body").append('<script src="http://localhost:35729/livereload.js?snipver=1"></script>');
 
