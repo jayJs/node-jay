@@ -6,3 +6,6 @@
 
 *.json
 !package.json
+
+!public/uploads
+public/uploads/*

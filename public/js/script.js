@@ -8,6 +8,8 @@
 $(document).ready(function () {
   "use strict";
 
+  J.wysiwg(true);
+
   // connect-livereload via Gulp autorefreshes the site.
   if (location.hostname === "localhost") {
     $("body").append('<script src="http://localhost:35729/livereload.js?snipver=1"></script>');
@@ -24,6 +26,8 @@ $(document).ready(function () {
     $(listPosts).hide();
     $(logIn).hide();
     $(e404).hide();
+
+    $("#deletePost").hide();
 
     $('html,body').scrollTop(0);
   }
@@ -54,13 +58,14 @@ $(document).ready(function () {
   };
 
   var editPostView = function (id) {
-    J.isUser(function () { // is a user
+    //J.isUser(function () { // is a user
       clearApp();
+      $("#deletePost").show('fadeIn');
       $(addPost).show('fadeIn');
       editPostFunction(id);
-    }, function () { // is not a user
-      window.location = "#/login";
-    });
+    //}, function () { // is not a user
+    //  window.location = "#/login";
+    //});
   };
 
   var logInView = function () {
@@ -146,6 +151,17 @@ $(document).ready(function () {
     J.update("Posts", 'addPostForm', id, function (data) {
       // todo: error handling
       window.location = "#/p/" + id;
+    });
+    
+    $("#deletePost").off('click').on('click', function (event) {
+      event.preventDefault();
+      J.delete("Posts", id).then(function (response) {
+        if (response.error) {
+          a(response.error)
+        } else {
+          location.href = "#/"
+        }
+      });
     });
   }
 

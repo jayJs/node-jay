@@ -57,6 +57,13 @@ app.get('/api/j/query', function(req, res){
   });
 });
 
+// DELETE
+app.delete('/api/j', function(req, res){
+  Jaynedb.delete(req, res, function(data){
+    res.jsonp(data);
+  });
+});
+
 // Send the index.html
 app.get('/', function(req, res){
   res.sendfile('./public/index.html');
