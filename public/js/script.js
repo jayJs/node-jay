@@ -9,7 +9,9 @@ $(document).ready(function () {
   "use strict";
 
   // connect-livereload via Gulp autorefreshes the site.
-  //$("body").append('<script src="http://localhost:35729/livereload.js?snipver=1"></script>');
+  if (location.hostname === "localhost") {
+    $("body").append('<script src="http://localhost:35729/livereload.js?snipver=1"></script>');
+  }
 
   // hide loadin + show app
   $("#loading").hide();
@@ -35,14 +37,14 @@ $(document).ready(function () {
   };
 
   var addPostView = function () {
-    J.isUser(function () { // is a user
+    //J.isUser(function () { // is a user
       clearApp();
       J.resetForm("addPostForm");
       $(addPost).show('fadeIn');
       addPostFunction();
-    }, function () { // is not a user
-      window.location = "#/login";
-    });
+    //}, function () { // is not a user
+    //  window.location = "#/login";
+    //});
   };
 
   var onePostView = function (id) {
@@ -170,12 +172,14 @@ $(document).ready(function () {
       if (data_0.error === "No such post" || data_0.error === "Query is confused") {
         $(e404).show();
       } else {
+        var titles = data.titles
         if (typeof data.titles === "string") {
-          data.titles = JSON.parse(data.titles);
+          titles = titles.replace(/&quot;/g, '\"');
+          data.titles = JSON.parse(titles);
         }
         $(onePost).empty();
         $.each(data, function (key, value) {
-          if (key === "updatedAt" || key === "createdAt" || key === "objectId") {
+          if (key === "updatedAt" || key === "createdAt" || key === "objectId" || key === "_id") {
             // empty block
           } else {
             if (value.length > 0) {
