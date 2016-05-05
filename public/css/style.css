@@ -16,6 +16,10 @@ p {
   text-align: left;
 }
 
+#adminLink {
+  margin-left: 15px;
+}
+
 #add {
   position: relative;
 }
@@ -47,6 +51,19 @@ p {
 
 #onePost {
   margin-top: 50px;
+}
+
+#adminData td {
+  border: 1px solid #eee;
+  padding: 3px;
+}
+
+#adminData td>textarea {
+  max-width: 100px;
+  height: 20px;
+  overflow: hidden;
+  border: none;
+  resize: none;
 }
 
 #alert {

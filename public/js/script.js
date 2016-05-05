@@ -26,6 +26,7 @@ $(document).ready(function () {
     $(listPosts).hide();
     $(logIn).hide();
     $(e404).hide();
+    $("#admin").hide();
 
     $("#deletePost").hide();
 
@@ -68,6 +69,12 @@ $(document).ready(function () {
     //});
   };
 
+  function adminView () {
+    clearApp();
+    $("#admin").show('fadeIn');
+    adminFunction();
+  }
+
   var logInView = function () {
     clearApp();
     $(logIn).show();
@@ -81,6 +88,7 @@ $(document).ready(function () {
   crossroads.addRoute('/login', logInView);
   crossroads.addRoute('/p/{id}', onePostView);
   crossroads.addRoute('/e/{id}', editPostView);
+  crossroads.addRoute('/admin', adminView);
 
   // that's a 404 if the route structure is not matched
   crossroads.bypassed.add(function () {
@@ -152,7 +160,7 @@ $(document).ready(function () {
       // todo: error handling
       window.location = "#/p/" + id;
     });
-    
+
     $("#deletePost").off('click').on('click', function (event) {
       event.preventDefault();
       J.delete("Posts", id).then(function (response) {
@@ -161,6 +169,63 @@ $(document).ready(function () {
         } else {
           location.href = "#/"
         }
+      });
+    });
+  }
+
+  function adminFunction () {
+
+    // CLEAR OLD TABLE
+    $("#adminData>thead>tr>td").remove();
+    $("#adminData>tbody>tr").remove();
+
+    // GET POSTS
+    J.get("Posts", 20).then(function (posts) {
+      var i;
+      var keys = [];
+      for (i=0; i < posts.length; i++) {
+        // CREATE A ROW
+        $("#adminData>tbody").append("<tr>")
+        for(var key in posts[i]){
+          if (key !== "titles") {
+            $("#adminData>tbody").append("<td><textarea data-id='" + posts[i].objectId + "' data-key='" + key + "'>" + posts[i][key] + "</textarea></td>")
+            var isKey = keys.indexOf(key);
+            if (isKey < 0) {
+              keys.push(key);
+            }
+          }
+        }
+        $("#adminData>tbody").append("</tr>")
+      }
+      // CREATE HEADER OUT OF KEYS
+      var j;
+      for (j=0; j < keys.length; j++) {
+        $("#adminData>thead>tr").append("<th>" + keys[j] + "</th>");
+      }
+
+      // CREATE AUTORESIZE
+      $("#adminData textarea").off('click').on('click', function () {
+        var ta = document.querySelector('textarea');
+        autosize.destroy($("textarea"));
+        $("#adminData td").css("height", "20px"); // TODO NOT WORKING
+        $(this).css('height', '100%');
+        autosize($(this));
+      });
+
+      // SAVE DATA ON BLUR
+      $("#adminData textarea").off('blur').on('blur', function () {
+        var id = $(this).attr("data-id");
+        var key = $(this).attr("data-key");
+        var value =  $(this).val()
+        var fd = new FormData();
+        var $post = $(this);
+        fd.append(key, value);
+        J.put("Posts", id, fd).then(function () {
+          $post.css('border', '1px solid #080');
+          setTimeout(function () {
+            $post.css('border', '1px solid #eee');
+          }, 500)
+        });
       });
     });
   }
