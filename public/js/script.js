@@ -176,9 +176,8 @@ $(document).ready(function () {
   function adminFunction () {
 
     // CLEAR OLD TABLE
-    $("#adminData>thead>tr>td").remove();
-    $("#adminData>tbody>tr").remove();
-
+    $("#adminData th").remove();
+    $("#adminData td").remove();
     // GET POSTS
     J.get("Posts", 20).then(function (posts) {
       var i;
