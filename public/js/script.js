@@ -8,11 +8,15 @@
 $(document).ready(function () {
   "use strict";
 
-  J.wysiwg(true);
+  J.wysiwg = true;
+  J.html5(true);
+
+  J.host = "http://node-jay.herokuapp.com/";
 
   // connect-livereload via Gulp autorefreshes the site.
   if (location.hostname === "localhost") {
     $("body").append('<script src="http://localhost:35729/livereload.js?snipver=1"></script>');
+    J.host = "http://localhost:5000/";
   }
 
   // hide loadin + show app

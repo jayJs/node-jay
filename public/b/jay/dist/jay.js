@@ -33,8 +33,11 @@ window.J = (function ($) {
 
   var jay = {
 
+    surf: [], // Last two pages I've surfed
+    surfCurrent: 0, // current number I'm b
+
     get: function (table, limit, id) {
-      var url = "/api/j/?table=" + table + '&id=' + id + '&limit=' + limit;
+      var url = "api/j/?table=" + table + '&id=' + id + '&limit=' + limit;
       if (J.host) { url = J.host + url; }
 
       return $.ajax({
@@ -56,7 +59,7 @@ window.J = (function ($) {
 
     post: function (table, data) {
       // TODO wait until access_token exists
-      var url = "/api/j/?table=" + table + "&token=" + J.token + "&user=" + J.userId + "&type=short";
+      var url = "api/j/?table=" + table + "&token=" + J.token + "&user=" + J.userId + "&type=short";
       if (J.host) { url = J.host + url; }
 
       return $.ajax({
@@ -85,7 +88,7 @@ window.J = (function ($) {
 
     put: function (table, id, data) {
 
-      var url = "/api/j/?table=" + table + '&id=' + id + '&data=' + data;
+      var url = "api/j/?table=" + table + '&id=' + id + '&data=' + data + "&token=" + J.token + "&user=" + J.userId + "&type=short";
       if (J.host) { url = J.host + url; }
 
       return $.ajax({
@@ -109,7 +112,7 @@ window.J = (function ($) {
 
     delete: function (table, id) {
 
-      var url = "/api/j/?table=" + table + '&id=' + id;
+      var url = "api/j/?table=" + table + '&id=' + id + "&token=" + J.token + "&user=" + J.userId + "&type=short";
       if (J.host) { url = J.host + url; }
 
       return $.ajax({
@@ -132,7 +135,7 @@ window.J = (function ($) {
 
     query: function (table, limit, key, value, order) {
 
-      var url = "/api/j/query/?table=" + table + '&key=' + key + '&value=' + value + '&limit=' + limit + '&order=' + order;
+      var url = "api/j/query/?table=" + table + '&key=' + key + '&value=' + value + '&limit=' + limit + '&order=' + order;
       if (J.host) { url = J.host + url; }
 
       return $.ajax({
@@ -264,8 +267,8 @@ window.J = (function ($) {
           data: JSON.stringify(ajax_object),
           type: 'POST',
           url: "/auth/fb",
-          dataType: 'jsonp',
-          jsonp: "callback",
+//          dataType: 'jsonp',
+//          jsonp: "callback",
           success: function (data) {
             if (data.error === true) {
               J.token = false;
@@ -340,7 +343,8 @@ window.J = (function ($) {
       $("#" + formId + " :input:not(:submit)").each(function () {
         var $field = $(this);
         if (data && data.hasOwnProperty($field.attr("id"))) {
-          if ($field.attr("type") === "text") {
+          var elementType = $(this).get(0).tagName
+          if ($field.attr("type") === "text" || elementType === 'TEXTAREA') {
             if ($field.hasClass("wysiwg")) {
               $field.parent().find(".trumbowyg-editor").html(data[$field.attr("id")]);
               $field.val($(".trumbowyg-editor").html());
@@ -402,11 +406,16 @@ window.J = (function ($) {
             if (typeof window[t.attr("name") + "_data"] === "undefined") { // if array does not exist, create it
               window[t.attr("name") + "_data"] = [];
             }
-
             window[t.attr("name") + "_meta"][t.attr("value")] = t.parent().text();
-            window[t.attr("name") + "_data"].push(t.val());
+            if (t.attr("type") === "checkbox") {
+              if ($.inArray( t.val(), window[t.attr("name") + "_data"]) < 0) {
+                window[t.attr("name") + "_data"].push(t.val());  // it's an array if it's checkboxes
+              }
+            } else if (t.attr("type") === "radio") {
+              window[t.attr("name") + "_data"] = t.val(); // it's not an array if it's radio
+            }
           }
-          if ($.inArray(t.attr("name"), checkboxes) === "-1") { // if array name not there yet, add it to checkboxes array
+          if ($.inArray(t.attr("name"), checkboxes) === -1) { // if array name not there yet, add it to checkboxes array
             checkboxes.push(t.attr("name"));
           }
           break;
@@ -449,6 +458,35 @@ window.J = (function ($) {
     html5: function (choice) {
       if (choice === true) {
         J.isHTHML5 = true;
+
+        // keep a count on pages visited
+        // TODO do it more then just the first page.
+        function surfIt () {
+          J.surfCurrent++;
+          var currentPage = {
+            index: J.surfCurrent,
+            href: document.location.href,
+            hash: document.location.hash
+          }
+          J.surf.unshift(currentPage);
+        }
+
+        // surf it on init
+        surfIt();
+        window.onpopstate = function(event) {
+          // surf it on a popstate
+          surfIt();
+          // if it's a backbutton
+          if (J.surf[0] && J.surf[1] && J.surf[0].href && J.surf[1].href && J.surf[0].href === J.surf[1].href) {
+            // go back
+            if (J.surf[2].hash) {
+              location.href = J.surf[2].hash
+            } else {
+              location.href = "#"
+            }
+          }
+        };
+
         $("body").on("click", "a", function (event) {
           if ($(this).attr("target") !== "_blank") {
             event.preventDefault();

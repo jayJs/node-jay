@@ -129,7 +129,10 @@ If you want to use it for authentication, [jay-npm](https://github.com/jayJs/jay
 
 Users who have authorized the Facebook app receive a client ID (available as J.userId) and a token (available as J.token) that enables them to send data to the server.  
 
+In order for this to work correctly, FB app ID and SECRET must be set in the backend and match the FB APP id set in frontend.  
 
+Currently this isues JSON, instead of JSONP (like most of the library).     
+  
 **J.isUser()**  
 isUser() provides the possibility to apply different commands to anonymous or logged-in users. isUser() determines that you are logged in before executing the functions. J.userId contains the user Facebook ID.
 
@@ -504,7 +507,7 @@ function save(table, formName) {
 }
 ```  
 
-##Compability  
+##Compatibility  
 Visit the site - compatible until IE 6. We use [latest jQuery version 1.x](http://jquery.com/browser-support/).  
 Post data - compatible until IE 10. The bottleneck is [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility).  
 
