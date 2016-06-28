@@ -26,7 +26,7 @@
     "hasher": "~1.2.0",
     "signals": "~1.0.0",
     "trumbowyg": "~1.1.7",
-    "jay": "1.0.0-beta.16",
+    "jay": "1.0.0-beta.17",
     "autosize": "~3.0.15"
   },
   "devDependencies": {}

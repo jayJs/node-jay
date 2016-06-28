@@ -8,15 +8,11 @@
 $(document).ready(function () {
   "use strict";
 
-  J.wysiwg = true;
-  J.html5(true);
-
-  J.host = "http://node-jay.herokuapp.com/";
+  J.wysiwg(true);
 
   // connect-livereload via Gulp autorefreshes the site.
   if (location.hostname === "localhost") {
     $("body").append('<script src="http://localhost:35729/livereload.js?snipver=1"></script>');
-    J.host = "http://localhost:5000/";
   }
 
   // hide loadin + show app
@@ -167,7 +163,7 @@ $(document).ready(function () {
 
     $("#deletePost").off('click').on('click', function (event) {
       event.preventDefault();
-      J.delete("Posts", id).then(function (response) {
+      J.remove("Posts", id).then(function (response) {
         if (response.error) {
           a(response.error)
         } else {
