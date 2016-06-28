@@ -30,7 +30,7 @@ app.post('/auth/fb', function(req, res) {
   })
 })
 
-// Get content
+// Get content 
 app.get('/api/j', function(req, res){
   Jaynedb.get(req, res, function(data){
     res.jsonp(data);
